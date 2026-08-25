@@ -1,0 +1,1071 @@
+<title>Sổ tay thiết kế VOMA</title>
+<style>
+:root{
+  --paper:#FFFFFF; --paper-2:#F6F8FB; --paper-3:#EDF1F7;
+  --ink:#111720; --ink-2:#3B4653; --muted:#6C7887;
+  --line:#DEE3EA; --line-2:#BFC7D2;
+  --brand:#005EB8; --brand-2:#003A70; --wash:#EAF2FB;
+  --warn:#A8560B; --warn-wash:#FCF2E4;
+  --ok:#1B5E20; --bad:#C62828;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1319; --paper-2:#151B23; --paper-3:#1D242E;
+    --ink:#E7ECF3; --ink-2:#B4BECB; --muted:#84909F;
+    --line:#242C37; --line-2:#36404D;
+    --brand:#74AEEC; --brand-2:#A6CCF3; --wash:#131F2C;
+    --warn:#DDA25C; --warn-wash:#221A0F;
+    --ok:#7CC48A; --bad:#EE8080;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1319; --paper-2:#151B23; --paper-3:#1D242E;
+  --ink:#E7ECF3; --ink-2:#B4BECB; --muted:#84909F;
+  --line:#242C37; --line-2:#36404D;
+  --brand:#74AEEC; --brand-2:#A6CCF3; --wash:#131F2C;
+  --warn:#DDA25C; --warn-wash:#221A0F;
+  --ok:#7CC48A; --bad:#EE8080;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{display:grid;grid-template-columns:246px minmax(0,1fr);gap:0;max-width:1240px;margin:0 auto}
+
+/* ---- rail ---- */
+.rail{border-right:1px solid var(--line);padding:34px 22px 60px}
+.rail .inner{position:sticky;top:24px}
+.rail .brand{display:flex;align-items:center;gap:9px;margin-bottom:22px}
+.rail .mk{width:26px;height:26px;border-radius:7px;background:var(--brand);color:#fff;
+  display:grid;place-items:center;font-weight:800;font-size:14px;flex:none}
+.rail .bn{font-weight:730;letter-spacing:-.02em;font-size:15px}
+.rail nav{display:flex;flex-direction:column;gap:1px}
+.rail a{display:flex;gap:9px;text-decoration:none;color:var(--ink-2);font-size:13.5px;
+  padding:5px 8px;border-radius:6px;line-height:1.4}
+.rail a:hover{background:var(--paper-2);color:var(--brand)}
+.rail a .s{font-family:var(--mono);font-size:11px;color:var(--muted);flex:none;width:20px;
+  padding-top:2px;font-variant-numeric:tabular-nums}
+.rail .note{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:11.5px;color:var(--muted);line-height:1.55}
+
+/* ---- main ---- */
+main{padding:34px 46px 120px;min-width:0}
+.mast{border-bottom:2px solid var(--ink);padding-bottom:26px;margin-bottom:40px}
+.mast .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--brand);font-weight:600}
+.mast h1{margin:.3em 0 .18em;font-size:clamp(32px,5vw,46px);line-height:1.06;letter-spacing:-.032em;
+  font-weight:790;text-wrap:balance}
+.mast .thesis{font-size:19px;line-height:1.5;color:var(--ink-2);max-width:44ch;margin:0}
+.mast .meta{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:22px;font-family:var(--mono);
+  font-size:11.5px;color:var(--muted)}
+.mast .meta b{color:var(--ink-2);font-weight:600}
+
+section{margin-bottom:66px;scroll-margin-top:20px}
+h2{margin:0 0 6px;font-size:11px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--brand);font-weight:600}
+h2+.h{margin:0 0 14px;font-size:27px;line-height:1.18;letter-spacing:-.026em;font-weight:760;text-wrap:balance}
+h3{margin:34px 0 10px;font-size:18px;letter-spacing:-.014em;font-weight:700}
+h4{margin:22px 0 7px;font-size:14.5px;font-weight:680;color:var(--ink)}
+p{margin:0 0 14px;max-width:70ch}
+ul,ol{margin:0 0 14px;padding-left:20px;max-width:70ch}
+li{margin-bottom:5px}
+code,.k{font-family:var(--mono);font-size:.87em;background:var(--paper-3);padding:1px 5px;
+  border-radius:4px;color:var(--ink)}
+strong{font-weight:670}
+a.ref{color:var(--brand);text-decoration:none;font-family:var(--mono);font-size:.9em;
+  border-bottom:1px solid color-mix(in srgb,var(--brand) 35%,transparent)}
+a.ref:hover{border-bottom-color:var(--brand)}
+hr{border:0;border-top:1px solid var(--line);margin:30px 0}
+
+.lead{font-size:17.5px;line-height:1.55;color:var(--ink-2);max-width:60ch}
+
+/* ---- blocks ---- */
+.callout{border-left:3px solid var(--brand);background:var(--wash);padding:14px 18px;
+  border-radius:0 8px 8px 0;margin:0 0 18px;max-width:74ch}
+.callout.warn{border-left-color:var(--warn);background:var(--warn-wash)}
+.callout .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--brand);font-weight:600;margin-bottom:5px}
+.callout.warn .t{color:var(--warn)}
+.callout p:last-child{margin-bottom:0}
+
+.law{display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:15px 0;
+  border-top:1px solid var(--line)}
+.law:last-child{border-bottom:1px solid var(--line)}
+.law .n{font-family:var(--mono);font-size:12px;font-weight:600;color:#fff;background:var(--brand);
+  border-radius:6px;height:26px;display:grid;place-items:center;letter-spacing:.03em}
+.law .b{min-width:0}
+.law .s{font-size:16.5px;font-weight:640;letter-spacing:-.012em;margin-bottom:3px;line-height:1.4}
+.law .w{font-size:14px;color:var(--ink-2);line-height:1.55;max-width:66ch}
+.law .w b{color:var(--ink)}
+
+.tbl{overflow-x:auto;margin:0 0 18px;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:520px}
+thead th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);font-weight:600;padding:10px 13px;
+  background:var(--paper-2);border-bottom:1px solid var(--line-2);white-space:nowrap}
+tbody td{padding:9px 13px;border-top:1px solid var(--line);vertical-align:top;line-height:1.5}
+tbody tr:nth-child(even){background:var(--paper-2)}
+td.mono,th.mono{font-family:var(--mono);font-size:12px;white-space:nowrap}
+
+.term{border:1px solid var(--line);border-radius:10px;padding:15px 17px;margin-bottom:12px;
+  background:var(--paper)}
+.term .hd{display:flex;flex-wrap:wrap;align-items:baseline;gap:9px;margin-bottom:8px}
+.term .nm{font-size:16.5px;font-weight:700;letter-spacing:-.012em}
+.term .code{font-family:var(--mono);font-size:11.5px;color:var(--brand);background:var(--wash);
+  padding:2px 7px;border-radius:5px}
+.term dl{display:grid;grid-template-columns:118px minmax(0,1fr);gap:5px 14px;margin:0;font-size:13.8px}
+.term dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;padding-top:4px}
+.term dd{margin:0;color:var(--ink-2);line-height:1.55}
+.term dd b{color:var(--ink);font-weight:640}
+.term .no dd,.term dd.no{color:var(--warn)}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:12px;margin-bottom:18px}
+.card{border:1px solid var(--line);border-radius:10px;padding:15px 17px;background:var(--paper)}
+.card .ct{font-size:15.5px;font-weight:690;margin-bottom:3px;letter-spacing:-.01em}
+.card .cq{font-size:13px;color:var(--brand);font-style:italic;margin-bottom:9px}
+.card .cb{font-size:13.5px;color:var(--ink-2);line-height:1.55}
+.card ul{padding-left:17px;margin:8px 0 0;font-size:13px;color:var(--ink-2)}
+
+.qa{border-top:1px solid var(--line);padding:16px 0}
+.qa:last-child{border-bottom:1px solid var(--line)}
+.qa .q{font-size:15.5px;font-weight:670;margin-bottom:6px;letter-spacing:-.01em}
+.qa .a{font-size:14.2px;color:var(--ink-2);line-height:1.6;max-width:70ch}
+.qa .cite{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:600;
+  color:var(--brand);background:var(--wash);padding:2px 7px;border-radius:5px;margin-right:6px;
+  vertical-align:1px}
+
+figure{margin:0 0 20px}
+figure svg{display:block;width:100%;height:auto;overflow:visible}
+figcaption{font-size:12.5px;color:var(--muted);margin-top:9px;line-height:1.5;max-width:70ch}
+.svgwrap{border:1px solid var(--line);border-radius:12px;padding:20px;background:var(--paper-2);overflow-x:auto}
+
+.tiers{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.tier{display:grid;grid-template-columns:74px minmax(0,1fr) 172px;gap:14px;padding:13px 15px;
+  border-top:1px solid var(--line);align-items:start}
+.tier:first-child{border-top:0}
+.tier .tg{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--brand)}
+.tier .tn{font-size:15px;font-weight:670;margin-bottom:2px}
+.tier .td{font-size:13.3px;color:var(--ink-2);line-height:1.5}
+.tier .tw{font-size:12.5px;color:var(--muted);font-family:var(--mono);line-height:1.5}
+
+.verdict{border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:0 10px 10px 0;
+  padding:15px 18px;margin-bottom:12px}
+.verdict.split{border-left-color:var(--warn)}
+.verdict.no{border-left-color:var(--bad)}
+.verdict .vh{display:flex;flex-wrap:wrap;gap:9px;align-items:baseline;margin-bottom:7px}
+.verdict .vt{font-size:15.5px;font-weight:690;letter-spacing:-.01em}
+.verdict .vb{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  font-weight:600;padding:2px 8px;border-radius:999px;background:var(--ok);color:var(--paper)}
+.verdict.split .vb{background:var(--warn)}
+.verdict.no .vb{background:var(--bad)}
+.verdict .vq{font-size:13.5px;color:var(--muted);font-style:italic;margin-bottom:8px;
+  padding-left:11px;border-left:2px solid var(--line-2)}
+.verdict .vd{font-size:14px;color:var(--ink-2);line-height:1.6;max-width:70ch}
+.verdict .vd p{margin:0 0 9px}
+.verdict .vd p:last-child{margin-bottom:0}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:minmax(0,1fr)}
+  .rail{border-right:0;border-bottom:1px solid var(--line);padding:22px}
+  .rail .inner{position:static}
+  .rail nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0}
+  main{padding:26px 20px 80px}
+  .tier{grid-template-columns:minmax(0,1fr)}
+  .term dl{grid-template-columns:minmax(0,1fr)}
+  .term dt{padding-top:8px}
+}
+@media print{.rail{display:none}.wrap{grid-template-columns:1fr}}
+</style>
+<div class="wrap">
+<aside class="rail"><div class="inner">
+  <div class="brand"><span class="mk">V</span><span class="bn">Sổ tay thiết kế</span></div>
+  <nav>
+    <a href="#s1"><span class="s">§1</span><span>Ba câu trả lời</span></a>
+    <a href="#s2"><span class="s">§2</span><span>Từ điển khái niệm</span></a>
+    <a href="#s3"><span class="s">§3</span><span>Bản đồ chức năng</span></a>
+    <a href="#s4"><span class="s">§4</span><span>Sáu nhóm</span></a>
+    <a href="#s5"><span class="s">§5</span><span>Quan hệ giữa nhóm</span></a>
+    <a href="#s6"><span class="s">§6</span><span>Hàm đặt vị trí</span></a>
+    <a href="#s7"><span class="s">§7</span><span>Mười sáu luật</span></a>
+    <a href="#s8"><span class="s">§8</span><span>Áp luật vào nút thật</span></a>
+    <a href="#s9"><span class="s">§9</span><span>Ngân sách thao tác</span></a>
+    <a href="#s10"><span class="s">§10</span><span>Thêm chức năng mới</span></a>
+    <a href="#s11"><span class="s">§11</span><span>Sổ phán quyết 26/08</span></a>
+  </nav>
+  <div class="note">Trích luật bằng số. “Nút đó ở đó vì Luật 4” là một câu trả lời hợp lệ và đầy đủ.</div>
+</div></aside>
+
+<main>
+<div class="mast">
+  <div class="eyebrow">VOMA · Web hợp nhất · Bản 2.0</div>
+  <h1>Tại sao nút đó lại ở đây</h1>
+  <p class="thesis">Một bộ luật đặt vị trí có thể trích dẫn, và một từ điển chốt nghĩa cho mọi khái niệm nghiệp vụ trong VOMA.</p>
+  <div class="meta">
+    <span><b>Ngày chốt</b> 26/08/2026</span>
+    <span><b>Nền</b> voma-ui-kit 1.3.1</span>
+    <span><b>Nguồn</b> 471 spec item · 53 bài docs.voma.vn</span>
+    <span><b>Thay thế</b> không · bổ sung cho bản 1.0</span>
+  </div>
+</div>
+
+<section id="s1">
+  <h2>§1</h2>
+  <div class="h">Ba câu trả lời</div>
+  <p class="lead">Sổ tay này tồn tại vì một tình huống cụ thể: một chủ shop hỏi “sao nút đó lại ở đây, đúng ra nó phải thế này thế kia”. Có ba cách trả lời, và chỉ một cách giữ được uy tín.</p>
+
+  <p>Cách thứ nhất là <em>“nó phải như vậy”</em>. Đây là câu nói không có nội dung, và người nghe biết ngay là không có nội dung.</p>
+  <p>Cách thứ hai là giải thích vòng vo về trải nghiệm người dùng. Dài, nghe có vẻ chuyên môn, nhưng không kiểm chứng được — nên lần sau khách vẫn hỏi lại đúng câu đó.</p>
+  <p>Cách thứ ba là trích một luật đã viết sẵn, kèm số hiệu. Ngắn, kiểm chứng được, và quan trọng nhất: nó chứng minh rằng vị trí đó là kết quả của một phép suy, không phải sở thích của người vẽ.</p>
+
+  <div class="callout">
+    <div class="t">Toàn bộ sổ tay quy về một câu</div>
+    <p><b>Vị trí của một thứ trên màn hình là hàm của ba biến: người dùng chạm vào nó bao nhiêu lần một ngày, bấm nhầm thì mất gì, và nó thuộc về phạm vi rộng đến đâu.</b> Ba biến đó đo được. “Quan trọng”, “trực quan”, “cho đẹp” thì không.</p>
+  </div>
+
+  <h3>Sổ tay này dùng thế nào</h3>
+  <p>Đọc một lần theo thứ tự để hiểu phép suy. Sau đó không đọc nữa — chỉ tra.</p>
+  <ul>
+    <li><strong>Khách hỏi vì sao</strong> → <a class="ref" href="#s8">§8</a>, tìm câu gần nhất, đọc luật được trích.</li>
+    <li><strong>Hai người trong nhóm hiểu một từ theo hai nghĩa</strong> → <a class="ref" href="#s2">§2</a>. Từ điển thắng, kể cả khi màn hình đang ghi khác.</li>
+    <li><strong>Sắp thêm một chức năng mới</strong> → <a class="ref" href="#s10">§10</a>, chạy hết sáu bước rồi mới mở Figma.</li>
+    <li><strong>Có tranh cãi về chỗ đặt</strong> → <a class="ref" href="#s6">§6</a> cho ra một vị trí. Nếu nó cho ra hai vị trí đều hợp lệ thì luật thiếu một tầng, và đó là lỗi của sổ tay chứ không phải của người tranh cãi — ghi lại và bổ sung.</li>
+  </ul>
+
+  <h3>Hai điều sổ tay này cố tình không làm</h3>
+  <p><strong>Không quy định màu sắc, khoảng cách, bo góc.</strong> Những thứ đó thuộc <span class="k">voma-ui-kit</span> và chỉ có một nguồn duy nhất là <span class="k">tokens.css</span>. Sổ tay chỉ nói về <em>vị trí</em> và <em>nghĩa</em>.</p>
+  <p><strong>Không phải bản mô tả tính năng.</strong> Nó không liệt kê VOMA làm được gì cho khách hàng. Nó giải thích tại sao những thứ đó nằm ở chỗ chúng đang nằm.</p>
+</section>
+<section id="s2">
+  <h2>§2</h2>
+  <div class="h">Từ điển khái niệm</div>
+  <p class="lead">Ba mươi tư khái niệm, mỗi khái niệm đúng một nghĩa. Mỗi mục có một trường bắt buộc mà các từ điển khác hay bỏ: <strong>cái nó KHÔNG phải</strong>. Trường đó là chỗ chặn hiểu nhầm, và mọi hiểu nhầm đã xảy ra trong dự án này đều nằm ở đó.</p>
+
+  <div class="callout warn">
+    <div class="t">Luật của từ điển</div>
+    <p>Nhãn trên giao diện lấy từ đây. Nếu một màn hình gọi một thứ bằng tên khác, <b>sửa màn hình, không sửa từ điển</b>. Muốn đổi nghĩa một khái niệm thì đổi ở đây trước, rồi mới đổi mã.</p>
+  </div>
+
+  <h3>A · Gian hàng và người dùng</h3>
+
+  <div class="term"><div class="hd"><span class="nm">Gian hàng</span><span class="code">seller / tenant</span></div><dl>
+    <dt>Là gì</dt><dd>Một pháp nhân bán hàng. Mọi dữ liệu trong VOMA đều thuộc về đúng một gian hàng, không có dữ liệu dùng chung giữa hai gian hàng.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải một cửa hàng trên sàn. Một gian hàng VOMA có thể nối nhiều shop TikTok và nhiều shop Shopee cùng lúc.</dd>
+    <dt>Ai sinh</dt><dd>Quản trị hệ thống, khi ký hợp đồng.</dd>
+    <dt>Ai đổi</dt><dd>Không ai. Đổi gian hàng của một bản ghi là chuyện không tồn tại.</dd>
+    <dt>Thấy ở đâu</dt><dd>Nút đầu tiên bên trái thanh trên cùng, luôn hiện, ở mọi màn hình.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Vai trò</span><span class="code">role</span></div><dl>
+    <dt>Là gì</dt><dd>Một cái tên gộp sẵn một bó quyền. VOMA có năm: <span class="k">admin</span>, <span class="k">pmi_staff</span>, <span class="k">oms_staff</span>, <span class="k">wms_staff</span>, <span class="k">viewer</span>.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải chức danh trong công ty. Một người có thể là trưởng kho mà chỉ cần vai trò <span class="k">viewer</span>.</dd>
+    <dt>Ai sinh</dt><dd>voma-identity, cố định trong mã nguồn.</dd>
+    <dt>Ai đổi</dt><dd>Chỉ <span class="k">admin</span> của gian hàng, và mỗi lần đổi ghi vào nhật ký.</dd>
+    <dt>Thấy ở đâu</dt><dd>Dưới tên người dùng ở góc trên phải; và trong Cấu hình → Người dùng.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Quyền</span><span class="code">permission</span></div><dl>
+    <dt>Là gì</dt><dd>Một cặp <em>miền:hành động</em>, ví dụ <span class="k">wms:write</span>. Đây mới là thứ hệ thống thật sự kiểm tra.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải thứ để ẩn giao diện. Thiếu quyền thì nút <b>vô hiệu và nói rõ lý do</b>, không biến mất — xem <a class="ref" href="#l6">Luật 6</a>.</dd>
+    <dt>Ai sinh</dt><dd>Cố định theo vai trò.</dd>
+    <dt>Ai đổi</dt><dd>Không gán lẻ được. Muốn đổi quyền thì đổi vai trò.</dd>
+    <dt>Thấy ở đâu</dt><dd>Cấu hình → Vai trò và quyền, dạng ma trận.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Nhật ký thao tác</span><span class="code">audit log</span></div><dl>
+    <dt>Là gì</dt><dd>Bản ghi ai đã đổi gì, lúc nào, giá trị cũ và giá trị mới. Chỉ ghi thêm, không sửa, không xoá.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải nhật ký lỗi kỹ thuật. Nó ghi hành vi của người, không ghi hành vi của máy.</dd>
+    <dt>Ai sinh</dt><dd>Tự động, mọi thao tác ghi.</dd>
+    <dt>Ai đổi</dt><dd>Không ai, kể cả admin. Nếu sửa được thì nó không còn là bằng chứng.</dd>
+    <dt>Thấy ở đâu</dt><dd>Tab “Lịch sử” trong mọi trang đối tượng, và Cấu hình → Nhật ký.</dd>
+  </dl></div>
+
+  <h3>B · Hàng hoá</h3>
+
+  <div class="term"><div class="hd"><span class="nm">Sản phẩm</span><span class="code">product</span></div><dl>
+    <dt>Là gì</dt><dd>Một mặt hàng ở mức mô tả — tên, ảnh, ngành hàng, thuộc tính chung. Là thứ khách nhìn thấy trên sàn.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải thứ tính tồn kho. Tồn kho gắn với biến thể, không gắn với sản phẩm.</dd>
+    <dt>Ai sinh</dt><dd>Người dùng nhập tay, hoặc kéo về từ sàn.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">pmi:write</span>.</dd>
+    <dt>Thấy ở đâu</dt><dd>Bán hàng → Sản phẩm.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Biến thể</span><span class="code">variant</span></div><dl>
+    <dt>Là gì</dt><dd>Một tổ hợp cụ thể bán được — màu, size. Có giá riêng, mã riêng, tồn riêng.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải thuộc tính. “Size” là thuộc tính; “Size 42, màu đen” mới là biến thể.</dd>
+    <dt>Ai sinh</dt><dd>Sinh cùng sản phẩm.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">pmi:write</span>. Xoá biến thể đã từng có đơn thì không xoá được, chỉ ngừng bán.</dd>
+    <dt>Thấy ở đâu</dt><dd>Tab “Biến thể” trong trang sản phẩm. Cột “Phân loại” ở bảng sản phẩm đếm số biến thể.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">SKU cha · SKU biến thể</span><span class="code">parent SKU / variant SKU</span></div><dl>
+    <dt>Là gì</dt><dd>SKU cha định danh sản phẩm; SKU biến thể định danh thứ thật sự nằm trên kệ. Kho chỉ làm việc với SKU biến thể.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải mã hàng của sàn. Sàn có mã riêng, giữ ở trường khác và không được lẫn.</dd>
+    <dt>Ai sinh</dt><dd>Người dùng đặt, hoặc hệ sinh theo mẫu.</dd>
+    <dt>Ai đổi</dt><dd>Sửa được cho tới lúc có bản ghi kho đầu tiên. Sau đó khoá.</dd>
+    <dt>Thấy ở đâu</dt><dd>Cột đầu tiên của bảng sản phẩm, chữ đẳng khoảng.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Đủ dữ liệu · Thiếu N mục</span><span class="code">completion</span></div><dl>
+    <dt>Là gì</dt><dd>Kết quả soát xem sản phẩm đã đủ trường bắt buộc để đẩy lên sàn chưa. Thiếu thì liệt kê đích danh thiếu gì.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải điểm chất lượng nội dung. Nó không nói mô tả hay hay dở, chỉ nói có hay không.</dd>
+    <dt>Ai sinh</dt><dd>PIM tính lại mỗi lần lưu.</dd>
+    <dt>Ai đổi</dt><dd>Không đổi trực tiếp. Điền đủ thì nó tự đổi.</dd>
+    <dt>Thấy ở đâu</dt><dd>Cột “Dữ liệu” ở bảng sản phẩm; và là một hàng đợi trong Việc của tôi.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Ngành hàng</span><span class="code">category</span></div><dl>
+    <dt>Là gì</dt><dd>Vị trí của sản phẩm trong cây phân loại <b>của từng sàn</b>. Mỗi sàn một cây khác nhau, nên một sản phẩm có nhiều ngành hàng cùng lúc.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải nhóm hàng nội bộ để quản lý. Ngành hàng do sàn định nghĩa và có thể đổi mà không báo trước.</dd>
+    <dt>Ai sinh</dt><dd>Kéo về từ sàn, người dùng chọn.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">pmi:write</span>. Đổi ngành hàng của sản phẩm đang bán thường buộc đăng lại.</dd>
+    <dt>Thấy ở đâu</dt><dd>Bộ lọc “Ngành hàng”, và tab Kênh bán trong trang sản phẩm.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Niêm yết</span><span class="code">listing</span></div><dl>
+    <dt>Là gì</dt><dd>Sự tồn tại của một sản phẩm trên một sàn cụ thể, kèm mã của sàn cấp cho nó.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải bản sao của sản phẩm. Sản phẩm là một; niêm yết là nhiều, mỗi sàn một cái, và chúng lệch nhau là chuyện bình thường.</dd>
+    <dt>Ai sinh</dt><dd>voma-channel, khi đẩy lên sàn thành công.</dd>
+    <dt>Ai đổi</dt><dd>Sàn đổi, VOMA đọc về. Sửa giá trên sàn mà không qua VOMA thì VOMA sẽ ghi nhận lệch.</dd>
+    <dt>Thấy ở đâu</dt><dd>Tab “Kênh bán” trong trang sản phẩm.</dd>
+  </dl></div>
+  <h3>C · Kênh bán</h3>
+
+  <div class="term"><div class="hd"><span class="nm">Kênh bán</span><span class="code">channel</span></div><dl>
+    <dt>Là gì</dt><dd>Một đường ống nối VOMA với một sàn. Nó bơm đơn vào, bơm niêm yết và tồn ra. Nó không sở hữu dữ liệu nào.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải nơi lưu đơn hàng hay sản phẩm. Đơn thuộc về Đơn hàng, sản phẩm thuộc về Sản phẩm — kênh chỉ chuyển.</dd>
+    <dt>Ai sinh</dt><dd>Người dùng nối, qua màn uỷ quyền của sàn.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">channel:write</span>.</dd>
+    <dt>Thấy ở đâu</dt><dd>Bán hàng → Kênh bán.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Uỷ quyền gian hàng</span><span class="code">shop authorization</span></div><dl>
+    <dt>Là gì</dt><dd>Việc chủ shop cho phép VOMA thay mặt mình làm việc với sàn. Tuổi thọ tính bằng <b>năm</b> — TikTok Shop cấp 365 ngày.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải access token. Đây là hai tuổi thọ khác nhau, lệch nhau ba bậc, và lẫn hai thứ này là nguồn của gần như mọi lỗi kết nối.</dd>
+    <dt>Ai sinh</dt><dd>Sàn, sau khi chủ shop bấm đồng ý.</dd>
+    <dt>Ai đổi</dt><dd>Chỉ chủ shop, trên trang của sàn. VOMA không gia hạn hộ được.</dd>
+    <dt>Thấy ở đâu</dt><dd>Trang Kênh bán, dòng “Uỷ quyền đến ngày…”.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Access token</span><span class="code">access_token</span></div><dl>
+    <dt>Là gì</dt><dd>Chìa khoá dùng cho từng lời gọi API. Sống ngắn — TikTok Shop khoảng <b>4 giờ</b>. Hệ tự làm mới, người dùng không cần biết.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải thứ để hiển thị cho người dùng. Token hết hạn là chuyện xảy ra sáu lần một ngày và hoàn toàn bình thường.</dd>
+    <dt>Ai sinh</dt><dd>voma-channel, tự động.</dd>
+    <dt>Ai đổi</dt><dd>Không ai bằng tay.</dd>
+    <dt>Thấy ở đâu</dt><dd><b>Không ở đâu cả.</b> Cố ý. Chỉ khi làm mới thất bại nhiều lần liên tiếp mới sinh một việc trong Việc của tôi.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Đang làm mới</span><span class="code">EXPIRING</span></div><dl>
+    <dt>Là gì</dt><dd>Trạng thái tức thời, sống vài giây, trong lúc hệ đổi token cũ lấy token mới.</dd>
+    <dt>Không phải</dt><dd class="no"><b>Không phải “sắp hết hạn”.</b> Đây là hiểu nhầm đã xảy ra thật. Hiển thị nó như cảnh báo là dạy người dùng hoảng vì một việc bình thường, và sau vài lần họ sẽ bỏ qua cả những cảnh báo thật.</dd>
+    <dt>Ai sinh</dt><dd>voma-channel.</dd>
+    <dt>Ai đổi</dt><dd>Tự hết sau vài giây.</dd>
+    <dt>Thấy ở đâu</dt><dd>Chip xanh “đang chạy” trên trang Kênh bán. Không sinh việc, không kêu.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Tác vụ đồng bộ</span><span class="code">job</span></div><dl>
+    <dt>Là gì</dt><dd>Một lượt chạy nền: kéo đơn, đẩy tồn, đăng sản phẩm. Có bốn kết cục: chờ, đang chạy, thành công, lỗi.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải hàng đợi việc của người. Tác vụ lỗi chỉ thành việc của người khi hệ đã thử lại và vẫn hỏng.</dd>
+    <dt>Ai sinh</dt><dd>Hệ, theo lịch hoặc theo sự kiện.</dd>
+    <dt>Ai đổi</dt><dd>Chạy lại được, không sửa được.</dd>
+    <dt>Thấy ở đâu</dt><dd>Tab “Tác vụ” trong trang Kênh bán.</dd>
+  </dl></div>
+
+  <h3>D · Đơn hàng</h3>
+
+  <div class="term"><div class="hd"><span class="nm">Đơn hàng</span><span class="code">order</span></div><dl>
+    <dt>Là gì</dt><dd>Một lần mua. Chứa người mua, danh sách hàng, tiền, và trạng thái xử lý.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải phiếu xuất kho. Một đơn có thể sinh nhiều phiếu kho, và trạng thái hai bên không đồng nhất.</dd>
+    <dt>Ai sinh</dt><dd>Kênh bán kéo về từ sàn, hoặc người dùng tạo tay.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">oms:write</span>, và chỉ đổi được theo các bước hợp lệ.</dd>
+    <dt>Thấy ở đâu</dt><dd>Bán hàng → Đơn hàng.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Mã đơn VOMA · Mã đơn trên sàn</span><span class="code">order_id / channel_order_id</span></div><dl>
+    <dt>Là gì</dt><dd>Hai định danh song song. Mã VOMA dùng nội bộ; mã sàn dùng khi khiếu nại với sàn.</dd>
+    <dt>Không phải</dt><dd class="no">Không thay thế được cho nhau. Đưa mã VOMA cho bộ phận hỗ trợ của sàn thì họ không tra được.</dd>
+    <dt>Ai sinh</dt><dd>VOMA sinh mã VOMA; sàn sinh mã sàn.</dd>
+    <dt>Ai đổi</dt><dd>Không ai.</dd>
+    <dt>Thấy ở đâu</dt><dd>Cả hai đều tìm được ở thanh lệnh. Mã sàn nằm ở tab “Kênh” trong trang đơn.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Trạng thái nguyên văn của sàn</span><span class="code">channel_raw_status</span></div><dl>
+    <dt>Là gì</dt><dd>Chuỗi đúng như sàn trả về, không dịch, không chuẩn hoá.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải trạng thái VOMA. VOMA có bộ trạng thái riêng dùng chung cho mọi sàn; chuỗi gốc giữ lại <b>chỉ</b> để khiếu nại.</dd>
+    <dt>Ai sinh</dt><dd>Sàn.</dd>
+    <dt>Ai đổi</dt><dd>Không ai, kể cả khi nó vô lý.</dd>
+    <dt>Thấy ở đâu</dt><dd>Tab “Kênh” trong trang đơn, luôn hiện, không giấu sau nút.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Xác nhận đơn</span><span class="code">CONFIRMED</span></div><dl>
+    <dt>Là gì</dt><dd>Bước người bán đồng ý làm đơn này. Đây là <b>ranh giới quan trọng nhất trong toàn hệ</b>: trước nó hàng chưa bị giữ, sau nó kho đã giữ hàng và huỷ sẽ tốn công.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải xác nhận đã thu tiền. Tiền là trục riêng.</dd>
+    <dt>Ai sinh</dt><dd>Người dùng, hoặc luật tự động nếu gian hàng bật.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">oms:write</span>.</dd>
+    <dt>Thấy ở đâu</dt><dd>Hành động chính, làm được theo lô từ hàng đợi “Chờ xác nhận”.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Chia kho</span><span class="code">split fulfilment</span></div><dl>
+    <dt>Là gì</dt><dd>Một đơn được lấy hàng từ nhiều kho, sinh nhiều phiếu xuất. Trạng thái của cả đơn <b>đi theo kho chậm nhất</b>.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải tách thành nhiều đơn. Khách vẫn thấy một đơn, và hoá đơn vẫn là một.</dd>
+    <dt>Ai sinh</dt><dd>Hệ quyết khi xác nhận đơn, dựa trên tồn khả dụng từng kho.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">wms:write</span> đổi được kho lấy hàng khi phiếu chưa nhặt.</dd>
+    <dt>Thấy ở đâu</dt><dd>Tab “Kho” trong trang đơn, có câu giải thích kho nào đang chậm.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Huỷ chưa xong ở kho</span><span class="code">CANCELLATION_PENDING</span></div><dl>
+    <dt>Là gì</dt><dd>Đơn <b>đã bị huỷ trên sàn</b>, nhưng kho chưa rút phiếu về, nên hàng vẫn đang bị giữ và chưa trả lại tồn khả dụng.</dd>
+    <dt>Không phải</dt><dd class="no"><b>Không phải “người mua xin huỷ, chờ duyệt”.</b> Đây là hiểu nhầm đã xảy ra thật và nó dẫn tới hành động ngược: người dùng ngồi chờ quyết định, trong khi việc cần làm là giục kho rút phiếu để giải phóng hàng.</dd>
+    <dt>Ai sinh</dt><dd>Kênh bán, khi sàn báo đơn đã huỷ mà kho còn phiếu sống.</dd>
+    <dt>Ai đổi</dt><dd>Tự chuyển sang “Đã huỷ” khi phiếu kho cuối cùng đóng.</dd>
+    <dt>Thấy ở đâu</dt><dd>Chip cam. Là một hàng đợi riêng trong Việc của tôi vì nó đang giam hàng.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Thu tiền</span><span class="code">payment_status</span></div><dl>
+    <dt>Là gì</dt><dd>Tiền đã về hay chưa. Hai giá trị: chưa thu, đã thu.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải hoá đơn. Thu tiền là sự kiện dòng tiền; hoá đơn là chứng từ thuế. Đơn có thể đã thu tiền mà chưa có hoá đơn, và ngược lại.</dd>
+    <dt>Ai sinh</dt><dd>Sàn báo về, hoặc ghi nhận tay với đơn ngoài sàn.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">oms:write</span>.</dd>
+    <dt>Thấy ở đâu</dt><dd>Chip thứ hai trên trang đơn, luôn tách khỏi chip trạng thái xử lý.</dd>
+  </dl></div>
+
+  <h3>E · Kho</h3>
+
+  <div class="callout warn">
+    <div class="t">Ba số, không phải một</div>
+    <p>Nói trống “tồn kho” là một câu không có nghĩa trong VOMA. Luôn phải nói rõ một trong ba số dưới đây. Đây là khái niệm bị hiểu sai nhiều nhất khi làm việc với người mới.</p>
+  </div>
+
+  <div class="term"><div class="hd"><span class="nm">Thực có</span><span class="code">on_hand</span></div><dl>
+    <dt>Là gì</dt><dd>Số lượng đang nằm trong kho, đếm được bằng tay.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải số bán được. Trong đó có phần đã hứa cho đơn khác.</dd>
+    <dt>Ai sinh</dt><dd>Phiếu nhập, phiếu xuất, kiểm kê.</dd>
+    <dt>Ai đổi</dt><dd>Chỉ đổi qua chứng từ. Sửa thẳng con số là điều chỉnh tồn, và luôn phải nêu lý do.</dd>
+    <dt>Thấy ở đâu</dt><dd>Trang Kho, dòng phụ dưới số khả dụng.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Đang giữ</span><span class="code">reserved</span></div><dl>
+    <dt>Là gì</dt><dd>Phần đã hứa cho đơn đã xác nhận nhưng chưa xuất khỏi kho.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải hàng lỗi hay hàng khoá. Hàng giữ vẫn nằm trên kệ, chỉ là không được bán lần nữa.</dd>
+    <dt>Ai sinh</dt><dd>Việc xác nhận đơn.</dd>
+    <dt>Ai đổi</dt><dd>Tự giảm khi xuất hoặc khi huỷ phiếu.</dd>
+    <dt>Thấy ở đâu</dt><dd>Trang Kho; và là lời giải thích khi khách hỏi “sao còn hàng mà không bán được”.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Khả dụng</span><span class="code">available</span></div><dl>
+    <dt>Là gì</dt><dd><b>Thực có trừ đang giữ.</b> Đây là số bán được, và là số duy nhất được đẩy lên sàn.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải số đếm được trong kho. Và khi kho chưa biết, giá trị là <span class="k">null</span> — phải hiển thị <b>“Không rõ”</b>, tuyệt đối không hiển thị 0. Số 0 là một khẳng định “hết hàng”; <span class="k">null</span> là “chưa ai đếm”. Hai câu đó dẫn tới hai quyết định nhập hàng ngược nhau.</dd>
+    <dt>Ai sinh</dt><dd>Tính ra, không lưu.</dd>
+    <dt>Ai đổi</dt><dd>Không đổi trực tiếp được.</dd>
+    <dt>Thấy ở đâu</dt><dd>Con số đậm nhất trên trang Kho, và cột “Khả dụng” ở bảng sản phẩm.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Vị trí</span><span class="code">location</span></div><dl>
+    <dt>Là gì</dt><dd>Chỗ cụ thể trong kho — dãy, kệ, tầng. Cùng một SKU nằm ở nhiều vị trí là bình thường.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải kho. Kho là toà nhà, vị trí là ô trong toà nhà đó.</dd>
+    <dt>Ai sinh</dt><dd>Cấu hình kho.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">wms:write</span>.</dd>
+    <dt>Thấy ở đâu</dt><dd>Trang Kho; và là thứ máy quét đọc ra khi nhặt hàng.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Phiếu xuất</span><span class="code">fulfillment</span></div><dl>
+    <dt>Là gì</dt><dd>Lệnh lấy hàng ra khỏi kho cho một đơn. Đi qua bảy bước từ chờ nhặt đến đã xuất kho.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải đơn hàng. Một đơn nhiều phiếu, và phiếu có trạng thái riêng.</dd>
+    <dt>Ai sinh</dt><dd>Sinh tự động khi đơn được xác nhận.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">wms:write</span>, thường qua máy quét chứ không qua bàn phím.</dd>
+    <dt>Thấy ở đâu</dt><dd>Tab “Kho” trong trang đơn; và là hàng đợi chính của nhân viên kho.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Phiếu nhập</span><span class="code">inbound</span></div><dl>
+    <dt>Là gì</dt><dd>Lệnh nhận hàng vào kho. Nhận thiếu so với dự kiến là chuyện thường và phải ghi nhận được.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải đơn mua hàng. VOMA không quản lý mua hàng.</dd>
+    <dt>Ai sinh</dt><dd>Người dùng tạo trước khi hàng về.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">wms:write</span>.</dd>
+    <dt>Thấy ở đâu</dt><dd>Vận hành → Kho → Phiếu nhập.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Điều chỉnh tồn</span><span class="code">adjust</span></div><dl>
+    <dt>Là gì</dt><dd>Sửa thẳng số thực có, không qua nhập/xuất. <b>Bắt buộc nêu lý do</b>, và lý do đi vào nhật ký.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải cách sửa lỗi nhập liệu tiện tay. Mỗi lần điều chỉnh là một lần thừa nhận sổ sách đã sai.</dd>
+    <dt>Ai sinh</dt><dd>Người dùng.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">wms:write</span>. Không huỷ được — sai thì điều chỉnh ngược lại, và cả hai lần đều nằm trong nhật ký.</dd>
+    <dt>Thấy ở đâu</dt><dd>Bảng bên trong trang Kho. Cố ý đặt sâu hơn các hành động khác — xem <a class="ref" href="#l8">Luật 8</a>.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Kiểm kê</span><span class="code">stock count</span></div><dl>
+    <dt>Là gì</dt><dd>Đếm lại thực tế rồi đối chiếu với sổ. Chênh lệch sinh ra điều chỉnh, có kèm nguồn gốc.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải điều chỉnh tồn. Kiểm kê có bằng chứng là lần đếm; điều chỉnh thì không.</dd>
+    <dt>Ai sinh</dt><dd>Người dùng mở đợt kiểm.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">wms:write</span>, làm bằng máy quét.</dd>
+    <dt>Thấy ở đâu</dt><dd>Vận hành → Máy quét → Kiểm kê.</dd>
+  </dl></div>
+
+  <h3>F · Hoá đơn</h3>
+
+  <div class="term"><div class="hd"><span class="nm">Hoá đơn điện tử</span><span class="code">invoice</span></div><dl>
+    <dt>Là gì</dt><dd>Chứng từ thuế gửi cơ quan thuế. VOMA phát hành qua Viettel SInvoice.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải phiếu thu, không phải đơn hàng. Có đơn không cần hoá đơn; có hoá đơn không gắn đơn nào.</dd>
+    <dt>Ai sinh</dt><dd>Người dùng lập, hoặc luật tự động khi đơn hoàn tất.</dd>
+    <dt>Ai đổi</dt><dd>Phát hành rồi thì <b>không sửa</b> — chỉ điều chỉnh hoặc thay thế.</dd>
+    <dt>Thấy ở đâu</dt><dd>Tài chính → Hoá đơn; và tab “Hoá đơn” trong trang đơn.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Trục thuế</span><span class="code">tax state</span></div><dl>
+    <dt>Là gì</dt><dd>Quan hệ với cơ quan thuế: chưa gửi → đã gửi chờ phản hồi → đã nhận → bị từ chối.</dd>
+    <dt>Không phải</dt><dd class="no">Không phải trạng thái của hoá đơn. Đây là một trong hai trục, và nó nói về <em>cơ quan thuế</em> chứ không nói về <em>chứng từ</em>.</dd>
+    <dt>Ai sinh</dt><dd>Phản hồi của SInvoice.</dd>
+    <dt>Ai đổi</dt><dd>Không ai bằng tay.</dd>
+    <dt>Thấy ở đâu</dt><dd>Chip thứ nhất. Khi bị từ chối, lý do nguyên văn hiện ngay dưới, không giấu.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Trục nghiệp vụ</span><span class="code">business state</span></div><dl>
+    <dt>Là gì</dt><dd>Vòng đời của chứng từ: nháp → đã phát hành → đã điều chỉnh / đã bị thay thế.</dd>
+    <dt>Không phải</dt><dd class="no"><b>Không gộp được với trục thuế.</b> Một hoá đơn có thể “đã phát hành” mà cơ quan thuế “đã từ chối”. Gộp hai trục thành một cột là sai về bản chất, không phải sai về hiển thị.</dd>
+    <dt>Ai sinh</dt><dd>Hành động của người dùng.</dd>
+    <dt>Ai đổi</dt><dd><span class="k">invoice:write</span>.</dd>
+    <dt>Thấy ở đâu</dt><dd>Chip thứ hai, luôn đứng cạnh chip thuế, không bao giờ thay thế nó.</dd>
+  </dl></div>
+
+  <div class="term"><div class="hd"><span class="nm">Điều chỉnh · Thay thế</span><span class="code">ADJUSTED / REPLACED</span></div><dl>
+    <dt>Là gì</dt><dd>Hai cách sửa một hoá đơn đã phát hành. Điều chỉnh viết thêm một chứng từ nói phần chênh. Thay thế phát hành một chứng từ mới đè lên toàn bộ chứng từ cũ.</dd>
+    <dt>Không phải</dt><dd class="no">Không thay nhau được, và không phải lựa chọn theo sở thích — luật thuế quy định trường hợp nào dùng cái nào.</dd>
+    <dt>Ai sinh</dt><dd>Người dùng, sau khi chọn đúng loại.</dd>
+    <dt>Ai đổi</dt><dd>Không huỷ được.</dd>
+    <dt>Thấy ở đâu</dt><dd>Hai hành động riêng biệt, có mô tả hệ quả trước khi xác nhận. Không gộp vào một nút “Sửa”.</dd>
+  </dl></div>
+</section>
+<section id="s3">
+  <h2>§3</h2>
+  <div class="h">Bản đồ chức năng</div>
+  <p class="lead">Sáu mươi hai chức năng VOMA có, đếm cho hết trước khi sắp xếp. Mỗi dòng đo hai biến — <strong>làm bao nhiêu lần</strong> và <strong>bấm nhầm thì mất gì</strong> — rồi <a class="ref" href="#s6">§6</a> biến hai biến đó thành một tầng.</p>
+  <p>Bảng này là thứ phải mở đầu tiên khi có tranh cãi về vị trí. Nó không nói cái gì quan trọng hơn cái gì; nó nói cái gì được chạm nhiều hơn cái gì, và đó là hai câu khác nhau.</p>
+
+  <div class="tbl"><table>
+    <thead><tr><th>Chức năng</th><th>Nhóm</th><th class="mono">Tần suất</th><th class="mono">Hệ quả</th><th class="mono">Tầng</th></tr></thead>
+    <tbody>
+      <tr><td>Xem hàng đợi hôm nay</td><td>Việc của tôi</td><td class="mono">phút</td><td class="mono">thấp</td><td class="mono">0</td></tr>
+      <tr><td>Xử lý một việc trong hàng đợi</td><td>Việc của tôi</td><td class="mono">phút</td><td class="mono">vừa</td><td class="mono">0</td></tr>
+      <tr><td>Xem tiến độ đã xử lý hôm nay</td><td>Việc của tôi</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">0</td></tr>
+      <tr><td>Hoãn một việc sang sau</td><td>Việc của tôi</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">1</td></tr>
+      <tr><td>Chuyển việc cho người khác</td><td>Việc của tôi</td><td class="mono">tuần</td><td class="mono">thấp</td><td class="mono">2</td></tr>
+      <tr><td>Xem danh sách sản phẩm</td><td>Hàng hoá</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">0</td></tr>
+      <tr><td>Tìm sản phẩm theo SKU hoặc tên</td><td>Hàng hoá</td><td class="mono">phút</td><td class="mono">thấp</td><td class="mono">0</td></tr>
+      <tr><td>Chuyển view lọc sẵn</td><td>Hàng hoá</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">1</td></tr>
+      <tr><td>Sắp xếp theo cột</td><td>Hàng hoá</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">1</td></tr>
+      <tr><td>Mở trang một sản phẩm</td><td>Hàng hoá</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">1</td></tr>
+      <tr><td>Điền dữ liệu còn thiếu</td><td>Hàng hoá</td><td class="mono">ngày</td><td class="mono">vừa</td><td class="mono">1</td></tr>
+      <tr><td>Sửa thông tin sản phẩm</td><td>Hàng hoá</td><td class="mono">ngày</td><td class="mono">vừa</td><td class="mono">2</td></tr>
+      <tr><td>Thêm hoặc sửa biến thể</td><td>Hàng hoá</td><td class="mono">tuần</td><td class="mono">vừa</td><td class="mono">2</td></tr>
+      <tr><td>Đổi giá bán</td><td>Hàng hoá</td><td class="mono">ngày</td><td class="mono">cao</td><td class="mono">2</td></tr>
+      <tr><td>Đẩy sản phẩm lên sàn</td><td>Hàng hoá</td><td class="mono">tuần</td><td class="mono">cao</td><td class="mono">2</td></tr>
+      <tr><td>Ngừng bán một sản phẩm</td><td>Hàng hoá</td><td class="mono">tháng</td><td class="mono">cao</td><td class="mono">2</td></tr>
+      <tr><td>Nhập hàng loạt từ tệp</td><td>Hàng hoá</td><td class="mono">tháng</td><td class="mono">cao</td><td class="mono">3</td></tr>
+      <tr><td>Xem danh sách đơn</td><td>Bán</td><td class="mono">phút</td><td class="mono">thấp</td><td class="mono">0</td></tr>
+      <tr><td>Tìm đơn theo mã VOMA hoặc mã sàn</td><td>Bán</td><td class="mono">phút</td><td class="mono">thấp</td><td class="mono">0</td></tr>
+      <tr><td>Xác nhận đơn theo lô</td><td>Bán</td><td class="mono">phút</td><td class="mono">vừa</td><td class="mono">1</td></tr>
+      <tr><td>Mở chi tiết một đơn</td><td>Bán</td><td class="mono">phút</td><td class="mono">thấp</td><td class="mono">1</td></tr>
+      <tr><td>In tem vận đơn theo lô</td><td>Bán</td><td class="mono">ngày</td><td class="mono">vừa</td><td class="mono">1</td></tr>
+      <tr><td>Ghi nhận đã thu tiền</td><td>Bán</td><td class="mono">ngày</td><td class="mono">vừa</td><td class="mono">2</td></tr>
+      <tr><td>Xem phiếu kho của đơn</td><td>Bán</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">2</td></tr>
+      <tr><td>Xem hoá đơn của đơn</td><td>Bán</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">2</td></tr>
+      <tr><td>Xem trạng thái nguyên văn của sàn</td><td>Bán</td><td class="mono">tuần</td><td class="mono">thấp</td><td class="mono">2</td></tr>
+      <tr><td>Đổi kho lấy hàng</td><td>Bán</td><td class="mono">tuần</td><td class="mono">vừa</td><td class="mono">2</td></tr>
+      <tr><td>Huỷ đơn</td><td>Bán</td><td class="mono">ngày</td><td class="mono">cao</td><td class="mono">2 · tách</td></tr>
+      <tr><td>Xem trạng thái kết nối các sàn</td><td>Kênh</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">0</td></tr>
+      <tr><td>Xử lý uỷ quyền sắp hết hạn</td><td>Kênh</td><td class="mono">tháng</td><td class="mono">cao</td><td class="mono">1</td></tr>
+      <tr><td>Chạy lại tác vụ đồng bộ lỗi</td><td>Kênh</td><td class="mono">ngày</td><td class="mono">vừa</td><td class="mono">1</td></tr>
+      <tr><td>Xem lịch sử tác vụ đồng bộ</td><td>Kênh</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">2</td></tr>
+      <tr><td>Ánh xạ ngành hàng của sàn</td><td>Kênh</td><td class="mono">tháng</td><td class="mono">vừa</td><td class="mono">3</td></tr>
+      <tr><td>Nối một kênh mới</td><td>Kênh</td><td class="mono">quý</td><td class="mono">cao</td><td class="mono">3</td></tr>
+      <tr><td>Ngắt kết nối một kênh</td><td>Kênh</td><td class="mono">quý</td><td class="mono">cao</td><td class="mono">3 · tách</td></tr>
+      <tr><td>Đặt lịch đồng bộ</td><td>Kênh</td><td class="mono">quý</td><td class="mono">vừa</td><td class="mono">3</td></tr>
+      <tr><td>Nhặt hàng bằng máy quét</td><td>Kho</td><td class="mono">phút</td><td class="mono">vừa</td><td class="mono">0</td></tr>
+      <tr><td>Đóng gói bằng máy quét</td><td>Kho</td><td class="mono">phút</td><td class="mono">vừa</td><td class="mono">0</td></tr>
+      <tr><td>Nhận hàng vào kho bằng máy quét</td><td>Kho</td><td class="mono">ngày</td><td class="mono">vừa</td><td class="mono">0</td></tr>
+      <tr><td>Tra tồn theo SKU</td><td>Kho</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">0</td></tr>
+      <tr><td>Tra tồn theo vị trí</td><td>Kho</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">0</td></tr>
+      <tr><td>Xem tách bạch thực có · giữ · khả dụng</td><td>Kho</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">1</td></tr>
+      <tr><td>Tạo phiếu nhập</td><td>Kho</td><td class="mono">ngày</td><td class="mono">vừa</td><td class="mono">1</td></tr>
+      <tr><td>Mở đợt kiểm kê</td><td>Kho</td><td class="mono">tháng</td><td class="mono">vừa</td><td class="mono">1</td></tr>
+      <tr><td>Điều chỉnh tồn kèm lý do</td><td>Kho</td><td class="mono">tuần</td><td class="mono">cao</td><td class="mono">2 · tách</td></tr>
+      <tr><td>Cấu hình kho và vị trí</td><td>Kho</td><td class="mono">quý</td><td class="mono">cao</td><td class="mono">3</td></tr>
+      <tr><td>Xem danh sách hoá đơn</td><td>Tiền</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">0</td></tr>
+      <tr><td>Lập hoá đơn</td><td>Tiền</td><td class="mono">ngày</td><td class="mono">cao</td><td class="mono">1</td></tr>
+      <tr><td>Xử lý hoá đơn bị cơ quan thuế từ chối</td><td>Tiền</td><td class="mono">tuần</td><td class="mono">cao</td><td class="mono">1</td></tr>
+      <tr><td>Mở chi tiết hoá đơn</td><td>Tiền</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">1</td></tr>
+      <tr><td>Gửi hoá đơn lên cơ quan thuế</td><td>Tiền</td><td class="mono">ngày</td><td class="mono">cao</td><td class="mono">2</td></tr>
+      <tr><td>Tải bản PDF hoặc XML</td><td>Tiền</td><td class="mono">tuần</td><td class="mono">thấp</td><td class="mono">2</td></tr>
+      <tr><td>Điều chỉnh hoá đơn đã phát hành</td><td>Tiền</td><td class="mono">tuần</td><td class="mono">cao</td><td class="mono">2 · tách</td></tr>
+      <tr><td>Thay thế hoá đơn đã phát hành</td><td>Tiền</td><td class="mono">tháng</td><td class="mono">cao</td><td class="mono">2 · tách</td></tr>
+      <tr><td>Cấu hình thông tin phát hành</td><td>Tiền</td><td class="mono">quý</td><td class="mono">cao</td><td class="mono">3</td></tr>
+      <tr><td>Đổi gian hàng đang xem</td><td>Nền</td><td class="mono">ngày</td><td class="mono">vừa</td><td class="mono">0</td></tr>
+      <tr><td>Xem vai trò và quyền của mình</td><td>Nền</td><td class="mono">tháng</td><td class="mono">thấp</td><td class="mono">0</td></tr>
+      <tr><td>Đăng xuất</td><td>Nền</td><td class="mono">ngày</td><td class="mono">thấp</td><td class="mono">2</td></tr>
+      <tr><td>Xem nhật ký thao tác</td><td>Nền</td><td class="mono">tuần</td><td class="mono">thấp</td><td class="mono">3</td></tr>
+      <tr><td>Quản lý người dùng</td><td>Nền</td><td class="mono">tháng</td><td class="mono">cao</td><td class="mono">3</td></tr>
+      <tr><td>Gán vai trò cho người dùng</td><td>Nền</td><td class="mono">tháng</td><td class="mono">cao</td><td class="mono">3</td></tr>
+      <tr><td>Đổi mật độ hiển thị</td><td>Nền</td><td class="mono">quý</td><td class="mono">thấp</td><td class="mono">3</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout">
+    <div class="t">Bốn con số đọc ra từ bảng này</div>
+    <p><b>Mười tám chức năng có hệ quả cao, và không một chức năng nào trong số đó ở tầng 0.</b> Đây là con số đáng tin nhất trong cả bảng, vì nó kiểm được bằng cách đếm: luật vùng nguy hiểm ở <a class="ref" href="#s6">§6</a> hoặc đúng ở cả mười tám dòng, hoặc sai — không có vùng xám.</p>
+    <p><b>Hai mươi mốt chức năng đạt chuẩn tần suất và hệ quả của tầng 0, nhưng chỉ mười sáu được nhận.</b> Năm cái rơi xuống tầng 1 và 2 vì chúng cần biết “bản ghi nào” trước khi có nghĩa — mở chi tiết một đơn, xem phiếu kho của đơn. Đây chính là lý do <a class="ref" href="#s6">§6</a> cần bước 3: đo hai biến chỉ cho ra độ sâu, chưa cho ra vị trí.</p>
+    <p><b>Mười lăm chức năng ở tần suất tháng hoặc quý — gần một phần tư danh sách — chiếm 0 pixel ở tầng 0.</b> Đó là chỗ các hệ ERP đi trước bị phình: chúng xếp theo sơ đồ tổ chức của phần mềm, không xếp theo số lần chạm.</p>
+    <p><b>Và có đúng hai ngoại lệ, ghi ra chứ không giấu đi.</b> “Xem vai trò của mình” chỉ chạm mỗi tháng nhưng ở tầng 0, vì theo <a class="ref" href="#l4">L4</a> nó đổi nghĩa của mọi thứ bên dưới — không biết mình đang là ai thì không hiểu vì sao nửa số nút bị mờ. “Xem nhật ký thao tác” chạm mỗi tuần nhưng ở tầng 3, vì việc hằng tuần thật ra là xem lịch sử của <em>một</em> bản ghi, và cái đó đã nằm sẵn ở tầng 2 trong trang đối tượng; sổ nhật ký toàn hệ mới là thứ mỗi quý mở một lần. Một bộ luật có ngoại lệ được ghi rõ thì vẫn dùng được; một bộ luật giả vờ không có ngoại lệ thì hỏng ngay lần đầu ai đó đếm lại.</p>
+  </div>
+</section>
+
+<section id="s4">
+  <h2>§4</h2>
+  <div class="h">Sáu nhóm</div>
+  <p class="lead">Nhóm theo <strong>câu hỏi người dùng đang hỏi</strong>, không theo service backend sinh ra dữ liệu. Người bán hàng không biết PIM, OMS, WMS là gì — và không nên phải biết.</p>
+
+  <p>Đây là chỗ VOMA khác các hệ hợp nhất khác. Khi bốn hệ thống ghép lại, cách dễ nhất là để mỗi hệ giữ nguyên menu của nó rồi dựng một thanh chọn hệ ở trên cùng. Làm vậy thì người dùng phải học sơ đồ kỹ thuật của nhà cung cấp trước khi làm được việc của mình. Bản đồ dưới đây bỏ ranh giới đó đi.</p>
+
+  <div class="grid2">
+    <div class="card"><div class="ct">Việc của tôi</div><div class="cq">“Hôm nay tôi phải làm gì?”</div>
+      <div class="cb">Không phải một hệ thống. Là một lát cắt ngang qua cả năm nhóm còn lại: mỗi nhóm đóng góp hàng đợi của mình vào đây.</div>
+      <ul><li>Nguồn: cả năm nhóm dưới</li><li>Không sở hữu dữ liệu nào</li><li>Là màn hình mặc định khi đăng nhập</li></ul></div>
+    <div class="card"><div class="ct">Hàng hoá</div><div class="cq">“Tôi bán cái gì?”</div>
+      <div class="cb">Định nghĩa mặt hàng và mọi thứ mô tả nó. Là nguồn của SKU — khoá mà cả kho lẫn sàn đều dựa vào.</div>
+      <ul><li>Hệ đằng sau: PIM</li><li>Sở hữu: sản phẩm, biến thể, SKU, ngành hàng</li></ul></div>
+    <div class="card"><div class="ct">Bán</div><div class="cq">“Ai đang mua, đơn đến đâu rồi?”</div>
+      <div class="cb">Nơi tiền vào và nơi áp lực thời gian dồn về. Nhóm được chạm nhiều nhất trong ngày.</div>
+      <ul><li>Hệ đằng sau: OMS</li><li>Sở hữu: đơn hàng, trạng thái xử lý, thu tiền</li></ul></div>
+    <div class="card"><div class="ct">Kênh</div><div class="cq">“Đường ống ra sàn còn thông không?”</div>
+      <div class="cb">Cái ống, không phải cái kho chứa. Nó chuyển đơn vào và chuyển niêm yết, tồn ra — nhưng không sở hữu thứ nào trong đó.</div>
+      <ul><li>Hệ đằng sau: voma-channel</li><li>Sở hữu: kết nối, uỷ quyền, tác vụ đồng bộ</li></ul></div>
+    <div class="card"><div class="ct">Kho</div><div class="cq">“Hàng đang ở đâu, còn bao nhiêu?”</div>
+      <div class="cb">Nhóm duy nhất có hai loại người dùng khác hẳn nhau: người ngồi bàn và người cầm máy quét đứng giữa kệ.</div>
+      <ul><li>Hệ đằng sau: WMS</li><li>Sở hữu: tồn, vị trí, phiếu nhập, phiếu xuất</li></ul></div>
+    <div class="card"><div class="ct">Tiền</div><div class="cq">“Thuế đã xong chưa?”</div>
+      <div class="cb">Nhóm có hệ quả cao nhất và tần suất trung bình. Gần như mọi thao tác ở đây không hoàn tác được.</div>
+      <ul><li>Hệ đằng sau: voma-invoice</li><li>Sở hữu: hoá đơn, hai trục trạng thái</li></ul></div>
+  </div>
+
+  <div class="callout warn">
+    <div class="t">Một chỗ nhóm không khớp gọn, và cách xử</div>
+    <p>Kênh bán vừa là việc hằng ngày (đơn chảy về) vừa là việc hằng quý (nối, cấu hình). Không thể xếp nó vào đúng một tần suất. Cách xử: <b>tách nhóm theo tần suất chứ không theo hệ thống</b> — phần sức khoẻ kết nối đi vào hàng đợi ở Việc của tôi (tầng 1), phần cấu hình đi xuống Cấu hình (tầng 3), và chỉ phần tra cứu ở lại làm một mục sidebar. Một hệ thống backend được phép xuất hiện ở ba tầng khác nhau. Cái không được phép là bắt người dùng vào đúng một chỗ để làm cả ba việc.</p>
+  </div>
+</section>
+<section id="s5">
+  <h2>§5</h2>
+  <div class="h">Quan hệ giữa các nhóm</div>
+  <p class="lead">Nhóm nào sinh dữ liệu cho nhóm nào, và nhóm nào chặn nhóm nào. Sơ đồ này quyết định <strong>thứ tự</strong> trong sidebar — không phải bảng chữ cái, không phải mức độ hay dùng.</p>
+
+  <figure><div class="svgwrap">
+  <svg viewBox="0 0 960 512" role="img" aria-label="Sơ đồ quan hệ giữa sáu nhóm chức năng của VOMA">
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--line-2)"/></marker>
+      <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--brand)"/></marker>
+      <marker id="as" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker>
+    </defs>
+    <style>
+      .bx{fill:var(--paper);stroke:var(--line-2);stroke-width:1.5;rx:10}
+      .bxb{fill:var(--wash);stroke:var(--brand);stroke-width:1.5;rx:10}
+      .bxd{fill:none;stroke:var(--line-2);stroke-width:1.5;stroke-dasharray:5 4;rx:10}
+      .tt{fill:var(--ink);font:700 15px var(--sans)}
+      .ts{fill:var(--muted);font:400 11px var(--sans)}
+      .lb{fill:var(--ink-2);font:500 10.5px var(--mono)}
+      .lbb{fill:var(--brand);font:600 10.5px var(--mono)}
+      .ar{stroke:var(--line-2);stroke-width:1.6;fill:none;marker-end:url(#ah)}
+      .arb{stroke:var(--brand);stroke-width:2;fill:none;marker-end:url(#ab)}
+      .ard{stroke:var(--muted);stroke-width:1.2;fill:none;stroke-dasharray:4 4;marker-end:url(#as)}
+    </style>
+
+    <rect class="bx" x="40" y="18" width="880" height="50"/>
+    <text class="tt" x="60" y="41">Kênh</text>
+    <text class="ts" x="60" y="57">đường ống ra sàn · không sở hữu dữ liệu nào, chỉ chuyển</text>
+
+    <rect class="bxb" x="40" y="150" width="200" height="76"/>
+    <text class="tt" x="60" y="181">Hàng hoá</text><text class="ts" x="60" y="199">“Tôi bán cái gì?”</text>
+    <text class="ts" x="60" y="215">sản phẩm · SKU</text>
+
+    <rect class="bxb" x="380" y="150" width="200" height="76"/>
+    <text class="tt" x="400" y="181">Bán</text><text class="ts" x="400" y="199">“Đơn đến đâu rồi?”</text>
+    <text class="ts" x="400" y="215">đơn · thu tiền</text>
+
+    <rect class="bxb" x="720" y="150" width="200" height="76"/>
+    <text class="tt" x="740" y="181">Tiền</text><text class="ts" x="740" y="199">“Thuế xong chưa?”</text>
+    <text class="ts" x="740" y="215">hoá đơn</text>
+
+    <rect class="bxb" x="230" y="316" width="200" height="76"/>
+    <text class="tt" x="250" y="347">Kho</text><text class="ts" x="250" y="365">“Còn bao nhiêu?”</text>
+    <text class="ts" x="250" y="381">tồn · phiếu</text>
+
+    <rect class="bx" x="620" y="316" width="300" height="76"/>
+    <text class="tt" x="640" y="347">Việc của tôi</text>
+    <text class="ts" x="640" y="365">lát cắt ngang · nhận hàng đợi từ</text>
+    <text class="ts" x="640" y="381">cả năm nhóm, không sở hữu gì</text>
+
+    <path class="arb" d="M240 188 H372"/>
+    <text class="lbb" x="248" y="180">SKU phải có trước</text>
+    <text class="lb" x="248" y="205">chặn</text>
+
+    <path class="arb" d="M580 188 H712"/>
+    <text class="lbb" x="590" y="180">đơn xong thì</text>
+    <text class="lbb" x="590" y="205">sinh hoá đơn</text>
+
+    <path class="arb" d="M140 226 V300 H222"/>
+    <text class="lbb" x="150" y="268">SKU là khoá nối</text>
+    <text class="lb" x="150" y="286">chặn</text>
+
+    <path class="arb" d="M430 344 H500 V234"/>
+    <text class="lbb" x="440" y="310">khả dụng quyết định</text>
+    <text class="lbb" x="440" y="296">bán được hay không</text>
+    <path class="arb" d="M470 226 V286 H422"/>
+    <text class="lbb" x="300" y="278">xác nhận đơn thì kho giữ hàng</text>
+
+    <path class="ar" d="M480 68 V142"/>
+    <text class="lb" x="490" y="100">sàn bơm đơn vào</text>
+    <path class="ar" d="M140 142 V78"/>
+    <text class="lb" x="150" y="112">đẩy niêm yết lên sàn</text>
+    <path class="ar" d="M230 354 H190 V90 H30 V60 H32"/>
+    <text class="lb" x="196" y="250">đẩy tồn</text>
+    <text class="lb" x="196" y="264">khả dụng</text>
+
+    <path class="ard" d="M560 226 L672 308"/>
+    <path class="ard" d="M800 226 V308"/>
+    <path class="ard" d="M430 370 H612"/>
+
+    <rect class="bxd" x="40" y="432" width="880" height="52"/>
+    <text class="tt" x="60" y="456">Nền</text>
+    <text class="ts" x="60" y="472">vai trò · quyền · nhật ký — không nằm trong luồng, nhưng quyết định mỗi nhóm ở trên hiện ra bao nhiêu</text>
+  </svg>
+  </div>
+  <figcaption>Mũi tên đậm là quan hệ dữ liệu bắt buộc. Mũi tên đứt là đóng góp hàng đợi. Kênh nằm trên cùng vì nó chạm vào ba nhóm nhưng không sở hữu dữ liệu của nhóm nào.</figcaption>
+  </figure>
+
+  <h3>Ba điều rút ra, và mỗi điều quyết một chuyện trên màn hình</h3>
+
+  <p><strong>Một · Thứ tự sidebar là chiều dữ liệu chảy.</strong> Sản phẩm → Đơn hàng → Kênh bán → Kho → Hoá đơn. Không có SKU thì không có niêm yết; không có niêm yết thì không có đơn; không có đơn thì kho không có việc; kho chưa xuất thì chưa có hoá đơn. Người dùng mới học hệ thống bằng cách đi từ trên xuống dưới đúng một lần, và thứ tự đó dạy họ luôn nghiệp vụ. Sắp theo mức độ hay dùng thì sẽ được Đơn hàng → Kho → Sản phẩm, nhanh hơn vài trăm mili-giây mỗi ngày và <em>không giải thích được gì cả</em>.</p>
+
+  <p><strong>Hai · Chỗ hai nhóm gặp nhau là chỗ đặt tab đóng góp.</strong> Mỗi mũi tên trong sơ đồ là một tab trên trang đối tượng của nhóm bên kia. Kho → Bán thành tab “Kho” trong trang đơn hàng. Tiền → Bán thành tab “Hoá đơn”. Kênh → Hàng hoá thành tab “Kênh bán” trong trang sản phẩm. Bảy mũi tên, bảy tab, không tab nào tự nghĩ ra.</p>
+
+  <p><strong>Ba · Nhóm không sở hữu dữ liệu thì không được một mục sidebar đầy đủ.</strong> Việc của tôi và Kênh đều không sở hữu gì. Việc của tôi được một chỗ vì nó là màn hình mặc định — điểm vào, không phải điểm đến. Kênh chỉ giữ lại phần tra cứu; phần cấu hình rơi xuống tầng 3, phần sức khoẻ rơi vào hàng đợi.</p>
+</section>
+
+<section id="s6">
+  <h2>§6</h2>
+  <div class="h">Hàm đặt vị trí</div>
+  <p class="lead">Đây là phần trả lời trực tiếp câu “sao nút đó lại ở đây”. Đưa vào một chức năng, hàm trả ra một vị trí và trả ra kèm lý do.</p>
+
+  <h3>Bước 1 — Đo hai biến</h3>
+  <p><strong>Tần suất:</strong> người dùng chạm vào nó bao nhiêu lần? Bốn nấc: mỗi phút · mỗi ngày · mỗi tuần · mỗi tháng trở lên. Đo bằng quan sát hoặc bằng nhật ký, không đo bằng cảm giác.</p>
+  <p><strong>Hệ quả nếu bấm nhầm:</strong> ba nấc. <em>Thấp</em> — bấm lại là xong. <em>Vừa</em> — phải sửa tay, mất vài phút. <em>Cao</em> — mất tiền, mất hàng, hoặc phải giải thích với cơ quan thuế hay với sàn.</p>
+
+  <h3>Bước 2 — Tra tầng</h3>
+  <div class="tiers">
+    <div class="tier"><div class="tg">TẦNG 0</div><div><div class="tn">Luôn hiện, không cần bấm gì</div>
+      <div class="td">Thanh trên cùng, sidebar, và hàng đầu của trang danh sách. Đây là bất động sản đắt nhất và có hạn — thêm một thứ vào đây là lấy chỗ của thứ khác.</div></div>
+      <div class="tw">phút hoặc ngày<br>hệ quả thấp</div></div>
+    <div class="tier"><div class="tg">TẦNG 1</div><div><div class="tn">Một lần bấm là tới</div>
+      <div class="td">View tab, hành động trên bảng, hàng đợi trong Việc của tôi, và thanh lệnh <span class="k">Ctrl K</span>. Thanh lệnh là lối tắt tới tầng 1 cho người đã thuộc tên chức năng.</div></div>
+      <div class="tw">ngày hoặc tuần<br>hệ quả thấp / vừa</div></div>
+    <div class="tier"><div class="tg">TẦNG 2</div><div><div class="tn">Bên trong trang đối tượng</div>
+      <div class="td">Chỉ có nghĩa khi đã chọn một bản ghi cụ thể. Nếu một hành động cần biết “cái nào” trước khi làm được, nó thuộc tầng này — đưa lên tầng 0 sẽ thành một nút bấm vào là báo lỗi.</div></div>
+      <div class="tw">bất kỳ tần suất<br>cần ngữ cảnh một bản ghi</div></div>
+    <div class="tier"><div class="tg">TẦNG 3</div><div><div class="tn">Trong Cấu hình</div>
+      <div class="td">Làm một lần rồi quên. Đặt ở đây <b>không phải</b> vì kém quan trọng — cấu hình phát hành hoá đơn là thứ quan trọng nhất trong hệ — mà vì nó được chạm mỗi quý một lần.</div></div>
+      <div class="tw">tháng hoặc quý</div></div>
+    <div class="tier"><div class="tg">TÁCH</div><div><div class="tn">Vùng nguy hiểm, không phải một tầng</div>
+      <div class="td">Hệ quả <em>cao</em> thì bị kéo xuống một tầng so với kết quả tính được, <b>và</b> tách khỏi cụm nút thường: khác cụm, khác lớp, có bước xác nhận nêu rõ hệ quả. Huỷ đơn được chạm hằng ngày nhưng không bao giờ lên tầng 0.</div></div>
+      <div class="tw">hệ quả cao<br>ở mọi tần suất</div></div>
+  </div>
+
+  <h3>Bước 3 — Tra vị trí trong tầng</h3>
+  <p>Tầng cho biết <em>sâu bao nhiêu</em>. Hai luật dưới đây cho biết <em>chỗ nào</em> trong tầng đó — và chúng là lý do thật sự đằng sau gần như mọi câu hỏi “sao nút này không nằm bên kia”.</p>
+
+  <figure><div class="svgwrap">
+  <svg viewBox="0 0 960 470" role="img" aria-label="Sơ đồ các tầng đặt chức năng trên khung màn hình VOMA">
+    <style>
+      .z0{fill:var(--wash);stroke:var(--brand);stroke-width:1.5}
+      .z1{fill:var(--paper-3);stroke:var(--line-2);stroke-width:1.3}
+      .z2{fill:var(--paper-2);stroke:var(--line-2);stroke-width:1.3}
+      .z3{fill:none;stroke:var(--line-2);stroke-width:1.4;stroke-dasharray:5 4}
+      .zt{fill:var(--ink);font:650 12.5px var(--sans)}
+      .zs{fill:var(--muted);font:400 10.5px var(--sans)}
+      .zn{fill:var(--brand);font:600 10px var(--mono)}
+      .ax{stroke:var(--muted);stroke-width:1.2;fill:none;marker-end:url(#as2)}
+      .axt{fill:var(--muted);font:500 10.5px var(--mono)}
+    </style>
+    <defs><marker id="as2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker></defs>
+
+    <rect class="z0" x="60" y="40" width="820" height="42" rx="8"/>
+    <text class="zn" x="72" y="58">TẦNG 0</text>
+    <text class="zt" x="132" y="58">Gian hàng</text><text class="zs" x="132" y="73">ngữ cảnh — đổi nó là đổi nghĩa cả màn hình</text>
+    <text class="zt" x="440" y="58">Tìm · thanh lệnh</text>
+    <text class="zt" x="742" y="58">Tài khoản</text>
+
+    <rect class="z0" x="60" y="94" width="176" height="286" rx="8"/>
+    <text class="zn" x="72" y="114">TẦNG 0</text>
+    <text class="zt" x="72" y="136">Việc của tôi</text>
+    <text class="zs" x="72" y="158">Sản phẩm</text><text class="zs" x="72" y="176">Đơn hàng</text>
+    <text class="zs" x="72" y="194">Kênh bán</text><text class="zs" x="72" y="212">Kho</text>
+    <text class="zs" x="72" y="230">Máy quét</text><text class="zs" x="72" y="248">Hoá đơn</text>
+    <text class="zs" x="72" y="274">Cấu hình</text>
+    <text class="zs" x="72" y="308">thứ tự = chiều</text><text class="zs" x="72" y="322">dữ liệu chảy</text>
+    <text class="zs" x="72" y="336">(§5)</text>
+
+    <rect class="z0" x="248" y="94" width="632" height="48" rx="8"/>
+    <text class="zn" x="260" y="112">TẦNG 0</text>
+    <text class="zt" x="322" y="112">Tên trang</text>
+    <text class="zs" x="260" y="130">view tab · và nút hành động chính dồn về mép phải</text>
+
+    <rect class="z1" x="248" y="154" width="632" height="38" rx="8"/>
+    <text class="zn" x="260" y="178">TẦNG 1</text>
+    <text class="zt" x="322" y="178">Ô tìm · bộ lọc · đếm kết quả</text>
+
+    <rect class="z2" x="248" y="204" width="396" height="176" rx="8"/>
+    <text class="zt" x="262" y="228">Bảng dữ liệu</text>
+    <text class="zs" x="262" y="246">chọn tất cả · sắp xếp cột · nền tiêu đề khác nền trang</text>
+    <text class="zs" x="262" y="268">mỗi dòng là một bản ghi — không có nút hành động</text>
+    <text class="zs" x="262" y="284">nào nằm trong dòng</text>
+
+    <rect class="z2" x="656" y="204" width="224" height="176" rx="8"/>
+    <text class="zn" x="668" y="228">TẦNG 2</text>
+    <text class="zt" x="668" y="250">Bảng xem nhanh</text>
+    <text class="zs" x="668" y="268">tab đóng góp từ</text><text class="zs" x="668" y="284">nhóm khác (§5)</text>
+    <text class="zs" x="668" y="308">hành động trên</text><text class="zs" x="668" y="322">một bản ghi</text>
+    <text class="zs" x="668" y="346">hành động nguy hiểm</text><text class="zs" x="668" y="360">tách xuống cuối</text>
+
+    <rect class="z3" x="60" y="404" width="400" height="46" rx="8"/>
+    <text class="zn" x="72" y="424">TẦNG 3</text>
+    <text class="zs" x="132" y="424">Cấu hình — sau một lần bấm, không ai vào nhầm</text>
+    <text class="zs" x="72" y="442">quan trọng nhưng chạm mỗi quý một lần</text>
+
+    <path class="ax" d="M540 404 H860"/>
+    <text class="axt" x="540" y="398">ngữ cảnh</text>
+    <text class="axt" x="668" y="398">nội dung</text>
+    <text class="axt" x="790" y="398">hành động</text>
+    <text class="axt" x="540" y="442">trái sang phải: tôi đang ở đâu → cái gì đang xảy ra → tôi làm gì tiếp</text>
+  </svg>
+  </div>
+  <figcaption>Khung màn hình với tầng của từng vùng. Vùng viền xanh là tầng 0 — tổng cộng chưa tới một phần ba diện tích, và đó là chủ ý.</figcaption>
+  </figure>
+
+  <p><strong>Ngang màn hình</strong> đọc theo thứ tự: trái là <em>tôi đang ở đâu</em>, giữa là <em>cái gì đang xảy ra</em>, phải là <em>tôi làm gì tiếp</em>. Đó là lý do nút chọn gian hàng nằm sát mép trái và nút hành động chính dồn về mép phải — và là lý do không được đổi chỗ hai thứ đó cho nhau dù có chỗ trống.</p>
+  <p><strong>Dọc màn hình</strong> đi từ phạm vi rộng xuống phạm vi hẹp. Thanh trên cùng nói về cả tài khoản. Sidebar nói về cả một nhóm. Đầu trang nói về một danh sách. Một dòng nói về một bản ghi. Cái gì đổi nghĩa của mọi thứ bên dưới nó thì phải nằm bên trên — nên gian hàng ở dòng trên cùng, không thể ở chỗ nào khác.</p>
+</section>
+<section id="s7">
+  <h2>§7</h2>
+  <div class="h">Mười sáu luật</div>
+  <p class="lead">Trích bằng số. “Nút đó nằm đó vì Luật 4” là một câu trả lời hợp lệ, đầy đủ, và kiểm chứng được — khác hẳn “nó phải như vậy”.</p>
+
+  <div id="l1" class="law"><div class="n">L1</div><div class="b">
+    <div class="s">Vị trí là hàm của tần suất và hệ quả, không phải của tầm quan trọng.</div>
+    <div class="w">“Quan trọng” là một ý kiến và ai cũng có ý kiến khác nhau. “Người dùng chạm 40 lần một ngày” là một con số. Cấu hình phát hành hoá đơn quan trọng hơn mọi thứ trong hệ, và nó nằm ở tầng 3.</div></div></div>
+
+  <div id="l2" class="law"><div class="n">L2</div><div class="b">
+    <div class="s">Nhóm theo câu hỏi người dùng đang hỏi, không theo hệ thống sinh ra dữ liệu.</div>
+    <div class="w">Người bán không biết PIM, OMS, WMS là gì. Ranh giới service là chuyện của chúng ta, không phải chuyện của họ. Đây là lý do tab “Kho” xuất hiện ngay trong trang đơn hàng thay vì bắt sang một mục khác.</div></div></div>
+
+  <div id="l3" class="law"><div class="n">L3</div><div class="b">
+    <div class="s">Trái là ngữ cảnh, giữa là nội dung, phải là hành động.</div>
+    <div class="w">Đúng chiều đọc. Đây là lý do gian hàng ở sát mép trái và nút hành động chính dồn về mép phải, kể cả khi khoảng giữa đang trống.</div></div></div>
+
+  <div id="l4" class="law"><div class="n">L4</div><div class="b">
+    <div class="s">Cái gì đổi nghĩa của mọi thứ bên dưới thì phải nằm bên trên.</div>
+    <div class="w">Đổi gian hàng làm mọi con số trên màn hình thành số của công ty khác. Nên nó ở dòng trên cùng, trên cả sidebar. Cùng lý do, vai trò hiện ở thanh trên chứ không nằm trong Cấu hình.</div></div></div>
+
+  <div id="l5" class="law"><div class="n">L5</div><div class="b">
+    <div class="s">Thứ tự trong sidebar đi theo chiều dữ liệu chảy.</div>
+    <div class="w">Sản phẩm → Đơn hàng → Kênh bán → Kho → Hoá đơn. Không theo bảng chữ cái, không theo mức độ hay dùng. Đi từ trên xuống một lần là hiểu luôn nghiệp vụ, và thứ tự đó không đổi khi thói quen người dùng đổi.</div></div></div>
+
+  <div id="l6" class="law"><div class="n">L6</div><div class="b">
+    <div class="s">Nút không dùng được thì vô hiệu tại chỗ và nói rõ lý do, không ẩn đi.</div>
+    <div class="w">Nút ẩn làm các nút sau nó dồn lên, và mọi toạ độ đã học thuộc trở thành sai. <b>Đây là luật đắt nhất và dễ bị vi phạm nhất</b>, vì “ẩn thứ không dùng được” nghe rất hợp lý. Áp cho cả trường hợp thiếu quyền: thiếu quyền thì thấy nút xám kèm câu giải thích, không phải thấy một khoảng trống.</div></div></div>
+
+  <div id="l7" class="law"><div class="n">L7</div><div class="b">
+    <div class="s">Thứ tự hành động cố định. Không sắp xếp lại theo ngữ cảnh.</div>
+    <div class="w">Không đẩy hành động hay dùng lên đầu, không giấu hành động ít dùng vào menu tràn khi chật. Danh sách tự sắp xếp là kẻ thù trực tiếp của phản xạ. Áp cả cho view tab: tab đang có 0 dòng vẫn hiện và ghi số 0.</div></div></div>
+
+  <div id="l8" class="law"><div class="n">L8</div><div class="b">
+    <div class="s">Hành động phá huỷ không đứng cạnh hành động thường.</div>
+    <div class="w">Bấm không cần nhìn nghĩa là sớm muộn sẽ bấm trượt một ô. Nếu ô bên cạnh “Xác nhận” là “Huỷ đơn” thì thiết kế đã tự đặt bẫy rồi đổ lỗi cho người dùng. Hành động phá huỷ tách khỏi cụm, đặt ở lớp khác, và có bước xác nhận nêu <b>hệ quả cụ thể</b> chứ không hỏi “bạn có chắc không”.</div></div></div>
+
+  <div id="l9" class="law"><div class="n">L9</div><div class="b">
+    <div class="s">Một màu chỉ nói một chuyện trong toàn hệ.</div>
+    <div class="w">Năm màu ngữ nghĩa của <span class="k">voma-ui-kit</span> đã thuộc về trạng thái dữ liệu và không ai được mượn lại. Vai trò, module, mức ưu tiên đều phải tìm cách diễn đạt khác — bằng độ đậm, bằng vị trí, bằng chữ. Xanh lá trong VOMA nghĩa là <em>xong</em>, ở mọi chỗ, không có ngoại lệ.</div></div></div>
+
+  <div id="l10" class="law"><div class="n">L10</div><div class="b">
+    <div class="s">Bảng chọn mở ra từ chính nút đã bấm.</div>
+    <div class="w">Bấm ở góc trái mà bảng chọn bật ra ở góc phải là bắt chuột đi ngang cả màn hình rồi quay lại. Trên màn 1920px đó là gần 1700px cho một thao tác chọn.</div></div></div>
+
+  <div id="l11" class="law"><div class="n">L11</div><div class="b">
+    <div class="s">Drawer dành cho nội dung phải đọc hoặc form phải điền. Chọn một giá trị thì luôn là dropdown.</div>
+    <div class="w">Hệ quả trực tiếp của L10, viết riêng vì nó là chỗ hay quyết sai nhất khi thêm màn hình mới.</div></div></div>
+
+  <div id="l12" class="law"><div class="n">L12</div><div class="b">
+    <div class="s">Số 0 là một khẳng định. Không biết là một chuyện khác, và phải viết ra bằng chữ.</div>
+    <div class="w">Khả dụng bằng <span class="k">null</span> phải hiện “Không rõ”, không bao giờ hiện 0. “Hết hàng” và “chưa ai đếm” dẫn tới hai quyết định nhập hàng ngược nhau. Áp cho mọi con số trong hệ, không riêng tồn kho.</div></div></div>
+
+  <div id="l13" class="law"><div class="n">L13</div><div class="b">
+    <div class="s">Nhãn lấy từ từ điển. Màn hình sai tên thì sửa màn hình.</div>
+    <div class="w">Một khái niệm có đúng một tên hiển thị trong toàn hệ, kể cả khi ba service gọi nó bằng ba tên khác nhau ở tầng dữ liệu. Muốn đổi tên thì đổi ở <a class="ref" href="#s2">§2</a> trước.</div></div></div>
+
+  <div id="l14" class="law"><div class="n">L14</div><div class="b">
+    <div class="s">Dữ liệu nguyên văn của bên thứ ba giữ nguyên và luôn xem được.</div>
+    <div class="w">Trạng thái sàn trả về, lý do cơ quan thuế từ chối, mã lỗi của nhà vận chuyển — dịch sang tiếng Việt để hiển thị thì được, nhưng bản gốc phải còn và phải mở ra xem được không quá một lần bấm. Đó là thứ duy nhất dùng được khi đi khiếu nại.</div></div></div>
+
+  <div id="l15" class="law"><div class="n">L15</div><div class="b">
+    <div class="s">Việc lặp lại nhiều lần trong ngày phải làm được theo lô.</div>
+    <div class="w">Nếu một thao tác xảy ra 500 lần một ngày mà chỉ làm được từng cái một, đó là lỗi thiết kế, không phải đặc thù nghiệp vụ. Xem <a class="ref" href="#s9">§9</a>.</div></div></div>
+
+  <div id="l16" class="law"><div class="n">L16</div><div class="b">
+    <div class="s">Mọi bộ lọc nằm trên URL.</div>
+    <div class="w">Gửi liên kết là gửi cả câu hỏi. Người nhận mở ra thấy đúng thứ người gửi đang thấy, không phải nghe mô tả lại “vào Đơn hàng, lọc Chờ xác nhận, rồi sắp theo ngày”. Cũng là cách duy nhất để F5 không mất chỗ đang đứng.</div></div></div>
+</section>
+
+<section id="s8">
+  <h2>§8</h2>
+  <div class="h">Áp luật vào nút thật</div>
+  <p class="lead">Mười hai câu hỏi đã thật sự được hỏi, hoặc chắc chắn sẽ được hỏi. Mỗi câu trả lời dưới một trăm chữ, và luôn bắt đầu bằng một số hiệu luật.</p>
+
+  <div class="qa"><div class="q">Sao nút chọn gian hàng lại ở góc trên bên trái?</div>
+    <div class="a"><span class="cite">L4</span><span class="cite">L3</span>Đổi gian hàng làm mọi con số trên màn hình thành số của một công ty khác — nó đổi nghĩa của mọi thứ bên dưới, nên phải nằm bên trên tất cả. Và nó là ngữ cảnh chứ không phải hành động, nên nằm bên trái chứ không bên phải.</div></div>
+
+  <div class="qa"><div class="q">Sao “Việc của tôi” lại tách riêng trên đầu, không nằm trong nhóm nào?</div>
+    <div class="a"><span class="cite">L2</span>Vì nó không phải một hệ thống, nó là một lát cắt ngang qua cả năm nhóm còn lại. Xếp nó vào một nhóm sẽ nói dối về nguồn gốc của những việc trong đó. Nó cũng là màn hình mặc định khi đăng nhập, vì câu hỏi đầu tiên buổi sáng luôn là “hôm nay tôi phải làm gì”.</div></div>
+
+  <div class="qa"><div class="q">Sao Sản phẩm lại đứng trước Đơn hàng, trong khi tôi vào Đơn hàng nhiều hơn?</div>
+    <div class="a"><span class="cite">L5</span>Thứ tự sidebar đi theo chiều dữ liệu chảy, không theo mức độ hay dùng. Không có sản phẩm thì không có niêm yết, không có niêm yết thì không có đơn. Sắp theo mức độ hay dùng sẽ tiết kiệm được vài trăm mili-giây một ngày và đổi lại là một menu không giải thích được gì. Anh vào Đơn hàng bằng <span class="k">Ctrl K</span> hoặc bằng phím tắt, không phải bằng cách rê chuột xuống.</div></div>
+
+  <div class="qa"><div class="q">Sao “Huỷ đơn” không nằm cạnh “Xác nhận” cho tiện?</div>
+    <div class="a"><span class="cite">L8</span>Vì đúng là tiện — tiện đến mức sẽ có ngày bấm nhầm. Sau một tháng làm 500 đơn mỗi ngày, tay bấm theo toạ độ chứ không đọc chữ. Đặt hành động không hoàn tác được cạnh hành động làm 500 lần một ngày là tự đặt bẫy.</div></div>
+
+  <div class="qa"><div class="q">Sao “Xuất Excel” không có sẵn trên thanh trên cùng?</div>
+    <div class="a"><span class="cite">L1</span>Xuất Excel được dùng khoảng mỗi tuần một lần. Thanh trên cùng là tầng 0, dành cho thứ chạm mỗi ngày hoặc mỗi phút, và nó có hạn — đưa Excel lên đó là lấy chỗ của ô tìm kiếm. Nó nằm ở hàng hành động của trang danh sách, một lần bấm, và có trong thanh lệnh.</div></div>
+
+  <div class="qa"><div class="q">Sao trang Đơn hàng lại có tab “Kho”? Kho là phần mềm khác mà.</div>
+    <div class="a"><span class="cite">L2</span>Khác với chúng ta, không khác với anh. Khi anh mở một đơn, câu hỏi tiếp theo gần như luôn là “hàng đi tới đâu rồi” — nên câu trả lời phải ở ngay đó. Ranh giới giữa các hệ thống là chuyện nội bộ của nhà cung cấp; nó không có lý do gì để hiện ra trên màn hình của anh.</div></div>
+
+  <div class="qa"><div class="q">Sao nút bị mờ chứ không ẩn đi cho gọn?</div>
+    <div class="a"><span class="cite">L6</span>Vì ẩn nó đi thì các nút sau nó dồn lên và mọi vị trí tay đã học thuộc trở thành sai. Một lần bấm trượt phá vỡ niềm tin xây trong ba tuần. Nút mờ còn nói cho anh biết chức năng đó tồn tại và vì sao lúc này chưa dùng được — nút ẩn thì không nói gì cả.</div></div>
+
+  <div class="qa"><div class="q">Sao trạng thái đơn lại có hai dòng chữ, một của VOMA một của sàn?</div>
+    <div class="a"><span class="cite">L14</span>Dòng của VOMA để làm việc — nó giống nhau ở mọi sàn nên anh chỉ phải học một bộ. Dòng nguyên văn của sàn để đi khiếu nại — khi gọi cho bộ phận hỗ trợ của sàn, chỉ chuỗi gốc mới tra được. Bỏ một trong hai đều mất một việc.</div></div>
+
+  <div class="qa"><div class="q">Sao chỗ này ghi “Không rõ” chứ không ghi 0?</div>
+    <div class="a"><span class="cite">L12</span>Vì 0 nghĩa là kho đã đếm và kết luận hết hàng. “Không rõ” nghĩa là kho chưa đếm. Nhìn thấy 0 thì anh sẽ đi nhập hàng; nhìn thấy “Không rõ” thì anh sẽ đi hỏi kho. Ghi 0 khi chưa biết là để phần mềm nói hộ một câu mà nó không có quyền nói.</div></div>
+
+  <div class="qa"><div class="q">Sao hoá đơn có tới hai chip trạng thái? Rối.</div>
+    <div class="a"><span class="cite">L13</span>Vì đó là hai chuyện độc lập, không phải hai cách nói một chuyện. Chip thứ nhất nói quan hệ với cơ quan thuế; chip thứ hai nói vòng đời của chứng từ. Một hoá đơn có thể “đã phát hành” mà cơ quan thuế “đã từ chối” — gộp lại thì phải chọn hiển thị một trong hai, và cái bị giấu luôn là cái anh cần.</div></div>
+
+  <div class="qa"><div class="q">Sao trong bảng sản phẩm không có nút “Xoá”?</div>
+    <div class="a"><span class="cite">L8</span><span class="cite">L1</span>Xoá là hành động không hoàn tác được, và bảng là nơi tay chạy nhanh nhất. Ngoài ra sản phẩm đã từng có đơn thì về mặt kế toán không xoá được — cái anh thật sự cần là “ngừng bán”, và nút đó nằm trong trang sản phẩm.</div></div>
+
+  <div class="qa"><div class="q">Sao tab lọc đang không có dòng nào mà vẫn hiện?</div>
+    <div class="a"><span class="cite">L7</span>Vì ẩn nó đi thì các tab bên phải trượt sang trái, và tay đã quen bấm “Thiếu dữ liệu” ở vị trí thứ tư sẽ bấm trúng “Chưa lên sàn”. Tab rỗng hiện số 0 — bản thân số 0 đó cũng là một thông tin: hôm nay không còn sản phẩm nào thiếu dữ liệu.</div></div>
+</section>
+<section id="s9">
+  <h2>§9</h2>
+  <div class="h">Ngân sách thao tác</div>
+  <p class="lead">Một shop 500 đơn mỗi ngày, mỗi đơn 10 thao tác chuột, là 5.000 thao tác mỗi ngày và <strong>150.000 thao tác mỗi tháng</strong> chỉ riêng vùng đơn hàng. Phép tính đúng. Kết luận rút ra từ nó thì phải cẩn thận.</p>
+
+  <div class="callout warn">
+    <div class="t">150.000 là một chẩn đoán, không phải một cơ hội</div>
+    <p>Đọc con số đó thành “nhiều lần bấm nên sẽ thành phản xạ, vậy hãy thiết kế cho phản xạ” là biến một triệu chứng thành một mục tiêu. Mười thao tác cho một đơn hàng là quá nhiều. Ở quy mô này, mỗi thao tác cắt được nhân lên 15.000 lần mỗi tháng — <b>việc đầu tiên không phải làm mười cái bấm đó nhanh hơn, mà là hỏi tại sao có mười cái</b>.</p>
+  </div>
+
+  <h3>Trần cho từng luồng</h3>
+  <p>Vượt trần là lỗi thiết kế phải sửa, không phải đặc thù nghiệp vụ phải chấp nhận.</p>
+
+  <div class="tbl"><table>
+    <thead><tr><th>Luồng</th><th class="mono">Trần</th><th>Đạt bằng cách nào</th></tr></thead>
+    <tbody>
+      <tr><td>Đơn đi đúng luồng, không có gì bất thường</td><td class="mono">0 / đơn</td><td>Xử lý theo lô: chọn tất cả trong hàng đợi, một hành động cho cả trăm đơn. Chi phí không phụ thuộc số đơn.</td></tr>
+      <tr><td>Đơn cần người quyết</td><td class="mono">≤ 3 / đơn</td><td>Mọi dữ kiện để quyết nằm sẵn trên một màn. Nhìn → quyết → sang việc tiếp, không mở tab mới, không quay lại danh sách.</td></tr>
+      <tr><td>Đơn phải điều tra</td><td class="mono">không đặt trần</td><td>Nhưng cấm bắt mở tab khác để tra: tab đóng góp từ Kho, Hoá đơn, Kênh phải có sẵn trong trang đơn (<a class="ref" href="#s5">§5</a>).</td></tr>
+      <tr><td>Nhặt và đóng gói trong kho</td><td class="mono">0 bàn phím</td><td>Máy quét là thiết bị nhập chính, không phải phụ trợ. Ô nhập tự lấy con trỏ, quét xong tự sang bước sau.</td></tr>
+      <tr><td>Tra một mã bất kỳ</td><td class="mono">1 phím + gõ</td><td><span class="k">Ctrl K</span> tìm chung mã đơn, mã sàn, SKU, số hoá đơn, tên khách. Không phải chọn trước là tìm loại gì.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Rồi mới đến phản xạ</h3>
+  <p>Sau khi cắt xong, những thao tác <em>còn lại</em> mới đáng đầu tư cho phản xạ. Và đầu tư đó có giá: phản xạ chỉ hình thành nếu vị trí không đổi suốt một tháng, nghĩa là nó khoá tay chúng ta ở mọi lần sửa giao diện về sau. Đừng trả cái giá đó cho những cái bấm lẽ ra phải xoá đi.</p>
+
+  <p>Vế còn lại của yêu cầu — <em>“sau một tháng, khách có thể di chuyển và bấm mà không cần nhìn rõ tên nút”</em> — thì đúng hoàn toàn, và nó là tiêu chí nghiệm thu tốt nhất chúng ta có, vì nó đo được. Năm luật phục vụ trực tiếp cho nó: <a class="ref" href="#l6">L6</a> nút không biến mất, <a class="ref" href="#l7">L7</a> thứ tự cố định, <a class="ref" href="#l8">L8</a> nguy hiểm tách xa, <a class="ref" href="#l3">L3</a> và <a class="ref" href="#l4">L4</a> vị trí suy ra được chứ không phải nhớ thuộc lòng.</p>
+
+  <div class="callout">
+    <div class="t">Phép nghiệm thu</div>
+    <p>Chụp cùng một trang ở năm trạng thái: đủ quyền · thiếu quyền · danh sách rỗng · đang tải · có lỗi. Chồng năm ảnh lên nhau. <b>Mọi nút hành động phải nằm đúng một chỗ ở cả năm ảnh.</b> Chỗ nào lệch là chỗ phá phản xạ, và phải sửa trước khi phát hành.</p>
+  </div>
+</section>
+
+<section id="s10">
+  <h2>§10</h2>
+  <div class="h">Thêm chức năng mới</div>
+  <p class="lead">Sáu bước, chạy hết rồi mới mở công cụ thiết kế. Nếu bước nào không trả lời được thì chức năng đó chưa đủ chín để vẽ.</p>
+
+  <ol>
+    <li><strong>Đặt tên trong từ điển.</strong> Viết mục mới ở <a class="ref" href="#s2">§2</a>, đủ bảy trường, đặc biệt là trường “Không phải”. Nếu không viết nổi trường đó thì chức năng đang lẫn với một chức năng đã có.</li>
+    <li><strong>Chọn nhóm bằng câu hỏi.</strong> Người dùng đang hỏi gì khi họ cần cái này? Câu hỏi đó thuộc nhóm nào trong sáu nhóm ở <a class="ref" href="#s4">§4</a>? Nếu nó thuộc hai nhóm thì nó là hai chức năng, tách ra.</li>
+    <li><strong>Đo hai biến.</strong> Tần suất và hệ quả. Bằng quan sát hoặc bằng nhật ký. Không đoán, và không hỏi người đề xuất — người đề xuất luôn trả lời “thường xuyên”.</li>
+    <li><strong>Tra tầng</strong> ở <a class="ref" href="#s6">§6</a>, rồi tra chỗ trong tầng bằng <a class="ref" href="#l3">L3</a> và <a class="ref" href="#l4">L4</a>. Nếu ra tầng 0, phải nói được nó lấy chỗ của cái gì — tầng 0 đã đầy.</li>
+    <li><strong>Kiểm quan hệ.</strong> Chức năng có đọc dữ liệu của nhóm khác không? Nếu có, nó là một <em>tab đóng góp</em> trên trang đối tượng của nhóm kia, không phải một mục sidebar mới. Xem <a class="ref" href="#s5">§5</a>.</li>
+    <li><strong>Soát năm trạng thái.</strong> Vẽ cả năm: đủ quyền, thiếu quyền, rỗng, đang tải, có lỗi. Nếu vị trí nút lệch giữa các trạng thái thì thiết kế chưa xong.</li>
+  </ol>
+
+  <div class="callout">
+    <div class="t">Dùng bộ luật này để từ chối</div>
+    <p>Đây là công dụng ít ai nghĩ tới nhưng dùng nhiều nhất. Khi một shop đòi kéo một chức năng hiếm dùng lên tầng 0, câu trả lời là một câu trích luật kèm câu hỏi ngược: <b>“Luật 1 — chỗ đó có hạn. Anh muốn bỏ cái nào đang ở đó để lấy chỗ?”</b> Gần như mọi lần, câu hỏi đó tự kết thúc cuộc thương lượng, vì người đề xuất nhìn thấy cái giá mà trước đó họ không nhìn thấy.</p>
+  </div>
+
+  <h3>Cắm một hệ thống mới vào VOMA</h3>
+  <p>Một module mới không sửa vào khung. Nó khai báo phần đóng góp của mình và khung tự dựng: một mục sidebar, một hoặc vài hàng đợi cho Việc của tôi, các tab góp vào trang đối tượng của module khác, các lệnh cho thanh lệnh, các nguồn cho ô tìm chung, và bảng ánh xạ trạng thái riêng về năm chip chung. Sáu thứ đó là toàn bộ hợp đồng. Khung không biết module nào tồn tại, và module không biết khung trông thế nào.</p>
+</section>
+
+<section id="s11">
+  <h2>§11</h2>
+  <div class="h">Sổ phán quyết · 26/08/2026</div>
+  <p class="lead">Tám phản hồi trong đợt rà soát, mỗi phản hồi một phán quyết. Hai trong số đó tôi không làm theo, và ghi rõ vì sao — đề xuất được ghi nguyên văn để đối chiếu.</p>
+
+  <div class="verdict"><div class="vh"><span class="vt">Vùng đầu trang danh sách</span><span class="vb">Đúng · làm</span></div>
+    <div class="vq">“vùng khoanh đỏ này có thể để các button chức năng hoặc theo dạng tab để tận dụng”</div>
+    <div class="vd"><p>Đầu trang đang xếp bốn băng chồng nhau — breadcrumb, tiêu đề với phụ đề, view tab, thanh lọc — tốn khoảng 150px trước dòng dữ liệu đầu tiên.</p>
+    <p>Cách sửa không phải nhét thêm nút vào đó, mà là gộp bốn băng còn hai: breadcrumb với tiêu đề, view tab và nút hành động lên cùng một dòng; tìm kiếm với bộ lọc xuống dòng thứ hai; bỏ hẳn phụ đề mô tả vì sang ngày thứ hai không ai đọc nữa. Bảng bắt đầu cao hơn khoảng 70px, thêm hai dòng dữ liệu mỗi màn. View tab chính là “dạng tab” mà đề xuất mong muốn — nó đã có, chỉ đang nằm tách ra nên đọc như một thanh thừa.</p></div></div>
+
+  <div class="verdict"><div class="vh"><span class="vt">Chọn tất cả trong bảng</span><span class="vb">Đúng · mở rộng</span></div>
+    <div class="vq">“Phần bảng thì chú ý có thêm check all”</div>
+    <div class="vd"><p>Đúng là thiếu. Làm đủ thì ô chọn tất cả phải có <b>ba</b> trạng thái, không phải hai: rỗng, chọn hết, và chọn một phần.</p>
+    <p>Chỗ ăn tiền nằm ở phần mở rộng: chọn tất cả trên một trang chỉ được số dòng đang hiện. Cái shop 500 đơn thật sự cần là chọn hết mọi dòng khớp bộ lọc. Nên sau khi tích, hiện thêm một dải “Đã chọn 50 dòng trên trang này — chọn hết 342 dòng khớp bộ lọc”. Việc bảy trang bảy lần bấm thành hai lần bấm. Đổi lại, hành động hàng loạt trên tập không nhìn thấy phải xác nhận có nêu cả số lẫn bộ lọc đang áp.</p></div></div>
+
+  <div class="verdict"><div class="vh"><span class="vt">Sắp xếp theo cột</span><span class="vb">Đúng · làm</span></div>
+    <div class="vq">“cột thì có chức năng sort”</div>
+    <div class="vd"><p>Nặng hơn thiếu: giao diện đang <em>hứa</em> mà không làm. Con trỏ đổi thành bàn tay và tiêu đề đổi màu khi rê chuột, nhưng bấm vào không xảy ra gì.</p>
+    <p>Làm đúng thì chỉ cột nào khai báo được cách sắp mới có con trỏ bàn tay — đừng hứa chỗ không làm được. Ba nhịp: tăng, giảm, về mặc định của view; nhịp thứ ba hay bị quên và luôn cần. Và sắp xếp thuộc về view chứ không thuộc về trang, vì mỗi view là một câu hỏi khác nhau: view “Chờ xác nhận” mặc định sắp theo thời gian chờ, không theo mã đơn. Làm đúng chỗ mặc định thì phần lớn người dùng không bao giờ phải bấm sort.</p></div></div>
+
+  <div class="verdict"><div class="vh"><span class="vt">Màu nền dòng tiêu đề bảng</span><span class="vb">Đúng · làm</span></div>
+    <div class="vq">“header của bảng nên để màu khác màu nền xám”</div>
+    <div class="vd"><p>Nền tiêu đề đang đặt đúng bằng nền trang nên nó chìm. Đây còn là lỗi thật chứ không chỉ thẩm mỹ: tiêu đề bảng dính trên đầu khi cuộn, mà không có nền riêng thì lúc cuộn chữ tiêu đề chồng lên dòng dữ liệu.</p>
+    <p>Ràng buộc khi sửa: không bịa mã màu mới. <span class="k">voma-ui-kit</span> là nguồn duy nhất của bảng màu, và luật nhà đã ghi rõ là không fork. Cách nằm trong hợp đồng là dùng chính màu chủ đạo pha loãng — một màu dẫn xuất, không phải một giá trị mới. Kèm theo, mép dưới tiêu đề nâng lên nét đậm để mắt bám vào đó mà định vị cột.</p></div></div>
+
+  <div class="verdict"><div class="vh"><span class="vt">Chọn gian hàng</span><span class="vb">Đúng · làm</span></div>
+    <div class="vq">“phần này có thể thiết kế dạng dropdown thì tốt hơn thay vì model bên phải”</div>
+    <div class="vd"><p>Đây là lỗi nặng nhất trong cả đợt. Nút ở góc trên trái, bảng chọn bật ra ở mép phải màn hình — chuột đi ngang gần 1700px rồi quay lại cho một thao tác chọn.</p>
+    <p>Sửa thành dropdown neo ngay dưới nút. Không chọn cứng một trong hai mà chọn ngưỡng: trên tám gian hàng thì dropdown mọc thêm ô lọc, trên hai mươi thì mục cuối mở drawer đầy đủ. Và vì đổi gian hàng là đổi nghĩa cả màn hình, sau khi đổi phải có tín hiệu không thể bỏ lỡ, đồng thời không được giữ lại dòng đang chọn của gian hàng cũ. Hộp thoại vai trò đang sai y hệt và sửa cùng lượt.</p></div></div>
+
+  <div class="verdict split"><div class="vh"><span class="vt">Màu chữ theo cấp người dùng</span><span class="vb">Phản biện</span></div>
+    <div class="vq">“Em có thể thêm màu text theo từng cấp độ user, ví dụ như lấy màu ở vòng tròn này”</div>
+    <div class="vd"><p>Nhu cầu đúng — phân biệt cấp người dùng bằng thị giác là hợp lý. Bảng màu thì không dùng được, và đây là chỗ tôi không làm theo.</p>
+    <p><span class="k">voma-ui-kit</span> đã tiêu hết ngân sách màu ngữ nghĩa: năm cặp trạng thái, không có cặp thứ sáu. Lấy màu từ bánh xe mười hai cung là lấy trúng xanh lá, đỏ, cam, xanh dương — bốn màu đã có nghĩa cố định. Hệ quả cụ thể: nhãn vai trò màu xanh lá đứng cạnh chip “Hoàn tất” màu xanh lá dạy hai nghĩa mâu thuẫn cho cùng một màu. Sau một tháng phản xạ, xanh lá nghĩa là <em>xong</em>; một nhãn vai trò xanh lá lúc đó đọc thành vô nghĩa.</p>
+    <p>Cách làm được việc mà không phạm <a class="ref" href="#l9">L9</a>: vai trò dùng một họ màu chưa mang nghĩa nào trong hệ, và phân cấp bằng <b>độ đậm của cùng một màu</b> chứ không bằng nhiều màu khác nhau. Cấp bậc là một thang bậc, mà thang bậc thì đọc bằng độ đậm — bánh xe màu diễn tả “khác nhau”, nó không diễn tả “cao hơn”. Kèm ràng buộc: màu vai trò chỉ sống ở bề mặt tài khoản và phân quyền, không bao giờ lọt vào dòng dữ liệu.</p></div></div>
+
+  <div class="verdict split"><div class="vh"><span class="vt">150.000 lần bấm mỗi tháng</span><span class="vb">Phản biện</span></div>
+    <div class="vq">“1 ngày 500 đơn, mỗi đơn 10 thao tác → 150000 bấm chuột → 1 tháng sẽ tạo thành phản xạ rồi”</div>
+    <div class="vd"><p>Số đúng, phép tính đúng, kết luận phải ngược lại. Xem <a class="ref" href="#s9">§9</a>: con số đó trước hết là chẩn đoán rằng mười thao tác cho một đơn là quá nhiều, và việc đầu tiên là cắt chứ không phải là tối ưu cho phản xạ. Đưa luồng thường từ mười thao tác xuống không thao tác — bằng xử lý theo lô — cắt phần lớn trong 150.000 đó. Phản xạ là việc làm sau, cho phần còn lại.</p></div></div>
+
+  <div class="verdict"><div class="vh"><span class="vt">Định nghĩa khái niệm nghiệp vụ và luật đặt vị trí</span><span class="vb">Đúng · toàn bộ tài liệu này</span></div>
+    <div class="vq">“phải định nghĩa rõ ràng tất cả ra, để tránh mỗi người hiểu 1 ý… nếu mình có triết lý thiết kế riêng thì mình sẽ trả lời được ngắn gọn và thuyết phục được”</div>
+    <div class="vd"><p>Đúng, và là hai hạng mục có giá trị lâu nhất trong đợt. Chúng thành <a class="ref" href="#s2">§2</a> và <a class="ref" href="#s7">§7</a> của sổ tay này. Bốn hiểu nhầm đã thật sự xảy ra trong dự án — “huỷ chưa xong ở kho” bị đọc thành “khách xin huỷ”, tồn kho bị nói trống thay vì nói rõ một trong ba số, hai trục trạng thái hoá đơn bị gộp làm một, và “đang làm mới” bị đọc thành “sắp hết hạn” — đều nằm gọn ở trường “Không phải” của từ điển. Đó là bằng chứng rằng đề xuất này không phải việc cho có.</p></div></div>
+</section>
+</main>
+</div>

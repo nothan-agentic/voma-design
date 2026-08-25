@@ -1,0 +1,2767 @@
+<title>VOMA bản 2.0</title>
+<style>
+  /* =========================================================================
+     VOMA — bản thiết kế chốt
+     Màu: voma-ui-kit/tokens.css v1.3.1, nguyên giá trị, không thêm màu mới.
+     Chữ: Be Vietnam Pro (khai báo trong tailwind-preset của kit).
+     Một chế độ sáng — kit chưa khai báo token tối.
+     ========================================================================= */
+  :root {
+    /* ---- token kit ---- */
+    --primary: #005eb8;
+    --primary-dark: #003a70;
+    --primary-soft: #e3f2fd;
+    --success: #2e7d32;
+    --warning: #ef6c00;
+    --error: #c62828;
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --surface-hover: #f9f9f9;
+    --line-light: #e0e0e0;
+    --line-dark: #757575;
+    --text-dark: #101820;
+    --st-success-fg: #1b5e20; --st-success-bg: #e8f5e9;
+    --st-error-fg: #c62828;   --st-error-bg: #ffebee;
+    --st-warning-fg: #e65100; --st-warning-bg: #fff3e0;
+    --st-prog-fg: #1565c0;    --st-prog-bg: #e3f2fd;
+    --st-neutral-fg: #424242; --st-neutral-bg: #f5f5f5;
+
+    /* ---- neutral suy ra, dùng cho chữ phụ và nền phụ ---- */
+    --ink: #101820;
+    --ink-2: #45525f;
+    --muted: #78859a;
+    --hair: #eef1f5;
+    --shadow-sm: 0 1px 2px rgba(16, 24, 32, .06);
+    --shadow-md: 0 10px 28px -12px rgba(16, 24, 32, .28);
+    --shadow-lg: 0 26px 60px -18px rgba(16, 24, 32, .45);
+
+    /* ---- mật độ: chỉ ba biến này đổi ---- */
+    --row-h: 44px;
+    --fs-table: 13.5px;
+    --pad-y: 10px;
+
+    /* ---- thang vai trò: MỘT hue (chàm ~265), phân cấp bằng độ đậm.
+       Cố ý không lấy từ bánh xe màu: 5 hue trạng thái đã có nghĩa cố định. ---- */
+    --role-3: #33257a;   /* admin  — sâu nhất */
+    --role-2: #56479f;   /* staff  — ngang hàng nhau */
+    --role-1: #7c71b5;   /* viewer — nông nhất */
+
+    --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: "Be Vietnam Pro", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  :root[data-density="tight"]  { --row-h: 34px; --fs-table: 13px;   --pad-y: 7px; }
+  :root[data-density="roomy"]  { --row-h: 44px; --fs-table: 13.5px; --pad-y: 10px; }
+  :root[data-density="scan"]   { --row-h: 62px; --fs-table: 16px;   --pad-y: 16px; }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow: hidden; }
+  button, input, select { font-family: inherit; }
+  ::selection { background: var(--primary-soft); }
+
+  /* =============== nút — ánh xạ AppButton của kit =============== */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 5px; cursor: pointer; white-space: nowrap; }
+  .btn-md { min-width: 96px; min-height: 48px; font-size: 16px; font-weight: 700; padding: 0 16px; }
+  .btn-sm { min-width: 80px; min-height: 36px; font-size: 15px; font-weight: 400; padding: 0 14px; }
+  .btn-icon { width: 40px; height: 40px; min-width: 0; padding: 0; }
+  .btn-primary { background: var(--primary); color: #fff; border: 1px solid transparent; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-secondary { background: var(--surface); color: var(--primary); border: 1px solid var(--primary); }
+  .btn-secondary:hover { background: var(--primary-soft); }
+  .btn-cancel { background: var(--surface); color: var(--text-dark); border: 1px solid var(--line-dark); }
+  .btn-cancel:hover { background: var(--surface-hover); }
+  .btn-danger { background: var(--surface); color: var(--text-dark); border: 1px solid var(--error); }
+  .btn-danger:hover { background: var(--st-error-bg); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn:focus-visible, .lnk:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+  .btn kbd { font-family: var(--mono); font-size: 11px; font-weight: 400; border: 1px solid currentColor; border-radius: 3px; padding: 0 5px; opacity: .7; }
+
+  .lnk { border: 0; background: none; color: var(--primary); cursor: pointer; padding: 0; font: inherit; }
+  .lnk:hover { text-decoration: underline; }
+
+  /* =============== chip trạng thái — AppStatusChip =============== */
+  .chip { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .chip-success { color: var(--st-success-fg); background: var(--st-success-bg); }
+  .chip-error { color: var(--st-error-fg); background: var(--st-error-bg); }
+  .chip-warning { color: var(--st-warning-fg); background: var(--st-warning-bg); }
+  .chip-in-progress { color: var(--st-prog-fg); background: var(--st-prog-bg); }
+  .chip-neutral { color: var(--st-neutral-fg); background: var(--st-neutral-bg); }
+  .chip.sm { font-size: 11px; padding: 1px 8px; }
+
+  /* =============== thanh trên =============== */
+  .topbar { display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 14px; background: var(--surface); border-bottom: 1px solid var(--line-light); flex: none; }
+  .logo { display: flex; align-items: center; gap: 9px; flex: none; }
+  .logo .mark { width: 28px; height: 28px; border-radius: 7px; background: var(--primary); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 14px; }
+  .logo .word { font-weight: 800; letter-spacing: .14em; font-size: 13px; }
+  .sellersel { display: flex; align-items: center; gap: 9px; border: 1px solid var(--line-light); border-radius: 8px; background: var(--surface); padding: 5px 11px; cursor: pointer; flex: none; }
+  .sellersel .cap { font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .sellersel .val { font-size: 13.5px; font-weight: 650; }
+  .sellersel:hover { border-color: var(--primary); }
+  .sellersel .car { color: var(--muted); font-size: 10px; }
+  .omni { flex: 1; min-width: 0; display: flex; align-items: center; gap: 9px; border: 1px solid var(--line-light); background: var(--bg); border-radius: 8px; padding: 7px 12px; color: var(--muted); font-size: 13.5px; cursor: pointer; }
+  .omni:hover { border-color: var(--primary); color: var(--primary); }
+  .omni .k { margin-left: auto; }
+  .kbd { font-family: var(--mono); font-size: 10.5px; border: 1px solid var(--line-light); border-radius: 4px; padding: 1px 5px; background: var(--surface); color: var(--muted); white-space: nowrap; }
+  .who { display: flex; align-items: center; gap: 9px; flex: none; cursor: pointer; }
+  .who .nm { text-align: right; line-height: 1.2; }
+  .who .nm b { display: block; font-size: 12.5px; }
+  .who .nm span { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .who .av { width: 30px; height: 30px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 12.5px; }
+  @media (max-width: 1000px) { .who .nm { display: none; } }
+  @media (max-width: 700px) { .omni span:not(.k) { display: none; } .sellersel .cap { display: none; } }
+
+  /* =============== khung chính =============== */
+  .app { display: flex; flex-direction: column; height: 100vh; }
+  .body { display: grid; grid-template-columns: 214px minmax(0, 1fr); flex: 1; min-height: 0; }
+  .body.scan { grid-template-columns: minmax(0, 1fr); }
+  .body.scan .sidebar { display: none; }
+  @media (max-width: 1000px) { .body { grid-template-columns: 58px minmax(0, 1fr); } .sidebar .lbl, .sidebar .grp { display: none; } .sidebar .navb { justify-content: center; } }
+
+  .sidebar { background: var(--surface); border-right: 1px solid var(--line-light); padding: 10px 9px; overflow-y: auto; }
+  .sidebar .grp { font-family: var(--mono); font-size: 9.5px; letter-spacing: .13em; text-transform: uppercase; color: var(--muted); padding: 14px 10px 6px; }
+  .sidebar .grp:first-child { padding-top: 2px; }
+  .navb { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; background: none; border-radius: 8px; padding: 9px 10px; font-size: 13.5px; font-weight: 550; color: var(--ink-2); cursor: pointer; }
+  .navb:hover { background: var(--primary-soft); color: var(--primary-dark); }
+  .navb[aria-current="page"] { background: var(--primary); color: #fff; }
+  .navb:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+  .navb svg { width: 17px; height: 17px; flex: none; }
+  .navb .badge { margin-left: auto; font-family: var(--mono); font-size: 11px; font-variant-numeric: tabular-nums; border-radius: 999px; padding: 0 7px; background: var(--st-neutral-bg); color: var(--st-neutral-fg); }
+  .navb .badge.hot { background: var(--st-warning-bg); color: var(--st-warning-fg); font-weight: 600; }
+  .navb[aria-current="page"] .badge { background: rgba(255,255,255,.24); color: #fff; }
+
+  .canvas { min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* =============== đầu trang =============== */
+  .phead { padding: 11px 22px 0; flex: none; display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; }
+  .phead .crumb { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); flex: none; }
+  .phead h1 { margin: 0; font-size: 19.5px; font-weight: 740; letter-spacing: -.022em; flex: none; }
+  .phead .viewtabs { padding: 0; margin: 0; flex: 1 1 auto; }
+  .phead .acts { margin-left: auto; display: flex; gap: 8px; align-items: center; flex: none; }
+  .phead .sep { width: 1px; height: 18px; background: var(--line-light); flex: none; }
+
+
+  /* =============== bảng =============== */
+  .tablewrap { flex: 1; min-height: 0; overflow: auto; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: var(--fs-table); }
+    /* nền dẫn xuất từ --primary, KHÔNG phải mã màu mới; trình duyệt cũ rơi về surface */
+  thead th { position: sticky; top: 0; z-index: 2; text-align: left; font-family: var(--mono); font-size: 9.5px; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; padding: 9px 12px; background: var(--surface); background: color-mix(in srgb, var(--primary) 6%, var(--surface)); border-bottom: 1.5px solid var(--line-dark); white-space: nowrap; user-select: none; }
+  thead th.num { text-align: right; }
+  thead th.sortable { cursor: pointer; }
+  thead th.sortable:hover { color: var(--primary); }
+  thead th .ar { display: none; margin-left: 5px; font-size: 9px; }
+  thead th.sorted { color: var(--primary); }
+  thead th.sorted .ar { display: inline; }
+  thead th.pick { width: 38px; padding-left: 12px; }
+  tbody td { padding: 0 12px; height: var(--row-h); border-bottom: 1px solid var(--hair); color: var(--ink-2); white-space: nowrap; }
+  tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody td.mono { font-family: var(--mono); font-size: calc(var(--fs-table) - .5px); color: var(--ink); }
+  tbody td b { color: var(--ink); font-weight: 600; }
+  tbody td .second { display: block; font-size: 11.5px; color: var(--muted); }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover td { background: var(--surface-hover); }
+  tbody tr.cur td { background: var(--primary-soft); box-shadow: inset 0 0 0 1px rgba(0, 94, 184, .25); }
+  tbody tr.marked td { background: #f1f7fd; }
+  tbody tr.cur.marked td { background: var(--primary-soft); }
+  .tick { width: 16px; height: 16px; border: 1.5px solid var(--line-dark); border-radius: 4px; display: inline-grid; place-items: center; font-size: 10px; background: var(--surface); color: transparent; }
+  .tick.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .tick.some { background: var(--primary); border-color: var(--primary); color: #fff; font-size: 13px; line-height: 0; }
+  .tick.head { cursor: pointer; }
+
+  /* =============== thanh lọc + view =============== */
+  .filterbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 22px 11px; flex: none; }
+  .filterbar .count { font-family: var(--mono); font-size: 11.5px; color: var(--muted); margin-left: auto; font-variant-numeric: tabular-nums; }
+  .viewtabs { display: flex; gap: 6px; flex-wrap: wrap; flex: none; }
+  .viewtab { border: 1px solid var(--line-light); background: var(--surface); border-radius: 999px; padding: 5px 13px; font-size: 13px; color: var(--ink-2); cursor: pointer; display: inline-flex; gap: 7px; align-items: center; }
+  .viewtab:hover { border-color: var(--primary); color: var(--primary); }
+  .viewtab[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .viewtab .n { font-family: var(--mono); font-size: 11px; font-variant-numeric: tabular-nums; opacity: .82; }
+  .viewtab.ghost { border-style: dashed; color: var(--muted); }
+  .searchbox { flex: 1; min-width: 180px; max-width: 380px; display: flex; align-items: center; gap: 8px; border: 1px solid var(--line-light); border-radius: 8px; background: var(--surface); padding: 8px 12px; }
+  .searchbox input { border: 0; outline: 0; background: transparent; flex: 1; min-width: 0; font: inherit; color: var(--ink); }
+  .fbtn { border: 1px solid var(--line-light); background: var(--surface); border-radius: 8px; padding: 7px 12px; font-size: 13px; color: var(--ink-2); cursor: pointer; display: inline-flex; gap: 7px; align-items: center; }
+  .fbtn:hover { border-color: var(--primary); color: var(--primary); }
+  .fbtn.on { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-dark); font-weight: 600; }
+
+  /* =============== bảng chọn neo tại chỗ =============== */
+  .menu { position: fixed; z-index: 90; min-width: 246px; max-width: 340px; background: var(--surface); border: 1px solid var(--line-light); border-radius: 12px; box-shadow: var(--shadow-md); padding: 6px; display: none; }
+  .menu.open { display: block; }
+  .menu .mcap { font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 8px 10px 5px; }
+  .menu .mi { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; background: none; border-radius: 8px; padding: 8px 10px; cursor: pointer; font: inherit; font-size: 13.5px; color: var(--ink); }
+  .menu .mi:hover { background: var(--primary-soft); }
+  .menu .mi[aria-current="true"] { background: var(--primary-soft); color: var(--primary-dark); font-weight: 600; }
+  .menu .mi .t2 { display: block; font-size: 11.5px; color: var(--muted); font-weight: 400; }
+  .menu .mi .ck { margin-left: auto; color: var(--primary); font-size: 12px; }
+  .menu .msep { height: 1px; background: var(--line-light); margin: 5px 4px; }
+  .menu .mrow { display: flex; gap: 6px; padding: 4px 6px 8px; }
+  .menu .mrow button { flex: 1; border: 1px solid var(--line-light); background: var(--surface); border-radius: 8px; padding: 6px 4px; font: inherit; font-size: 12px; color: var(--ink-2); cursor: pointer; }
+  .menu .mrow button[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .menuscrim { position: fixed; inset: 0; z-index: 89; display: none; }
+  .menuscrim.open { display: block; }
+  .rolebadge { font-family: var(--mono); font-size: 10px; font-weight: 600; }
+  .rolebadge.r3 { color: var(--role-3); }
+  .rolebadge.r2 { color: var(--role-2); }
+  .rolebadge.r1 { color: var(--role-1); }
+  .roledot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+
+  /* =============== khung xem nhanh =============== */
+  .split { display: grid; grid-template-columns: minmax(0, 1fr) 400px; flex: 1; min-height: 0; }
+  @media (max-width: 1240px) { .split { grid-template-columns: minmax(0, 1fr) 340px; } }
+  @media (max-width: 980px) { .split { grid-template-columns: minmax(0, 1fr); } .peek { display: none; } }
+  .peek { border-left: 1px solid var(--line-light); background: var(--surface); overflow-y: auto; display: flex; flex-direction: column; }
+  .pinbar { display: flex; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--line-light); overflow-x: auto; background: var(--bg); flex: none; }
+  .pinbar .pin { flex: none; border: 1px solid var(--line-light); background: var(--surface); border-radius: 999px; padding: 3px 10px; font-size: 11.5px; font-family: var(--mono); color: var(--ink-2); cursor: pointer; display: inline-flex; gap: 7px; align-items: center; }
+  .pinbar .pin[aria-current="true"] { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-dark); }
+  .pinbar .empty { font-size: 11.5px; color: var(--muted); padding: 3px 2px; }
+  .peekbody { padding: 16px 18px 22px; }
+  .peekbody h2 { margin: 0 0 3px; font-size: 19px; font-weight: 740; letter-spacing: -.02em; font-variant-numeric: tabular-nums; word-break: break-word; }
+  .peekbody .psub { font-size: 12.5px; color: var(--muted); margin-bottom: 12px; }
+
+  /* =============== tab đối tượng =============== */
+  .otabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line-light); overflow-x: auto; flex: none; }
+  .otab { flex: none; border: 0; background: none; font-size: 13.5px; font-weight: 600; color: var(--ink-2); padding: 9px 13px; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; }
+  .otab:hover { color: var(--primary); }
+  .otab[aria-selected="true"] { color: var(--primary); border-bottom-color: var(--primary); }
+  .otab:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+  .otab .src { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+
+  /* =============== khối nội dung =============== */
+  .scrollarea { flex: 1; min-height: 0; overflow-y: auto; padding: 18px 22px 26px; }
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, .9fr); gap: 16px; align-items: start; }
+  @media (max-width: 1100px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(224px, 1fr)); gap: 14px; }
+  .card { background: var(--surface); border: 1px solid var(--line-light); border-radius: 10px; padding: 16px 17px; margin-bottom: 14px; }
+  .card:last-child { margin-bottom: 0; }
+  .card > h3 { margin: 0 0 12px; font-family: var(--mono); font-size: 10px; letter-spacing: .11em; text-transform: uppercase; color: var(--muted); font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .card > h3 .right { margin-left: auto; }
+  .dl { display: grid; grid-template-columns: auto 1fr; gap: 9px 16px; font-size: 13.5px; }
+  .dl dt { color: var(--muted); }
+  .dl dd { margin: 0; text-align: right; color: var(--ink); font-weight: 550; font-variant-numeric: tabular-nums; word-break: break-word; }
+  .lrow { display: flex; justify-content: space-between; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--hair); font-size: 13.5px; }
+  .lrow:last-child { border-bottom: 0; }
+  .lrow .l { color: var(--ink-2); }
+  .lrow .l b { display: block; color: var(--ink); }
+  .lrow .r { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); font-weight: 550; }
+  .total { display: flex; justify-content: space-between; padding-top: 12px; margin-top: 4px; border-top: 2px solid var(--line-light); font-size: 15px; font-weight: 700; }
+  .total .r { font-variant-numeric: tabular-nums; }
+
+  .tl .ev { display: grid; grid-template-columns: 13px 1fr; gap: 12px; padding-bottom: 15px; position: relative; font-size: 13px; }
+  .tl .ev:last-child { padding-bottom: 0; }
+  .tl .ev:not(:last-child)::before { content: ""; position: absolute; left: 6px; top: 15px; bottom: 0; width: 1px; background: var(--line-light); }
+  .tl .ev i { width: 9px; height: 9px; border-radius: 50%; background: var(--primary); margin-top: 5px; display: block; }
+  .tl .ev.past i { background: var(--line-dark); }
+  .tl .ev.next i { background: var(--surface); border: 2px solid var(--line-light); width: 11px; height: 11px; margin-top: 4px; }
+  .tl .ev b { display: block; color: var(--ink); font-weight: 600; }
+  .tl .ev span { color: var(--muted); font-size: 12px; }
+
+  /* =============== hàng đợi việc =============== */
+  .work { display: grid; grid-template-columns: 248px 336px minmax(0, 1fr); flex: 1; min-height: 0; }
+  @media (max-width: 1280px) { .work { grid-template-columns: 216px 300px minmax(0, 1fr); } }
+  @media (max-width: 980px) { .work { grid-template-columns: 200px minmax(0, 1fr); } .work .qitems { display: none; } }
+  @media (max-width: 720px) { .work { grid-template-columns: minmax(0, 1fr); } .work .qrail { display: none; } }
+  .qrail { background: var(--surface); border-right: 1px solid var(--line-light); overflow-y: auto; padding: 12px 9px; }
+  .qrail .cap { font-family: var(--mono); font-size: 9.5px; letter-spacing: .13em; text-transform: uppercase; color: var(--muted); padding: 4px 10px 8px; }
+  .qb { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; background: none; border-radius: 8px; padding: 9px 10px; font-size: 13.5px; color: var(--ink-2); cursor: pointer; }
+  .qb:hover { background: var(--primary-soft); color: var(--primary-dark); }
+  .qb[aria-current="true"] { background: var(--primary); color: #fff; font-weight: 600; }
+  .qb:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+  .qb .sq { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+  .qb .n { margin-left: auto; font-family: var(--mono); font-size: 11.5px; font-variant-numeric: tabular-nums; background: var(--st-neutral-bg); color: var(--st-neutral-fg); border-radius: 999px; padding: 0 7px; }
+  .qb .n.hot { background: var(--st-warning-bg); color: var(--st-warning-fg); font-weight: 600; }
+  .qb[aria-current="true"] .n { background: rgba(255,255,255,.24); color: #fff; }
+  .qb.done { color: var(--muted); }
+  .qitems { background: var(--surface); border-right: 1px solid var(--line-light); overflow-y: auto; }
+  .qhead { padding: 14px 16px 12px; border-bottom: 1px solid var(--line-light); position: sticky; top: 0; background: var(--surface); z-index: 2; }
+  .qhead h2 { margin: 0; font-size: 15.5px; font-weight: 700; letter-spacing: -.014em; }
+  .qhead .meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .qbar { height: 4px; border-radius: 2px; background: var(--st-neutral-bg); margin-top: 10px; overflow: hidden; }
+  .qbar i { display: block; height: 100%; background: var(--success); }
+  .qitem { display: block; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--hair); background: none; padding: 12px 16px; cursor: pointer; }
+  .qitem:hover { background: var(--surface-hover); }
+  .qitem[aria-current="true"] { background: var(--primary-soft); box-shadow: inset 3px 0 0 var(--primary); }
+  .qitem:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+  .qitem .t1 { font-size: 13.5px; font-weight: 640; color: var(--ink); }
+  .qitem .t2 { font-size: 12.5px; color: var(--ink-2); margin-top: 1px; }
+  .qitem .t3 { display: flex; gap: 8px; align-items: center; font-size: 11.5px; color: var(--muted); margin-top: 5px; }
+  .qitem .age { margin-left: auto; font-family: var(--mono); }
+  .qitem.urgent .age { color: var(--error); font-weight: 600; }
+  .workpane { overflow-y: auto; padding: 20px 24px 24px; }
+  .whead h1 { margin: 0; font-size: 22px; font-weight: 750; letter-spacing: -.024em; }
+  .whead .sub { font-size: 13px; color: var(--muted); margin: 3px 0 16px; }
+  .why { background: var(--st-warning-bg); color: var(--st-warning-fg); border-radius: 9px; padding: 12px 15px; font-size: 13px; margin-bottom: 18px; }
+  .actionbar { position: sticky; bottom: 0; background: var(--surface); border: 1px solid var(--line-light); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 -3px 16px rgba(16,24,32,.05); margin-top: 18px; }
+  .actionbar .hint { margin-left: auto; font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+
+  /* =============== máy quét =============== */
+  .scanwrap { flex: 1; overflow-y: auto; background: var(--bg); }
+  .scan { max-width: 480px; margin: 0 auto; padding: 20px 18px 40px; }
+  .scanhead { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .scanhead h1 { margin: 0; font-size: 20px; font-weight: 750; }
+  .scanhead .btn { margin-left: auto; }
+  .scanstep { display: flex; gap: 6px; margin-bottom: 16px; }
+  .scanstep div { flex: 1; height: 5px; border-radius: 3px; background: var(--line-light); }
+  .scanstep div.on { background: var(--primary); }
+  .scanstep div.ok { background: var(--success); }
+  .scanfield { border: 2px dashed var(--primary); border-radius: 14px; background: var(--primary-soft); padding: 22px 18px; text-align: center; margin-bottom: 16px; }
+  .scanfield .cap { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--primary-dark); }
+  .scanfield input { width: 100%; border: 0; background: transparent; outline: 0; text-align: center; font-family: var(--mono); font-size: 22px; color: var(--ink); margin-top: 8px; }
+  .scanfield.err { border-color: var(--error); background: var(--st-error-bg); }
+  .scanfield.err .cap { color: var(--st-error-fg); }
+  .scanbig { background: var(--surface); border: 1px solid var(--line-light); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+  .scanbig .lbl { font-size: 13px; color: var(--muted); }
+  .scanbig .val { font-size: 26px; font-weight: 760; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .scanlist .r { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--hair); font-size: 15px; }
+  .scanlist .r:last-child { border-bottom: 0; }
+  .scanlist .r b { font-variant-numeric: tabular-nums; }
+  .scanlist .r.done { color: var(--muted); }
+  .scanlist .r.done b { color: var(--success); }
+
+  /* =============== trạng thái rỗng / lỗi / tải =============== */
+  .empty { text-align: center; padding: 52px 24px; color: var(--muted); }
+  .empty .ttl { color: var(--ink); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .empty p { max-width: 44ch; margin: 0 auto 16px; font-size: 13.5px; }
+  .skel { background: linear-gradient(90deg, var(--hair) 25%, #f7f9fc 50%, var(--hair) 75%); background-size: 400% 100%; animation: sk 1.4s ease infinite; border-radius: 5px; height: 12px; }
+  @keyframes sk { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+  @media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
+  .deny { max-width: 520px; background: var(--surface); border: 1px solid var(--line-light); border-left: 3px solid var(--error); border-radius: 11px; padding: 20px; }
+  .deny .code { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--error); }
+  .deny h2 { margin: 6px 0 8px; font-size: 18px; }
+  .deny p { margin: 0 0 12px; font-size: 13.5px; color: var(--ink-2); }
+
+  /* =============== thanh dưới =============== */
+  .statusbar { height: 32px; flex: none; border-top: 1px solid var(--line-light); background: var(--surface); display: flex; align-items: center; gap: 16px; padding: 0 16px; font-size: 12px; color: var(--muted); }
+  .statusbar b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .statusbar .agg { background: var(--primary-soft); color: var(--primary-dark); border-radius: 999px; padding: 2px 10px; font-weight: 600; }
+  .statusbar .keys { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+  @media (max-width: 860px) { .statusbar .keys { display: none; } }
+
+  /* =============== hành động hàng loạt =============== */
+  .bulk { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--primary-dark); color: #fff; border-radius: 10px; padding: 11px 16px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-md); z-index: 20; }
+  .bulk b { font-variant-numeric: tabular-nums; }
+  .bulk button { border: 1px solid rgba(255,255,255,.4); background: transparent; color: #fff; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
+  .bulk button:hover { background: rgba(255,255,255,.15); }
+
+  /* =============== lớp phủ =============== */
+  .scrim { position: fixed; inset: 0; background: rgba(16,24,32,.44); display: none; z-index: 60; }
+  .scrim.open { display: block; }
+  .scrim.center { align-items: flex-start; justify-content: center; padding-top: 11vh; }
+  .scrim.center.open { display: flex; }
+  .palette { width: min(600px, 93vw); background: var(--surface); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-lg); }
+  .palette .q { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--line-light); }
+  .palette .q input { border: 0; outline: 0; background: transparent; font: inherit; font-size: 16px; flex: 1; color: var(--ink); }
+  .palette .list { max-height: 360px; overflow-y: auto; padding-bottom: 8px; }
+  .palette .sect { font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 11px 16px 4px; }
+  .palette .it { display: flex; align-items: center; gap: 10px; padding: 9px 16px; font-size: 13.5px; color: var(--ink-2); cursor: pointer; }
+  .palette .it.hl { background: var(--primary-soft); color: var(--primary-dark); }
+  .palette .it .from { margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(480px, 94vw); background: var(--surface); box-shadow: var(--shadow-lg); z-index: 61; display: none; flex-direction: column; }
+  .drawer.open { display: flex; }
+  .drawer .dh { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--line-light); }
+  .drawer .dh h2 { margin: 0; font-size: 17px; font-weight: 700; }
+  .drawer .dh .x { margin-left: auto; border: 0; background: none; font-size: 20px; color: var(--muted); cursor: pointer; line-height: 1; }
+  .drawer .db { flex: 1; overflow-y: auto; padding: 18px; }
+  .drawer .da { padding: 14px 18px; border-top: 1px solid var(--line-light); display: flex; gap: 8px; justify-content: flex-end; }
+
+  .modal { width: min(520px, 94vw); background: var(--surface); border-radius: 12px; box-shadow: var(--shadow-lg); margin: 14vh auto 0; }
+  .modal .mh { padding: 18px 20px 0; }
+  .modal .mh h2 { margin: 0; font-size: 18px; font-weight: 720; }
+  .modal .mb { padding: 12px 20px 18px; font-size: 13.5px; color: var(--ink-2); }
+  .modal .ma { padding: 0 20px 18px; display: flex; gap: 8px; justify-content: flex-end; }
+
+  .toast { position: fixed; left: 50%; bottom: 52px; transform: translate(-50%, 10px); background: var(--primary-dark); color: #fff; padding: 12px 18px; border-radius: 9px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; z-index: 80; box-shadow: var(--shadow-md); max-width: 90vw; display: flex; gap: 14px; align-items: center; }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+  .toast button { border: 1px solid rgba(255,255,255,.45); background: none; color: #fff; border-radius: 6px; padding: 4px 10px; font-size: 12.5px; cursor: pointer; }
+  @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+
+  .radio { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border: 1px solid var(--line-light); border-radius: 9px; cursor: pointer; margin-bottom: 8px; }
+  .radio:hover { border-color: var(--primary); }
+  .radio[aria-checked="true"] { border-color: var(--primary); background: var(--primary-soft); }
+  .radio .dot { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--line-dark); flex: none; display: grid; place-items: center; }
+  .radio[aria-checked="true"] .dot { border-color: var(--primary); }
+  .radio[aria-checked="true"] .dot::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+  .radio .txt b { display: block; font-size: 13.5px; }
+  .radio .txt span { font-size: 12px; color: var(--muted); }
+</style>
+
+<div class="app">
+  <header class="topbar">
+    <div class="logo"><span class="mark">V</span><span class="word">VOMA</span></div>
+    <button class="sellersel" id="sellerbtn" type="button" aria-haspopup="dialog">
+      <span class="cap">Gian hàng</span><span class="val" id="sellername">TopVNSport</span><span class="car">▾</span>
+    </button>
+    <button class="omni" id="omnibtn" type="button">
+      <span aria-hidden="true">⌕</span><span>Tìm đơn, sản phẩm, hoá đơn, hoặc việc muốn làm…</span>
+      <span class="k kbd">Ctrl K</span>
+    </button>
+    <button class="who" id="whobtn" type="button">
+      <span class="nm"><b id="whoname">Hải Nguyễn</b><span class="rolebadge" id="whorole">admin</span></span>
+      <span class="av" id="whoav">H</span>
+    </button>
+  </header>
+
+  <div class="body" id="body">
+    <nav class="sidebar" id="sidebar" aria-label="Điều hướng chính"></nav>
+    <section class="canvas" id="canvas"></section>
+  </div>
+
+  <footer class="statusbar" id="statusbar"></footer>
+</div>
+
+<div class="menuscrim" id="menuscrim"></div>
+<div class="menu" id="menu" role="menu" aria-label="Bảng chọn"></div>
+
+<div class="scrim center" id="palscrim">
+  <div class="palette" role="dialog" aria-label="Thanh lệnh">
+    <div class="q"><span aria-hidden="true" style="color:var(--muted)">⌕</span>
+      <input id="palq" placeholder="Gõ mã đơn, SKU, số hoá đơn, tên khách, hoặc việc muốn làm…" aria-label="Tìm kiếm và ra lệnh">
+    </div>
+    <div class="list" id="pallist"></div>
+  </div>
+</div>
+
+<div class="scrim" id="drawerscrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Bảng bên">
+  <div class="dh"><h2 id="drawertitle"></h2><button class="x" id="drawerx" type="button" aria-label="Đóng">×</button></div>
+  <div class="db" id="drawerbody"></div>
+  <div class="da" id="draweracts"></div>
+</aside>
+
+<div class="scrim center" id="modalscrim">
+  <div class="modal" role="dialog" aria-label="Xác nhận">
+    <div class="mh"><h2 id="modaltitle"></h2></div>
+    <div class="mb" id="modalbody"></div>
+    <div class="ma" id="modalacts"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================================
+   1 · NỀN — token, tiện ích, đăng ký module
+   ========================================================================= */
+
+var ICONS = {
+  inbox:  '<path d="M2 10.5h4l1.4 2.2h4.2L13 10.5h4"/><path d="M3.6 3.4h11.8l1.6 7.1v4.6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-4.6z"/>',
+  box:    '<path d="M9.5 1.8 16 5.3v8.4L9.5 17.2 3 13.7V5.3z"/><path d="M3 5.3 9.5 9 16 5.3M9.5 9v8.2"/>',
+  cart:   '<circle cx="7.5" cy="16" r="1.3"/><circle cx="14.5" cy="16" r="1.3"/><path d="M1.8 2.2h2.3l2.1 9.6h9.6"/><path d="M5.6 5h11.2l-1.5 5.6H6.4"/>',
+  plug:   '<path d="M6.5 2v4M12.5 2v4"/><rect x="4" y="6" width="11" height="5.5" rx="1.4"/><path d="M9.5 11.5V17"/>',
+  ware:   '<path d="M2.2 6.6 9.5 2.3l7.3 4.3V17H2.2z"/><path d="M6.4 17v-5.4h6.2V17"/>',
+  scan:   '<path d="M2.4 6V3.4h2.8M14.2 3.4H17V6M17 13v2.6h-2.8M5.2 15.6H2.4V13"/><path d="M6 6.6v5.8M8.4 6.6v5.8M11 6.6v5.8M13.4 6.6v5.8"/>',
+  doc:    '<path d="M4 2h6.6L15 6.4V17H4z"/><path d="M10.4 2v4.4H15M6.6 9.6h5.8M6.6 12.8h5.8"/>',
+  cog:    '<circle cx="9.5" cy="9.5" r="2.8"/><path d="M9.5 1.8v2.2M9.5 15v2.2M17.2 9.5H15M4 9.5H1.8M15 4l-1.6 1.6M5.6 13.4 4 15M15 15l-1.6-1.6M5.6 5.6 4 4"/>',
+  users:  '<circle cx="7" cy="6.4" r="2.8"/><path d="M2 16.2c0-2.8 2.2-4.6 5-4.6s5 1.8 5 4.6"/><path d="M13 4.2a2.8 2.8 0 0 1 0 5.4M14.4 16.2c0-2.2-.8-3.6-2-4.4"/>'
+};
+
+function svgIcon(name) {
+  return '<svg viewBox="0 0 19 19" fill="none" stroke="currentColor" stroke-width="1.5" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
+}
+
+function vnd(n) { return (n || 0).toLocaleString('vi-VN') + ' ₫'; }
+function num(n) { return (n || 0).toLocaleString('vi-VN'); }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function chip(kind, label, title) {
+  return '<span class="chip chip-' + kind + '"' + (title ? ' title="' + esc(title) + '"' : '') + '>' + label + '</span>';
+}
+function el(id) { return document.getElementById(id); }
+function each(root, sel, fn) { Array.prototype.forEach.call(root.querySelectorAll(sel), fn); }
+function dl(pairs) {
+  return '<dl class="dl">' + pairs.map(function (p) {
+    return '<dt>' + p[0] + '</dt><dd>' + p[1] + '</dd>';
+  }).join('') + '</dl>';
+}
+function lrow(left, right, second) {
+  return '<div class="lrow"><span class="l">' + (second ? '<b>' + left + '</b>' + second : left) +
+    '</span><span class="r">' + right + '</span></div>';
+}
+function tlEvent(kind, title, sub) {
+  return '<div class="ev ' + kind + '"><i></i><div><b>' + title + '</b><span>' + sub + '</span></div></div>';
+}
+
+/* -------------------------------------------------------------------------
+   Vai trò và quyền — đo từ voma-identity/backend/utils/seed.py
+   ------------------------------------------------------------------------- */
+/* rank: 3 = quản trị, 2 = nghiệp vụ (ngang hàng nhau), 1 = chỉ xem.
+   Màu vai trò đọc theo rank — một hue, ba độ đậm. Không phải năm màu khác nhau. */
+var ROLES = {
+  admin:     { name: 'Hải Nguyễn',  rank: 3, perms: ['pmi:read','pmi:write','oms:read','oms:write','wms:read','wms:write','invoice:read','invoice:write','channel:read','channel:write','audit:read'] },
+  pmi_staff: { name: 'Ngọc Trần', rank: 2,   perms: ['pmi:read','pmi:write'] },
+  oms_staff: { name: 'Hải Nguyễn', rank: 2,  perms: ['oms:read','oms:write','pmi:read'] },
+  wms_staff: { name: 'Tú Phạm', rank: 2,     perms: ['wms:read','wms:write','pmi:read'] },
+  viewer:    { name: 'Lan Vũ',      rank: 1, perms: ['pmi:read','oms:read','wms:read','invoice:read','audit:read'] }
+};
+
+var SELLERS = [
+  { id: 'seller-demo',   name: 'TopVNSport',    note: 'TikTok Shop · Shopee' },
+  { id: 'seller-anbinh', name: 'An Bình Sport', note: 'Shopee' }
+];
+
+/* -------------------------------------------------------------------------
+   Đăng ký module — nguồn duy nhất sinh sidebar, thanh lệnh và tìm kiếm.
+   Một hệ thống mới vào VOMA bằng cách thêm một khối ở đây, không sửa shell.
+   ------------------------------------------------------------------------- */
+var MODULES = [
+  { id: 'work',     label: 'Việc của tôi', icon: 'inbox', group: null,          screen: 'work',     perm: null,           order: 0 },
+  { id: 'pim',      label: 'Sản phẩm',     icon: 'box',   group: 'Bán hàng',    screen: 'products', perm: 'pmi:read',     order: 10 },
+  { id: 'oms',      label: 'Đơn hàng',     icon: 'cart',  group: 'Bán hàng',    screen: 'orders',   perm: 'oms:read',     order: 20 },
+  { id: 'channel',  label: 'Kênh bán',     icon: 'plug',  group: 'Bán hàng',    screen: 'channels', perm: 'channel:read', order: 30 },
+  { id: 'wms',      label: 'Kho',          icon: 'ware',  group: 'Vận hành',    screen: 'stock',    perm: 'wms:read',     order: 40 },
+  { id: 'scan',     label: 'Máy quét',     icon: 'scan',  group: 'Vận hành',    screen: 'scan',     perm: 'wms:read',     order: 50 },
+  { id: 'invoice',  label: 'Hoá đơn',      icon: 'doc',   group: 'Tài chính',   screen: 'invoices', perm: 'invoice:read', order: 60 },
+  { id: 'settings', label: 'Cấu hình',     icon: 'cog',   group: 'Hệ thống',    screen: 'settings', perm: 'audit:read',   order: 90 }
+];
+
+var GROUPS = ['Bán hàng', 'Vận hành', 'Tài chính', 'Hệ thống'];
+
+/* -------------------------------------------------------------------------
+   Trạng thái ứng dụng
+   ------------------------------------------------------------------------- */
+var S = {
+  role: 'admin',
+  sort: {},
+  seller: 'seller-demo',
+  screen: 'work',
+  density: 'roomy',
+  /* bàn dữ liệu */
+  view: {},          /* screen -> view id */
+  cursor: {},        /* screen -> chỉ số dòng */
+  marked: {},        /* screen -> { id: true } */
+  query: {},         /* screen -> chuỗi tìm */
+  pins: [],
+  peekTab: 'sum',
+  /* trang đối tượng */
+  obj: null,         /* { kind, id, tab } */
+  /* hàng đợi */
+  queue: null,
+  qIndex: 0,
+  qDone: 0,
+  /* máy quét */
+  scanTask: null,
+  scanStep: 0,
+  scanErr: null,
+  scanPicked: []
+};
+
+function can(perm) { return !perm || ROLES[S.role].perms.indexOf(perm) !== -1; }
+function seller() { return SELLERS.filter(function (s) { return s.id === S.seller; })[0]; }
+function moduleOf(screen) { return MODULES.filter(function (m) { return m.screen === screen; })[0]; }
+</script>
+
+<script>
+/* =========================================================================
+   4 · DỮ LIỆU VÀ HỢP ĐỒNG MÀN HÌNH
+   Mỗi module tự khai báo phần của mình vào bốn sổ đăng ký dưới đây.
+   Shell không biết trước module nào tồn tại.
+   ========================================================================= */
+var SCREENS = {};          /* screen id -> hàm dựng HTML */
+var DATASETS = {};         /* screen id -> nguồn dữ liệu cho bàn dữ liệu */
+var OBJECTS = {};          /* kind      -> trang đối tượng, gồm tab do module khác góp */
+var QUEUES = [];           /* hàng đợi việc, do module đóng góp */
+var SCAN_TASKS = [];       /* việc trên máy quét */
+var DRAWERS = {};          /* bảng bên */
+var SETTINGS_GROUPS = [];  /* nhóm cấu hình */
+var COMMANDS = [];         /* lệnh tĩnh cho thanh lệnh */
+
+/* Đăng ký một tab đóng góp vào trang đối tượng của module khác. */
+function contributeTab(kind, tab) {
+  if (!OBJECTS[kind]) return;
+  OBJECTS[kind].tabs.push(tab);
+  OBJECTS[kind].tabs.sort(function (a, b) { return a.order - b.order; });
+}
+
+/* Chỉ mục cho thanh lệnh: đối tượng + hành động + đi tới, gom từ mọi module. */
+function commandIndex() {
+  var out = [];
+  MODULES.forEach(function (m) {
+    if (!can(m.perm)) return;
+    out.push({
+      group: 'Đi tới', module: m.id, label: m.label, hint: m.screen,
+      run: function () { go(m.screen); }
+    });
+  });
+  Object.keys(DATASETS).forEach(function (screen) {
+    var ds = DATASETS[screen];
+    if (!can(ds.perm)) return;
+    ds.rows.slice(0, 8).forEach(function (r) {
+      out.push({
+        group: 'Đối tượng', module: ds.module, label: ds.search(r), hint: ds.search(r),
+        run: function () { openObject(ds.module, ds.kind, r[ds.key]); }
+      });
+    });
+  });
+  QUEUES.forEach(function (q) {
+    if (!can(q.perm)) return;
+    q.items.forEach(function (it) {
+      out.push({
+        group: 'Việc cần làm', module: q.module, label: it.action + ' · ' + it.title, hint: it.sub,
+        run: function () { S.queue = q.id; S.qIndex = q.items.indexOf(it); go('work'); }
+      });
+    });
+  });
+  COMMANDS.forEach(function (c) { if (can(c.perm)) out.push(c); });
+  var rank = { 'Việc cần làm': 0, 'Đối tượng': 1, 'Hành động': 2, 'Đi tới': 3 };
+  return out.sort(function (a, b) { return rank[a.group] - rank[b.group]; });
+}
+
+/* ---------------- bảng bên: chọn gian hàng, đổi vai trò ---------------- */
+DRAWERS.seller = {
+  title: 'Chọn gian hàng',
+  body: function () {
+    return '<p style="font-size:13.5px;color:var(--ink-2);margin:0 0 14px">Đổi gian hàng sẽ huỷ các truy vấn đang chạy và xoá dữ liệu của gian hàng cũ khỏi bộ nhớ tạm trước khi vẽ lại.</p>' +
+      SELLERS.map(function (s) {
+        return '<button class="radio" type="button" data-seller="' + s.id + '" aria-checked="' + (s.id === S.seller) + '" style="width:100%">' +
+          '<span class="dot"></span><span class="txt"><b>' + s.name + '</b><span>' + s.note + '</span></span></button>';
+      }).join('');
+  },
+  acts: '<button class="btn btn-sm btn-cancel" type="button" id="dclose2">Đóng</button>',
+  bind: function () {
+    each(el('drawerbody'), '[data-seller]', function (b) {
+      b.onclick = function () {
+        if (b.dataset.seller === S.seller) { closeDrawer(); return; }
+        var old = seller().name;
+        S.seller = b.dataset.seller;
+        S.cursor = {}; S.marked = {}; S.query = {}; S.pins = []; S.obj = null;
+        closeDrawer(); render();
+        toast('Đang xem ' + seller().name + '. Đã xoá dữ liệu tạm của ' + old + '.');
+      };
+    });
+  }
+};
+
+DRAWERS.role = {
+  title: 'Tài khoản',
+  body: function () {
+    return '<p style="font-size:13.5px;color:var(--ink-2);margin:0 0 14px">Vai trò quyết định màn hình nào hiện trong menu và màn hình nào trả 403 khi gõ thẳng địa chỉ.</p>' +
+      Object.keys(ROLES).map(function (k) {
+        return '<button class="radio" type="button" data-role="' + k + '" aria-checked="' + (k === S.role) + '" style="width:100%">' +
+          '<span class="dot"></span><span class="txt"><b>' + k + '</b><span>' + ROLES[k].perms.join(' · ') + '</span></span></button>';
+      }).join('');
+  },
+  acts: '<button class="btn btn-sm btn-cancel" type="button" id="dclose2">Đóng</button>',
+  bind: function () {
+    each(el('drawerbody'), '[data-role]', function (b) {
+      b.onclick = function () {
+        S.role = b.dataset.role;
+        var m = moduleOf(S.screen);
+        if (m && !can(m.perm)) { S.screen = 'work'; S.obj = null; }
+        closeDrawer(); render();
+      };
+    });
+  }
+};
+
+/* ---------------- cấu hình ---------------- */
+SETTINGS_GROUPS = [
+  { by: 'identity', label: 'Người dùng và vai trò', desc: 'Ai được vào gian hàng này và làm được gì.', toast: 'Người dùng và vai trò · thuộc Identity, phạm vi tenant.' },
+  { by: 'channel', label: 'Kết nối sàn', desc: 'Uỷ quyền shop, ánh xạ danh mục và thuộc tính cho từng sàn.', toast: 'Kết nối sàn · mở danh sách kênh của gian hàng.' },
+  { by: 'invoice', label: 'Hoá đơn điện tử', desc: 'Nhà cung cấp, dải số, ký hiệu, chính sách ánh xạ doanh thu.', toast: 'Hoá đơn điện tử · cấu hình theo tenant và kênh.' },
+  { by: 'wms', label: 'Kho và vị trí', desc: 'Danh sách kho, sơ đồ khu, quy tắc gợi ý vị trí.', toast: 'Kho và vị trí.' },
+  { by: 'oms', label: 'Thanh toán', desc: 'Cổng thanh toán dùng để đối chiếu tiền về.', scope: 'Áp dụng cho mọi gian hàng', scopeKind: 'warning', toast: 'Thanh toán · cấu hình này là toàn hệ thống, không riêng gian hàng.' },
+  { by: 'oms', label: 'Tin nhắn cho khách', desc: 'Kênh gửi SMS và Zalo khi đơn đổi trạng thái.', scope: 'Áp dụng cho mọi gian hàng', scopeKind: 'warning', toast: 'Tin nhắn · cấu hình này là toàn hệ thống, không riêng gian hàng.' }
+];
+</script>
+
+<script>
+/* =========================================================================
+   4a · MODULE OMS — đơn hàng, khách hàng
+   ========================================================================= */
+
+/* Từ vựng trạng thái đơn: mã hệ thống → nhãn tiếng Việt → chip ui-kit.
+   in-progress dành cho đơn đang chạy đúng đường; warning chỉ dành cho đơn
+   cần người can thiệp. */
+var ORDER_STATUS = {
+  DRAFT:                 { label: 'Nháp',                chip: 'neutral' },
+  CONFIRMED:             { label: 'Đã xác nhận',         chip: 'in-progress' },
+  PROCESSING:            { label: 'Đang xử lý',          chip: 'in-progress' },
+  PICKING:               { label: 'Đang lấy hàng',       chip: 'in-progress' },
+  PACKED:                { label: 'Đã đóng gói',         chip: 'in-progress' },
+  SHIPPED:               { label: 'Đang giao',           chip: 'in-progress' },
+  COMPLETED:             { label: 'Hoàn tất',            chip: 'success' },
+  CANCELLATION_PENDING:  { label: 'Huỷ chưa xong ở kho', chip: 'warning' },
+  CANCELLED:             { label: 'Đã huỷ',              chip: 'error' }
+};
+var PAY_STATUS = {
+  PENDING: { label: 'Chưa thu tiền', chip: 'warning' },
+  PAID:    { label: 'Đã thu tiền',   chip: 'success' }
+};
+
+var ORDERS = [
+  { id: '585503416692409354', ch: 'TikTok Shop', chRaw: 'AWAITING_SHIPMENT', chId: '585503416692409354',
+    cus: 'Nguyễn Thị Hà', phone: '0903 xxx 118', addr: '18 ngõ 4 Trần Thái Tông, Q. Cầu Giấy, Hà Nội',
+    goods: 1240000, ship: 30000, st: 'CONFIRMED', pay: 'PAID', at: '12/08 14:22', note: 'Giao giờ hành chính',
+    items: [
+      { name: 'Vợt cầu lông Yonex Astrox 88D Pro', variant: 'Xanh · 4U G5', sku: 'SP-74B108D4-DEFAULT', qty: 1, price: 1240000, avail: 104 },
+      { name: 'Quấn cán vợt Yonex AC102', variant: 'Đen', sku: 'SP-2C77A190-BK', qty: 1, price: 0, avail: 640 }
+    ],
+    ff: [ { no: 'PX-5855-01', wh: 'KHO-HN', st: 'PACKED', carrier: 'GHTK', track: 'S28841102', shipped: '—' } ] },
+
+  { id: '585504991002771845', ch: 'TikTok Shop', chRaw: 'UNPAID', chId: '585504991002771845',
+    cus: 'Đỗ Thu Trang', phone: '0906 xxx 775', addr: '92 Lê Lợi, TP. Huế',
+    goods: 4150000, ship: 35000, st: 'DRAFT', pay: 'PENDING', at: '12/08 15:31', note: '',
+    items: [ { name: 'Giày chạy bộ Asics Gel-Kayano 30', variant: 'Size 42', sku: 'SP-2F19C0A7-42', qty: 1, price: 4150000, avail: 37 } ],
+    ff: [] },
+
+  { id: '241012-SPE-0104', ch: 'Shopee', chRaw: 'READY_TO_SHIP', chId: '241012SPE0104',
+    cus: 'Vũ Đức Kiên', phone: '0935 xxx 118', addr: '55 Lạch Tray, Q. Ngô Quyền, Hải Phòng',
+    goods: 1560000, ship: 28000, st: 'PICKING', pay: 'PAID', at: '12/08 11:05', note: '',
+    items: [
+      { name: 'Vợt cầu lông Yonex Astrox 88D Pro', variant: 'Đỏ · 4U G5', sku: 'SP-74B108D4-RED', qty: 1, price: 1240000, avail: null },
+      { name: 'Bóng đá Động Lực UHV 2.07', variant: 'Size 5', sku: 'SP-90D3E551-STD', qty: 2, price: 160000, avail: 212 }
+    ],
+    ff: [
+      { no: 'PX-5855-02', wh: 'KHO-HN', st: 'PICKING', carrier: 'GHTK', track: '—', shipped: '—' },
+      { no: 'PX-5855-03', wh: 'KHO-HCM', st: 'PACKED', carrier: 'GHTK', track: 'S28841240', shipped: '—' }
+    ] },
+
+  { id: '585501321346450442', ch: 'TikTok Shop', chRaw: 'SHIPPED', chId: '585501321346450442',
+    cus: 'Trần Văn Long', phone: '0912 xxx 447', addr: '210 Nguyễn Văn Linh, Q. Hải Châu, Đà Nẵng',
+    goods: 3290000, ship: 35000, st: 'SHIPPED', pay: 'PAID', at: '12/08 09:10', note: '',
+    items: [ { name: 'Vợt cầu lông Yonex Astrox 88D Pro', variant: 'Xanh · 4U G5', sku: 'SP-74B108D4-DEFAULT', qty: 1, price: 3290000, avail: 104 } ],
+    ff: [ { no: 'PX-5854-11', wh: 'KHO-HN', st: 'SHIPPED', carrier: 'GHTK', track: 'S28840771', shipped: '12/08 16:05' } ] },
+
+  { id: '241012-SPE-0088', ch: 'Shopee', chRaw: 'COMPLETED', chId: '241012SPE0088',
+    cus: 'CT TNHH An Phát', phone: '0977 xxx 201', addr: 'Lô B2 KCN Tân Thuận, Q.7, TP.HCM',
+    goods: 890000, ship: 22000, st: 'COMPLETED', pay: 'PAID', at: '11/08 16:40', note: 'Xuất hoá đơn công ty',
+    items: [ { name: 'Áo bơi Speedo Endurance+', variant: 'Size M', sku: 'SP-11A7B44C-M', qty: 1, price: 890000, avail: 18 } ],
+    ff: [ { no: 'PX-5851-04', wh: 'KHO-HCM', st: 'COMPLETED', carrier: 'GHN', track: 'GHN9920117', shipped: '11/08 18:20' } ] },
+
+  { id: '241012-SPE-0091', ch: 'Shopee', chRaw: 'CANCELLED', chId: '241012SPE0091',
+    cus: 'Lê Minh Chi', phone: '0988 xxx 630', addr: '14 Đồng Khởi, TP. Biên Hoà, Đồng Nai',
+    goods: 520000, ship: 0, st: 'CANCELLED', pay: 'PENDING', at: '11/08 15:02', note: 'Khách đổi ý',
+    items: [ { name: 'Bóng đá Động Lực UHV 2.07', variant: 'Size 5', sku: 'SP-90D3E551-STD', qty: 1, price: 520000, avail: 212 } ],
+    ff: [] },
+
+  { id: '585502774100388219', ch: 'TikTok Shop', chRaw: 'CANCELLED', chId: '585502774100388219',
+    cus: 'Hoàng Anh Tuấn', phone: '0917 xxx 902', addr: '77 Nguyễn Thái Học, TP. Vinh, Nghệ An',
+    goods: 2180000, ship: 30000, st: 'CANCELLATION_PENDING', pay: 'PAID', at: '10/08 19:44', note: '',
+    items: [ { name: 'Giày chạy bộ Asics Gel-Kayano 30', variant: 'Size 41', sku: 'SP-2F19C0A7-41', qty: 1, price: 2180000, avail: 37 } ],
+    ff: [
+      { no: 'PX-5849-02', wh: 'KHO-HN', st: 'CANCELLED', carrier: '—', track: '—', shipped: '—' },
+      { no: 'PX-5849-03', wh: 'KHO-HCM', st: 'PACKED', carrier: 'GHTK', track: 'S28839114', shipped: '—' }
+    ] },
+
+  { id: '241012-SPE-0067', ch: 'Shopee', chRaw: 'RETURN_REQUESTED', chId: '241012SPE0067',
+    cus: 'Nguyễn Bảo Ngọc', phone: '0964 xxx 330', addr: '3 Nguyễn Trãi, Q. Thanh Xuân, Hà Nội',
+    goods: 1120000, ship: 25000, st: 'COMPLETED', pay: 'PAID', at: '10/08 08:12', note: 'Sàn ghi nhận yêu cầu trả hàng',
+    items: [ { name: 'Áo bơi Speedo Endurance+', variant: 'Size L', sku: 'SP-11A7B44C-L', qty: 1, price: 1120000, avail: 18 } ],
+    ff: [ { no: 'PX-5848-01', wh: 'KHO-HN', st: 'COMPLETED', carrier: 'GHN', track: 'GHN9919043', shipped: '10/08 11:40' } ] }
+];
+
+function orderTotal(o) { return o.goods + o.ship; }
+function orderChip(o) { var s = ORDER_STATUS[o.st]; return chip(s.chip, s.label, 'Trạng thái nguyên văn của ' + o.ch + ': ' + o.chRaw); }
+function availText(v) { return v === null ? 'Không rõ' : num(v); }
+
+DATASETS.orders = {
+  module: 'oms', kind: 'oms.order', key: 'id', perm: 'oms:read',
+  group: 'Bán hàng', title: 'Đơn hàng', sub: 'Tất cả kênh',
+  searchHint: 'Tìm mã đơn, tên khách, số điện thoại…',
+  rows: ORDERS,
+  search: function (o) { return o.id + ' · ' + o.cus + ' · ' + o.ch; },
+  sum: function (o) { return orderTotal(o); },
+  views: [
+    { id: 'todo',  label: 'Cần xử lý', f: function (o) { return ['DRAFT', 'CONFIRMED', 'CANCELLATION_PENDING'].indexOf(o.st) !== -1; } },
+    { id: 'all',   label: 'Tất cả',    f: function () { return true; } },
+    { id: 'ship',  label: 'Đang giao', f: function (o) { return ['PICKING', 'PACKED', 'SHIPPED'].indexOf(o.st) !== -1; } },
+    { id: 'unpaid',label: 'Chưa thu tiền', f: function (o) { return o.pay === 'PENDING' && o.st !== 'CANCELLED'; } },
+    { id: 'tiktok',label: 'Kênh TikTok', f: function (o) { return o.ch === 'TikTok Shop'; } }
+  ],
+  filters: [
+    { label: 'Khoảng ngày', toast: 'Khoảng ngày · chọn từ ngày đến ngày, mặc định 30 ngày gần nhất.' },
+    { label: 'Kênh bán', toast: 'Kênh bán · lọc theo TikTok Shop, Shopee, hoặc đơn tạo tay.' },
+    { label: 'Trạng thái', toast: 'Trạng thái · chọn nhiều giá trị cùng lúc.' }
+  ],
+  headActions: '<button class="btn btn-sm btn-cancel" type="button" data-toast="Đang xuất ' +
+    'danh sách theo đúng bộ lọc hiện tại ra tệp Excel.">Xuất Excel</button>' +
+    '<button class="btn btn-md btn-primary" type="button" data-toast="Mở trình tự lập đơn: chọn khách → chọn kênh → thêm sản phẩm → lưu nháp.">Lập đơn</button>',
+  bulkActions: [
+    { label: 'Xác nhận giao', toast: 'Đã xác nhận giao các đơn đang chọn.' },
+    { label: 'In phiếu giao', toast: 'Đã gửi lệnh in phiếu giao cho các đơn đang chọn.' },
+    { label: 'Xuất Excel', toast: 'Đã xuất các đơn đang chọn.' }
+  ],
+  emptyTitle: 'Không có đơn nào khớp',
+  emptyBody: 'Không có đơn nào thoả bộ lọc hiện tại. Thử bỏ bớt điều kiện hoặc chuyển sang view "Tất cả".',
+  emptyAction: '<button class="btn btn-sm btn-secondary" type="button" data-view="all">Xem tất cả đơn</button>',
+  cols: [
+    { label: 'Mã đơn', mono: true, cell: function (o) { return o.id; } },
+    { label: 'Khách hàng', cell: function (o) { return '<b>' + o.cus + '</b><span class="second">' + o.phone + '</span>'; } },
+    { label: 'Kênh', cell: function (o) { return o.ch; } },
+    { label: 'Giá trị', num: true, cell: function (o) { return '<b>' + vnd(orderTotal(o)) + '</b>'; } },
+    { label: 'Thanh toán', cell: function (o) { return chip(PAY_STATUS[o.pay].chip, PAY_STATUS[o.pay].label); } },
+    { label: 'Trạng thái', cell: function (o) { return orderChip(o); } },
+    { label: 'Tạo lúc', cell: function (o) { return o.at; } }
+  ]
+};
+
+OBJECTS['oms.order'] = {
+  title: function (o) { return o.id; },
+  sub: function (o) { return o.cus + ' · ' + o.phone + ' · đặt ' + o.at; },
+  chips: function (o) {
+    return orderChip(o) + chip(PAY_STATUS[o.pay].chip, PAY_STATUS[o.pay].label) +
+      chip('neutral', o.ch, 'Mã đơn nguyên văn của sàn: ' + o.chId);
+  },
+  actions: function (o) {
+    if (o.st === 'DRAFT') {
+      return '<button class="btn btn-md btn-primary" type="button" data-confirm="Duyệt đơn và giữ hàng?|' +
+        'Kho sẽ giữ hàng cho đơn này và tạo phiếu xuất. Không có nút hoàn tác — muốn dừng thì phải huỷ đơn.|' +
+        'Duyệt và giữ hàng|Đã duyệt đơn và giữ hàng ở kho.">Duyệt đơn</button>';
+    }
+    if (o.st === 'CANCELLATION_PENDING') {
+      return '<button class="btn btn-md btn-primary" type="button" data-toast="Đang gọi lại kho để huỷ nốt phiếu còn treo.">Huỷ nốt ở kho</button>';
+    }
+    if (o.st === 'SHIPPED') {
+      return '<button class="btn btn-md btn-primary" type="button" data-toast="Đã đóng đơn ' + o.id + '.">Đóng đơn</button>';
+    }
+    return '<button class="btn btn-sm btn-cancel" type="button" data-toast="Đã gửi lệnh in phiếu giao.">In phiếu giao</button>';
+  },
+  tabs: [
+    { id: 'sum',   label: 'Tổng quan', by: 'oms',     order: 10, perm: 'oms:read' },
+    { id: 'items', label: 'Hàng hoá',  by: 'oms',     order: 20, perm: 'oms:read' }
+  ],
+  panel: function (tab, o, compact) {
+    if (tab === 'sum') {
+      var money = '<div class="card"><h3>Tiền</h3>' +
+        lrow('Tiền hàng', vnd(o.goods)) + lrow('Phí giao hàng', vnd(o.ship)) +
+        '<div class="total"><span>Khách trả</span><span class="r">' + vnd(orderTotal(o)) + '</span></div></div>';
+      var info = '<div class="card"><h3>Giao hàng</h3>' + dl([
+        ['Người nhận', o.cus], ['Điện thoại', o.phone], ['Địa chỉ', o.addr],
+        ['Kênh bán', o.ch], ['Ghi chú', o.note || '—']
+      ]) + '</div>';
+      if (compact) return info + money;
+      return '<div class="grid2"><div>' + info + money + '</div><div>' +
+        '<div class="card"><h3>Lộ trình</h3><div class="tl">' + orderTimeline(o) + '</div></div></div></div>';
+    }
+    if (tab === 'items') {
+      return '<div class="card"><h3>Hàng hoá</h3>' +
+        o.items.map(function (i) {
+          return lrow(i.name, i.qty + ' × ' + vnd(i.price),
+            '<span class="second">' + i.variant + ' · ' + i.sku + ' · còn ' + availText(i.avail) + '</span>');
+        }).join('') +
+        '<div class="total"><span>Tiền hàng</span><span class="r">' + vnd(o.goods) + '</span></div></div>';
+    }
+    return '';
+  }
+};
+
+function orderTimeline(o) {
+  var order = ['DRAFT', 'CONFIRMED', 'PROCESSING', 'PICKING', 'PACKED', 'SHIPPED', 'COMPLETED'];
+  var at = order.indexOf(o.st);
+  if (o.st === 'CANCELLED') {
+    return tlEvent('', 'Đã huỷ', o.at + ' · ' + (o.note || 'huỷ từ ' + o.ch)) + tlEvent('past', 'Tạo từ ' + o.ch, o.at);
+  }
+  if (o.st === 'CANCELLATION_PENDING') {
+    return tlEvent('', 'Huỷ chưa xong ở kho', 'Phiếu PX-5849-03 tại KHO-HCM chưa huỷ được') +
+      tlEvent('past', 'Đã huỷ phiếu KHO-HN', '10/08 20:02') + tlEvent('past', 'Yêu cầu huỷ đơn', '10/08 20:01');
+  }
+  var out = '';
+  if (at < order.length - 1) out += tlEvent('next', ORDER_STATUS[order[at + 1]].label, 'bước kế tiếp');
+  for (var i = at; i >= 0; i--) {
+    out += tlEvent(i === at ? '' : 'past', ORDER_STATUS[order[i]].label, i === at ? 'hiện tại · ' + o.at : '');
+  }
+  return out;
+}
+
+/* ---------------- hàng đợi của OMS ---------------- */
+QUEUES.push({
+  id: 'oms-draft', label: 'Đơn chờ duyệt', module: 'oms', perm: 'oms:read', color: '#005eb8',
+  items: [
+    {
+      title: 'Đơn 585504991002771845', sub: 'Đỗ Thu Trang · TP. Huế · ' + vnd(4185000),
+      age: '3 giờ', urgent: true,
+      why: '<b>Vì sao việc này ở đây:</b> đơn về từ TikTok Shop 3 giờ trước và vẫn chưa thanh toán. Kho đang giữ 1 đôi Asics Gel-Kayano 30 cho đơn này; nếu sàn huỷ, hàng phải được trả lại tồn bán.',
+      facts: [['Kênh bán', 'TikTok Shop'], ['Trạng thái sàn', 'UNPAID'], ['Tiền hàng', vnd(4150000)],
+              ['Phí giao', vnd(35000)], ['Tồn đang giữ', '1 · SP-2F19C0A7-42'], ['Còn khả dụng', '37']],
+      linesTitle: 'Hàng hoá',
+      lines: [['Giày chạy bộ Asics Gel-Kayano 30 · Size 42', '1 × ' + vnd(4150000)]],
+      links: [{ label: 'Đơn hàng', module: 'oms', kind: 'oms.order', id: '585504991002771845' }],
+      timeline: [['', 'Chưa thanh toán', '12/08 15:31 · webhook TikTok'], ['past', 'Tạo từ sàn', '12/08 15:31']],
+      action: 'Giữ hàng thêm 24 giờ', action2: 'Bỏ giữ hàng'
+    }
+  ]
+});
+
+QUEUES.push({
+  id: 'oms-stuck', label: 'Đơn huỷ chưa xong', module: 'oms', perm: 'oms:read', color: '#c62828',
+  items: [
+    {
+      title: 'Đơn 585502774100388219', sub: 'Hoàng Anh Tuấn · TP. Vinh · đã thu ' + vnd(2210000),
+      age: '2 ngày', urgent: true,
+      why: '<b>Vì sao việc này ở đây:</b> lệnh huỷ đơn chạy được ở KHO-HN nhưng thất bại ở KHO-HCM, nên đơn treo giữa chừng. Đây <b>không phải</b> yêu cầu huỷ của khách — khách đã trả tiền và tiền vẫn đang giữ.',
+      facts: [['Kênh bán', 'TikTok Shop'], ['Đã thu của khách', vnd(2210000)],
+              ['Phiếu đã huỷ', 'PX-5849-02 · KHO-HN'], ['Phiếu còn treo', 'PX-5849-03 · KHO-HCM'],
+              ['Trạng thái phiếu treo', 'Đã đóng gói'], ['Số lần thử huỷ', '3']],
+      linesTitle: 'Phiếu kho',
+      lines: [['PX-5849-02 · KHO-HN', 'đã huỷ'], ['PX-5849-03 · KHO-HCM', 'đã đóng gói, chưa huỷ']],
+      links: [{ label: 'Đơn hàng', module: 'oms', kind: 'oms.order', id: '585502774100388219' }],
+      timeline: [['', 'Huỷ thất bại lần 3', '11/08 09:14'], ['past', 'Huỷ thất bại lần 2', '10/08 22:30'], ['past', 'Yêu cầu huỷ đơn', '10/08 20:01']],
+      action: 'Gọi lại kho để huỷ nốt', action2: 'Chuyển cho quản lý kho'
+    }
+  ]
+});
+</script>
+
+<script>
+/* =========================================================================
+   4b · MODULE PIM — sản phẩm, biến thể, danh mục
+   ========================================================================= */
+
+var PRODUCT_STATUS = {
+  Published:      { label: 'Đang bán',  chip: 'success' },
+  Draft:          { label: 'Nháp',      chip: 'neutral' },
+  'Out of Stock': { label: 'Hết hàng',  chip: 'warning' },
+  Banned:         { label: 'Bị khoá',   chip: 'error' }
+};
+
+var PRODUCTS = [
+  { sku: 'SP-74B108D4', name: 'Vợt cầu lông Yonex Astrox 88D Pro', cat: 'Cầu lông > Vợt', family: 'Vợt cầu lông',
+    st: 'Published', price: [1240000, 3290000], weight: 88, ready: 100, avail: 104,
+    variants: [
+      { t1: 'Xanh', t2: '4U G5', sku: 'SP-74B108D4-DEFAULT', barcode: '4550086123456', price: 3290000 },
+      { t1: 'Đỏ',   t2: '4U G5', sku: 'SP-74B108D4-RED',     barcode: '4550086123463', price: 3290000 }
+    ],
+    listings: [ { ch: 'TikTok Shop', st: 'linked', ext: '1737006632793573005' }, { ch: 'Shopee', st: 'linked', ext: '22841003117' } ],
+    missing: [] },
+
+  { sku: 'SP-2F19C0A7', name: 'Giày chạy bộ Asics Gel-Kayano 30', cat: 'Chạy bộ > Giày', family: 'Giày thể thao',
+    st: 'Published', price: [4150000, 4150000], weight: 310, ready: 100, avail: 37,
+    variants: [
+      { t1: 'Size 41', t2: '', sku: 'SP-2F19C0A7-41', barcode: '4550086900411', price: 4150000 },
+      { t1: 'Size 42', t2: '', sku: 'SP-2F19C0A7-42', barcode: '4550086900428', price: 4150000 }
+    ],
+    listings: [ { ch: 'TikTok Shop', st: 'linked', ext: '1737005649955751565' }, { ch: 'Shopee', st: 'none', ext: '' } ],
+    missing: [] },
+
+  { sku: 'SP-90D3E551', name: 'Bóng đá Động Lực UHV 2.07', cat: 'Bóng đá > Bóng', family: 'Bóng thể thao',
+    st: 'Draft', price: [520000, 520000], weight: 430, ready: 62, avail: 212,
+    variants: [ { t1: 'Size 5', t2: '', sku: 'SP-90D3E551-STD', barcode: '', price: 520000 } ],
+    listings: [ { ch: 'TikTok Shop', st: 'error', ext: '' } ],
+    missing: ['Ảnh bìa', 'Mã vạch của biến thể Size 5', 'Thuộc tính bắt buộc: Chất liệu'] },
+
+  { sku: 'SP-11A7B44C', name: 'Áo bơi Speedo Endurance+', cat: 'Bơi lội > Trang phục', family: 'Trang phục thể thao',
+    st: 'Published', price: [890000, 1120000], weight: 120, ready: 88, avail: 18,
+    variants: [
+      { t1: 'Đen', t2: 'M', sku: 'SP-11A7B44C-M', barcode: '5053744118901', price: 890000 },
+      { t1: 'Đen', t2: 'L', sku: 'SP-11A7B44C-L', barcode: '5053744118918', price: 1120000 }
+    ],
+    listings: [ { ch: 'Shopee', st: 'linked', ext: '22840977402' } ],
+    missing: ['Mô tả dài dưới 10 ký tự'] },
+
+  { sku: 'SP-2C77A190', name: 'Quấn cán vợt Yonex AC102', cat: 'Cầu lông > Phụ kiện', family: 'Phụ kiện thể thao',
+    st: 'Published', price: [45000, 45000], weight: 12, ready: 100, avail: 640,
+    variants: [ { t1: 'Đen', t2: '', sku: 'SP-2C77A190-BK', barcode: '4550086771029', price: 45000 } ],
+    listings: [ { ch: 'TikTok Shop', st: 'linked', ext: '1737004112900771020' }, { ch: 'Shopee', st: 'linked', ext: '22840551190' } ],
+    missing: [] },
+
+  { sku: 'SP-55C2B901', name: 'Găng tay thủ môn Adidas Predator', cat: 'Bóng đá > Phụ kiện', family: 'Phụ kiện thể thao',
+    st: 'Draft', price: [0, 0], weight: 0, ready: 34, avail: null,
+    variants: [ { t1: 'Size 9', t2: '', sku: '', barcode: '', price: 0 } ],
+    listings: [],
+    missing: ['Ảnh bìa', 'Cân nặng', 'Giá bán của biến thể Size 9', 'Mã SKU của biến thể Size 9'] }
+];
+
+function priceRange(p) {
+  return p.price[0] === p.price[1] ? vnd(p.price[0]) : vnd(p.price[0]) + ' – ' + vnd(p.price[1]);
+}
+function readyChip(p) {
+  if (p.ready === 100) return chip('success', 'Đủ dữ liệu');
+  if (p.ready >= 80) return chip('warning', 'Thiếu ' + p.missing.length + ' mục');
+  return chip('error', 'Thiếu ' + p.missing.length + ' mục');
+}
+
+DATASETS.products = {
+  module: 'pim', kind: 'pim.product', key: 'sku', perm: 'pmi:read',
+  group: 'Bán hàng', title: 'Sản phẩm', sub: 'Danh mục hàng của gian hàng',
+  searchHint: 'Tìm tên sản phẩm, SKU cha, SKU biến thể…',
+  rows: PRODUCTS,
+  search: function (p) { return p.sku + ' · ' + p.name; },
+  sum: function (p) { return p.price[1]; },
+  views: [
+    { id: 'all',     label: 'Tất cả',        f: function () { return true; } },
+    { id: 'selling', label: 'Đang bán',      f: function (p) { return p.st === 'Published'; } },
+    { id: 'draft',   label: 'Nháp',          f: function (p) { return p.st === 'Draft'; } },
+    { id: 'gap',     label: 'Thiếu dữ liệu', f: function (p) { return p.missing.length > 0; } },
+    { id: 'unlisted',label: 'Chưa lên sàn',  f: function (p) { return !p.listings.some(function (l) { return l.st === 'linked'; }); } }
+  ],
+  filters: [
+    { label: 'Ngành hàng', toast: 'Ngành hàng · lọc theo cây danh mục.' },
+    { label: 'Kênh bán', toast: 'Kênh bán · lọc sản phẩm theo sàn đang niêm yết.' }
+  ],
+  headActions: '<button class="btn btn-sm btn-cancel" type="button" data-toast="Nhập từ sàn: chọn shop đã uỷ quyền, chọn danh mục đích, rồi kéo listing về.">Nhập từ sàn</button>' +
+    '<button class="btn btn-md btn-primary" type="button" data-toast="Mở trình tự tạo sản phẩm: thông tin cơ bản → phân loại → giá → ảnh → thuộc tính → kênh bán.">Thêm sản phẩm</button>',
+  bulkActions: [
+    { label: 'Đẩy lên sàn', toast: 'Đã mở bước soát trước khi đẩy cho các sản phẩm đang chọn.' },
+    { label: 'Đổi ngành hàng', toast: 'Đã mở hộp chọn ngành hàng mới.' },
+    { label: 'Xuất Excel', toast: 'Đã xuất các sản phẩm đang chọn.' }
+  ],
+  emptyTitle: 'Chưa có sản phẩm nào ở đây',
+  emptyBody: 'Không có sản phẩm nào thoả bộ lọc. Bạn có thể tạo mới, hoặc kéo sản phẩm có sẵn từ sàn về.',
+  emptyAction: '<button class="btn btn-sm btn-secondary" type="button" data-toast="Mở nhập từ sàn.">Nhập từ sàn</button>',
+  cols: [
+    { label: 'SKU cha', mono: true, cell: function (p) { return p.sku; } },
+    { label: 'Tên sản phẩm', cell: function (p) {
+        return '<b>' + p.name + '</b><span class="second">' + p.cat + '</span>'; } },
+    { label: 'Phân loại', num: true, cell: function (p) { return p.variants.length; } },
+    { label: 'Giá bán', num: true, cell: function (p) { return priceRange(p); } },
+    { label: 'Khả dụng', num: true, cell: function (p) { return availText(p.avail); } },
+    { label: 'Dữ liệu', cell: function (p) { return readyChip(p); } },
+    { label: 'Trạng thái', cell: function (p) { return chip(PRODUCT_STATUS[p.st].chip, PRODUCT_STATUS[p.st].label); } }
+  ]
+};
+
+OBJECTS['pim.product'] = {
+  title: function (p) { return p.name; },
+  sub: function (p) { return p.sku + ' · ' + p.cat + ' · họ thuộc tính ' + p.family; },
+  chips: function (p) {
+    return chip(PRODUCT_STATUS[p.st].chip, PRODUCT_STATUS[p.st].label) + readyChip(p) +
+      p.listings.map(function (l) {
+        if (l.st === 'linked') return chip('success', l.ch, 'Mã trên sàn: ' + l.ext);
+        if (l.st === 'error') return chip('error', l.ch + ' · lỗi đăng');
+        return chip('neutral', l.ch + ' · chưa đăng');
+      }).join('');
+  },
+  actions: function (p) {
+    return '<button class="btn btn-sm btn-cancel" type="button" data-toast="Mở trình soạn sản phẩm.">Sửa</button>' +
+      '<button class="btn btn-md btn-primary" type="button" data-toast="Đã mở bước soát trước khi đẩy ' + p.sku + ' lên sàn.">Đẩy lên sàn</button>';
+  },
+  tabs: [
+    { id: 'sum',      label: 'Tổng quan',  by: 'pim', order: 10, perm: 'pmi:read' },
+    { id: 'variants', label: 'Phân loại',  by: 'pim', order: 20, perm: 'pmi:read' }
+  ],
+  panel: function (tab, p, compact) {
+    if (tab === 'sum') {
+      var info = '<div class="card"><h3>Thông tin</h3>' + dl([
+        ['SKU cha', p.sku], ['Ngành hàng', p.cat], ['Họ thuộc tính', p.family],
+        ['Cân nặng', p.weight ? num(p.weight) + ' g' : '—'], ['Số phân loại', p.variants.length],
+        ['Giá bán', priceRange(p)]
+      ]) + '</div>';
+      var gap = '<div class="card"><h3>Mức đủ dữ liệu · ' + p.ready + '%</h3>' +
+        '<div class="qbar" style="margin:0 0 12px"><i style="width:' + p.ready + '%;background:' +
+        (p.ready === 100 ? 'var(--success)' : (p.ready >= 80 ? 'var(--warning)' : 'var(--error)')) + '"></i></div>' +
+        (p.missing.length
+          ? p.missing.map(function (m) { return lrow(m, chip('warning', 'còn thiếu')); }).join('')
+          : '<div style="font-size:13.5px;color:var(--ink-2)">Hồ sơ đủ điều kiện đẩy lên mọi sàn đang nối.</div>') +
+        '</div>';
+      if (compact) return info + gap;
+      return '<div class="grid2"><div>' + info + gap + '</div><div>' +
+        '<div class="card"><h3>Kênh bán</h3>' +
+        (p.listings.length
+          ? p.listings.map(function (l) {
+              return lrow(l.ch, l.st === 'linked' ? chip('success', 'Đã liên kết') :
+                (l.st === 'error' ? chip('error', 'Lỗi đăng') : chip('neutral', 'Chưa đăng')),
+                l.ext ? '<span class="second">Mã trên sàn ' + l.ext + '</span>' : '');
+            }).join('')
+          : '<div style="font-size:13.5px;color:var(--ink-2)">Chưa niêm yết trên sàn nào.</div>') +
+        '</div>' +
+        '<div class="card"><h3>Tồn kho</h3>' + dl([['Khả dụng', availText(p.avail)]]) +
+        '<div style="font-size:12px;color:var(--muted);margin-top:10px">Số do Kho cung cấp. "Không rõ" nghĩa là kho chưa trả lời, không phải bằng không.</div></div>' +
+        '</div></div>';
+    }
+    if (tab === 'variants') {
+      return '<div class="card"><h3>Phân loại hàng</h3>' +
+        p.variants.map(function (v) {
+          var name = v.t1 + (v.t2 ? ' · ' + v.t2 : '');
+          var warn = (!v.sku ? ' ' + chip('error', 'thiếu SKU') : '') + (!v.barcode ? ' ' + chip('warning', 'thiếu mã vạch') : '');
+          return lrow(name + warn, v.price ? vnd(v.price) : chip('error', 'chưa có giá'),
+            '<span class="second">' + (v.sku || 'chưa có SKU') + (v.barcode ? ' · ' + v.barcode : '') + '</span>');
+        }).join('') + '</div>';
+    }
+    return '';
+  }
+};
+
+QUEUES.push({
+  id: 'pim-gap', label: 'Sản phẩm thiếu dữ liệu', module: 'pim', perm: 'pmi:read', color: '#ef6c00',
+  items: [
+    {
+      title: 'Găng tay thủ môn Adidas Predator', sub: 'SP-55C2B901 · nháp · thiếu 4 mục',
+      age: '4 ngày', urgent: false,
+      why: '<b>Vì sao việc này ở đây:</b> hồ sơ mới đạt 34%. Sản phẩm chưa có giá và chưa có mã SKU cho phân loại, nên không đẩy lên sàn nào được và cũng không bán được ở cửa hàng.',
+      facts: [['SKU cha', 'SP-55C2B901'], ['Ngành hàng', 'Bóng đá > Phụ kiện'],
+              ['Họ thuộc tính', 'Phụ kiện thể thao'], ['Số phân loại', '1'], ['Mức đủ dữ liệu', '34%']],
+      linesTitle: 'Còn thiếu',
+      lines: [['Ảnh bìa', 'bắt buộc'], ['Cân nặng', 'bắt buộc'], ['Giá bán của Size 9', 'bắt buộc'], ['Mã SKU của Size 9', 'bắt buộc']],
+      links: [{ label: 'Sản phẩm', module: 'pim', kind: 'pim.product', id: 'SP-55C2B901' }],
+      action: 'Mở và bổ sung', action2: 'Chuyển cho người khác'
+    },
+    {
+      title: 'Bóng đá Động Lực UHV 2.07', sub: 'SP-90D3E551 · thiếu thuộc tính bắt buộc của ngành hàng',
+      age: '2 giờ', urgent: true,
+      why: '<b>Vì sao việc này ở đây:</b> TikTok Shop từ chối đăng vì thiếu thuộc tính bắt buộc <b>Chất liệu</b>. Sản phẩm đang không bán được trên kênh này; ba lần đẩy gần nhất đều trả cùng một lỗi.',
+      facts: [['SKU cha', 'SP-90D3E551'], ['Kênh', 'TikTok Shop'], ['Mã lỗi sàn', '36004'],
+              ['Số lần thử', '3'], ['Lần thử gần nhất', '13:40'], ['Ngành hàng trên sàn', 'Thể thao > Bóng đá']],
+      linesTitle: 'Thuộc tính sàn đòi',
+      lines: [['Chất liệu', 'chưa có'], ['Kích cỡ chuẩn', 'chưa có']],
+      links: [{ label: 'Sản phẩm', module: 'pim', kind: 'pim.product', id: 'SP-90D3E551' }],
+      timeline: [['', 'Đẩy lỗi lần 3', '12/08 13:40 · mã 36004'], ['past', 'Đẩy lỗi lần 2', '12/08 10:12'], ['past', 'Đẩy lỗi lần 1', '11/08 17:55']],
+      action: 'Bổ sung thuộc tính', action2: 'Bỏ đăng kênh này'
+    }
+  ]
+});
+</script>
+
+<script>
+/* =========================================================================
+   4c · MODULE WMS — tồn kho, phiếu kho, máy quét
+   ========================================================================= */
+
+var FF_STATUS = {
+  PENDING:   { label: 'Chờ nhặt',      chip: 'neutral' },
+  PICKING:   { label: 'Đang nhặt',     chip: 'in-progress' },
+  PICKED:    { label: 'Đã nhặt xong',  chip: 'warning' },
+  PACKING:   { label: 'Đang đóng gói', chip: 'in-progress' },
+  PACKED:    { label: 'Đã đóng gói',   chip: 'warning' },
+  SHIPPED:   { label: 'Đã xuất kho',   chip: 'success' },
+  CANCELLED: { label: 'Đã huỷ',        chip: 'error' }
+};
+var INBOUND_STATUS = {
+  PENDING:   { label: 'Chờ nhận',      chip: 'neutral' },
+  RECEIVING: { label: 'Đang nhận',     chip: 'in-progress' },
+  COMPLETED: { label: 'Đã nhập kho',   chip: 'success' },
+  CANCELLED: { label: 'Đã huỷ',        chip: 'error' }
+};
+
+var STOCK = [
+  { sku: 'SP-74B108D4-DEFAULT', name: 'Vợt cầu lông Yonex Astrox 88D Pro · Xanh 4U G5', loc: 'A-01-03', wh: 'KHO-HN', onhand: 110, reserved: 6, upd: '12/08 · Điều chỉnh +3' },
+  { sku: 'SP-74B108D4-RED', name: 'Vợt cầu lông Yonex Astrox 88D Pro · Đỏ 4U G5', loc: 'A-01-04', wh: 'KHO-HN', onhand: 22, reserved: 1, upd: '11/08 · Nhập kho' },
+  { sku: 'SP-2F19C0A7-42', name: 'Giày chạy bộ Asics Gel-Kayano 30 · Size 42', loc: 'A-02-11', wh: 'KHO-HN', onhand: 39, reserved: 2, upd: '11/08 · Nhập kho' },
+  { sku: 'SP-2F19C0A7-41', name: 'Giày chạy bộ Asics Gel-Kayano 30 · Size 41', loc: 'A-02-10', wh: 'KHO-HN', onhand: 14, reserved: 1, upd: '10/08 · Nhặt hàng −1' },
+  { sku: 'SP-90D3E551-STD', name: 'Bóng đá Động Lực UHV 2.07 · Size 5', loc: 'B-04-02', wh: 'KHO-HCM', onhand: 212, reserved: 0, upd: '10/08 · Nhập kho' },
+  { sku: 'SP-11A7B44C-M', name: 'Áo bơi Speedo Endurance+ · Đen M', loc: 'B-02-07', wh: 'KHO-HCM', onhand: 19, reserved: 1, upd: '09/08 · Nhặt hàng −2' },
+  { sku: 'SP-2C77A190-BK', name: 'Quấn cán vợt Yonex AC102 · Đen', loc: 'A-05-01', wh: 'KHO-HN', onhand: 640, reserved: 0, upd: '05/08 · Nhập kho' }
+];
+function avail(s) { return s.onhand - s.reserved; }
+
+DATASETS.stock = {
+  module: 'wms', kind: 'wms.stock', key: 'sku', perm: 'wms:read',
+  group: 'Vận hành', title: 'Tồn kho', sub: 'Theo mã hàng và vị trí',
+  searchHint: 'Tìm mã SKU, tên hàng, vị trí…',
+  rows: STOCK,
+  search: function (s) { return s.sku + ' · ' + s.name + ' · ' + s.loc; },
+  sum: function (s) { return avail(s); },
+  sumFmt: function (t) { return num(t) + ' đơn vị khả dụng'; },
+  views: [
+    { id: 'all',      label: 'Tất cả',       f: function () { return true; } },
+    { id: 'reserved', label: 'Đang giữ hàng', f: function (s) { return s.reserved > 0; } },
+    { id: 'low',      label: 'Còn ít',        f: function (s) { return avail(s) < 25; } },
+    { id: 'hn',       label: 'KHO-HN',        f: function (s) { return s.wh === 'KHO-HN'; } }
+  ],
+  filters: [
+    { label: 'Kho', toast: 'Kho · lọc theo KHO-HN hoặc KHO-HCM.' },
+    { label: 'Khu', toast: 'Khu · lọc theo khu và dãy kệ.' }
+  ],
+  headActions: '<button class="btn btn-sm btn-cancel" type="button" data-toast="Chuyển vị trí: chọn hàng, chọn vị trí đích, ghi lý do.">Chuyển vị trí</button>' +
+    '<button class="btn btn-md btn-primary" type="button" data-drawer="adjust">Điều chỉnh tồn</button>',
+  bulkActions: [
+    { label: 'Chuyển vị trí', toast: 'Đã mở phiếu chuyển vị trí cho các dòng đang chọn.' },
+    { label: 'In nhãn kệ', toast: 'Đã gửi lệnh in nhãn kệ.' }
+  ],
+  emptyTitle: 'Không có dòng tồn nào khớp',
+  emptyBody: 'Không tìm thấy mã hàng nào theo bộ lọc hiện tại.',
+  emptyAction: '<button class="btn btn-sm btn-secondary" type="button" data-view="all">Xem tất cả</button>',
+  cols: [
+    { label: 'Mã SKU', mono: true, cell: function (s) { return s.sku; } },
+    { label: 'Tên hàng', cell: function (s) { return '<b>' + s.name + '</b>'; } },
+    { label: 'Vị trí', mono: true, cell: function (s) { return s.loc + '<span class="second">' + s.wh + '</span>'; } },
+    { label: 'Khả dụng', num: true, cell: function (s) {
+        var a = avail(s);
+        return '<b>' + num(a) + '</b>' + (a < 25 ? ' ' + chip('warning', 'ít', 'Dưới 25 đơn vị') : ''); } },
+    { label: 'Đang giữ', num: true, cell: function (s) { return s.reserved ? num(s.reserved) : '—'; } },
+    { label: 'Thực có', num: true, cell: function (s) { return num(s.onhand); } },
+    { label: 'Cập nhật', cell: function (s) { return s.upd; } }
+  ]
+};
+
+OBJECTS['wms.stock'] = {
+  title: function (s) { return s.sku; },
+  sub: function (s) { return s.name; },
+  chips: function (s) {
+    return chip('neutral', s.loc + ' · ' + s.wh) +
+      (s.reserved ? chip('warning', 'Đang giữ ' + s.reserved) : chip('success', 'Không giữ hàng'));
+  },
+  actions: function () {
+    return '<button class="btn btn-sm btn-cancel" type="button" data-toast="Mở phiếu chuyển vị trí.">Chuyển vị trí</button>' +
+      '<button class="btn btn-md btn-primary" type="button" data-drawer="adjust">Điều chỉnh tồn</button>';
+  },
+  tabs: [ { id: 'sum', label: 'Tổng quan', by: 'wms', order: 10, perm: 'wms:read' } ],
+  panel: function (tab, s, compact) {
+    var box = '<div class="card"><h3>Số lượng</h3>' +
+      lrow('<b>Khả dụng</b> — bán được ngay', '<b style="font-size:17px">' + num(avail(s)) + '</b>') +
+      lrow('Đang giữ cho đơn đã duyệt', num(s.reserved)) +
+      lrow('Thực có trong kho', num(s.onhand)) +
+      '</div>';
+    var meta = '<div class="card"><h3>Vị trí</h3>' + dl([
+      ['Kho', s.wh], ['Vị trí', s.loc], ['Cập nhật gần nhất', s.upd]
+    ]) + '</div>';
+    if (compact) return box + meta;
+    return '<div class="grid2"><div>' + box + meta + '</div><div>' +
+      '<div class="card"><h3>Đơn đang giữ hàng này</h3>' +
+      (s.reserved
+        ? lrow('585503416692409354 · Nguyễn Thị Hà', chip('in-progress', 'Đang lấy hàng'))
+        : '<div style="font-size:13.5px;color:var(--ink-2)">Không có đơn nào đang giữ.</div>') +
+      '</div></div></div>';
+  }
+};
+
+/* ---------------- bảng bên: điều chỉnh tồn ---------------- */
+DRAWERS.adjust = {
+  title: 'Điều chỉnh tồn kho',
+  body: function () {
+    return '<p style="font-size:13.5px;color:var(--ink-2);margin:0 0 16px">Điều chỉnh ghi thẳng vào sổ tồn kho và không hoàn tác được. Mọi dòng điều chỉnh đều lưu người thực hiện và lý do.</p>' +
+      '<div class="card" style="margin-bottom:14px"><h3>Mã hàng</h3>' +
+      dl([['SKU', 'SP-74B108D4-DEFAULT'], ['Vị trí', 'A-01-03 · KHO-HN'], ['Thực có hiện tại', '110'], ['Đang giữ', '6']]) + '</div>' +
+      '<label style="display:block;font-size:13px;color:var(--muted);margin-bottom:6px">Số lượng lệch</label>' +
+      '<input style="width:100%;border:1px solid var(--line-light);border-radius:8px;padding:11px 12px;font:inherit;font-family:var(--mono);font-size:16px" placeholder="ví dụ +3 hoặc −2">' +
+      '<label style="display:block;font-size:13px;color:var(--muted);margin:14px 0 6px">Lý do <span style="color:var(--error)">*</span></label>' +
+      '<div>' + ['Kiểm kê định kỳ', 'Hàng hỏng, huỷ bỏ', 'Sửa sai lệch nhập liệu', 'Hàng thất lạc'].map(function (r, i) {
+        return '<button class="radio" type="button" aria-checked="' + (i === 0) + '" style="width:100%"><span class="dot"></span><span class="txt"><b>' + r + '</b></span></button>';
+      }).join('') + '</div>' +
+      '<label style="display:block;font-size:13px;color:var(--muted);margin:6px 0 6px">Ghi chú thêm</label>' +
+      '<input style="width:100%;border:1px solid var(--line-light);border-radius:8px;padding:11px 12px;font:inherit" placeholder="Số phiếu kiểm kê, người chứng kiến…">';
+  },
+  acts: '<button class="btn btn-sm btn-cancel" type="button" id="dclose2">Huỷ</button>' +
+    '<button class="btn btn-sm btn-primary" type="button" id="adjustok">Ghi điều chỉnh</button>',
+  bind: function () {
+    el('adjustok').onclick = function () {
+      closeDrawer();
+      toast('Đã ghi điều chỉnh +3 cho SP-74B108D4-DEFAULT tại A-01-03, lý do: kiểm kê định kỳ.');
+    };
+  }
+};
+
+/* ---------------- hàng đợi của WMS ---------------- */
+QUEUES.push({
+  id: 'wms-pick', label: 'Hàng chờ nhặt', module: 'wms', perm: 'wms:read', color: '#2e7d32',
+  items: [
+    {
+      title: 'Phiếu nhặt PX-5855-02', sub: 'KHO-HN · 2 dòng · đơn 241012-SPE-0104',
+      age: '25 phút', urgent: false,
+      why: '<b>Vì sao việc này ở đây:</b> đơn đã duyệt và kho đã giữ hàng. Việc này chặn bước đóng gói của chuyến xe GHTK 16:00 hôm nay.',
+      facts: [['Đơn nguồn', '241012-SPE-0104'], ['Kho', 'KHO-HN'], ['Số dòng', '2'],
+              ['Khu cần đi', 'A-01, B-04'], ['Chuyến xe', '16:00 · GHTK'], ['Người nhặt', 'chưa giao ai']],
+      linesTitle: 'Cần nhặt',
+      lines: [['Vợt Yonex Astrox 88D · Đỏ · A-01-04', '1'], ['Bóng Động Lực UHV 2.07 · B-04-02', '2']],
+      links: [{ label: 'Đơn hàng', module: 'oms', kind: 'oms.order', id: '241012-SPE-0104' }],
+      action: 'Mở trên máy quét', action2: 'Giao cho người khác'
+    },
+    {
+      title: 'Phiếu nhặt PX-5855-03', sub: 'KHO-HCM · 1 dòng · đơn 585501321346450442',
+      age: '41 phút', urgent: false,
+      why: '<b>Vì sao việc này ở đây:</b> đơn giao trong ngày, còn 79 phút tới giờ cắt của nhà vận chuyển.',
+      facts: [['Đơn nguồn', '585501321346450442'], ['Kho', 'KHO-HCM'], ['Số dòng', '1'],
+              ['Vị trí', 'A-02-11'], ['Giờ cắt', '16:00']],
+      linesTitle: 'Cần nhặt',
+      lines: [['Giày Asics Gel-Kayano 30 · Size 42 · A-02-11', '1']],
+      links: [{ label: 'Đơn hàng', module: 'oms', kind: 'oms.order', id: '585501321346450442' }],
+      action: 'Mở trên máy quét', action2: 'Giao cho người khác'
+    }
+  ]
+});
+
+QUEUES.push({
+  id: 'wms-pack', label: 'Hàng chờ đóng gói', module: 'wms', perm: 'wms:read', color: '#2e7d32',
+  items: [
+    {
+      title: 'Đóng gói đơn 585503416692409354', sub: 'Đã nhặt xong lúc 15:02 · KHO-HN',
+      age: '12 phút', urgent: false,
+      why: '<b>Vì sao việc này ở đây:</b> đã nhặt đủ hàng. Cân, dán vận đơn và quét mã là đơn chuyển sang chờ nhà xe tới lấy.',
+      facts: [['Đơn', '585503416692409354'], ['Phiếu', 'PX-5855-01'], ['Người nhặt', 'Tú Phạm'],
+              ['Khối lượng ước tính', '0,8 kg'], ['Nhà vận chuyển', 'GHTK'], ['Kho', 'KHO-HN']],
+      linesTitle: 'Hàng trong kiện',
+      lines: [['Vợt cầu lông Yonex Astrox 88D Pro', '1'], ['Quấn cán vợt Yonex AC102', '1']],
+      links: [{ label: 'Đơn hàng', module: 'oms', kind: 'oms.order', id: '585503416692409354' }],
+      action: 'Mở trên máy quét', action2: 'Báo thiếu hàng'
+    }
+  ]
+});
+
+QUEUES.push({
+  id: 'wms-inbound', label: 'Hàng về chờ nhập', module: 'wms', perm: 'wms:read', color: '#005eb8',
+  items: [
+    {
+      title: 'Lô nhập NK-2608-04', sub: 'CT Yonex Việt Nam · 3 dòng · KHO-HN',
+      age: '1 ngày', urgent: true,
+      why: '<b>Vì sao việc này ở đây:</b> lô đã tới kho từ hôm qua nhưng còn 1 dòng chưa gán vị trí cất. Chừng nào còn dòng thiếu vị trí thì không đóng lô được, và hàng chưa vào tồn bán.',
+      facts: [['Nhà cung cấp', 'CT Yonex Việt Nam'], ['Kho', 'KHO-HN'], ['Ngày dự kiến', '11/08'],
+              ['Đã nhận', '2 / 3 dòng'], ['Đã gán vị trí', '2 / 3 dòng']],
+      linesTitle: 'Dòng hàng',
+      lines: [['Vợt Astrox 88D Xanh · đã cất A-01-03', '20 / 20'],
+              ['Quấn cán AC102 · đã cất A-05-01', '100 / 100'],
+              ['Vợt Astrox 88D Đỏ · chưa gán vị trí', '0 / 10']],
+      action: 'Mở trên máy quét', action2: 'Báo thiếu hàng với nhà cung cấp'
+    }
+  ]
+});
+
+/* ---------------- việc trên máy quét ---------------- */
+SCAN_TASKS = [
+  {
+    id: 'pick', label: 'Nhặt hàng', sub: 'Quét mã hàng theo phiếu nhặt', count: '2 phiếu',
+    doneToast: 'Đã nhặt xong phiếu PX-5855-02. Phiếu chuyển sang chờ đóng gói.',
+    steps: [
+      { context: 'Phiếu PX-5855-02 · dòng 1 / 2', big: 'Vợt Astrox 88D · Đỏ',
+        field: 'Quét mã hàng', placeholder: 'A-01-04', expect: 'SP-74B108D4-RED',
+        list: [['Vị trí lấy', 'A-01-04', false], ['Cần nhặt', '1', false]],
+        action: 'Xác nhận đã nhặt', alt: 'Báo hết hàng', altToast: 'Đã báo hết hàng tại A-01-04. Phiếu chuyển cho quản lý kho xử lý.' },
+      { context: 'Phiếu PX-5855-02 · dòng 2 / 2', big: 'Bóng UHV 2.07',
+        field: 'Quét mã hàng', placeholder: 'B-04-02', expect: 'SP-90D3E551-STD',
+        list: [['Vị trí lấy', 'B-04-02', false], ['Cần nhặt', '2', false], ['Đã nhặt', '0', false]],
+        action: 'Xác nhận đã nhặt', alt: 'Báo hết hàng', altToast: 'Đã báo hết hàng tại B-04-02.' },
+      { context: 'Phiếu PX-5855-02', big: 'Đã nhặt đủ 2 / 2 dòng',
+        list: [['Vợt Astrox 88D · Đỏ', '1 / 1', true], ['Bóng UHV 2.07', '2 / 2', true]],
+        action: 'Hoàn tất phiếu nhặt' }
+    ]
+  },
+  {
+    id: 'pack', label: 'Đóng gói', sub: 'Quét mã vận đơn để đóng kiện', count: '1 phiếu',
+    doneToast: 'Đã đóng gói đơn 585503416692409354, mã vận đơn S28841102. Đơn chờ nhà xe tới lấy.',
+    steps: [
+      { context: 'Đơn 585503416692409354', big: 'Chọn nhà vận chuyển',
+        list: [['GHTK', 'chuyến 16:00', false], ['GHN', 'chuyến 17:00', false], ['Viettel Post', 'chuyến 18:00', false]],
+        action: 'Dùng GHTK' },
+      { context: 'Đơn 585503416692409354 · GHTK', big: '2 món trong kiện',
+        field: 'Quét mã vận đơn', placeholder: 'S28841102',
+        list: [['Vợt cầu lông Yonex Astrox 88D Pro', '1', true], ['Quấn cán vợt Yonex AC102', '1', true]],
+        action: 'Xác nhận đóng gói', alt: 'Báo sai hàng', altToast: 'Đã báo sai hàng. Phiếu quay lại bước nhặt.' }
+    ]
+  },
+  {
+    id: 'receive', label: 'Nhận hàng', sub: 'Quét hàng về và gán vị trí cất', count: '1 lô',
+    doneToast: 'Đã hoàn tất lô NK-2608-04. Hàng đã vào tồn bán.',
+    steps: [
+      { context: 'Lô NK-2608-04 · CT Yonex Việt Nam', big: 'Còn 1 / 3 dòng chưa xong',
+        field: 'Quét mã hàng nhận', placeholder: 'SP-74B108D4-RED', expect: 'SP-74B108D4-RED',
+        list: [['Vợt Astrox 88D Xanh', '20 / 20', true], ['Quấn cán AC102', '100 / 100', true], ['Vợt Astrox 88D Đỏ', '0 / 10', false]],
+        action: 'Xác nhận đã nhận', alt: 'Báo thiếu hàng', altToast: 'Đã ghi nhận thiếu hàng, lô vẫn mở để đối chiếu với nhà cung cấp.' },
+      { context: 'Vợt Astrox 88D Đỏ · 10 cái', big: 'Cất vào vị trí nào?',
+        field: 'Quét mã vị trí', placeholder: 'A-01-04', expect: 'A-01-04',
+        list: [['Vị trí gợi ý', 'A-01-04', false], ['Còn chỗ', '38 ô', false]],
+        action: 'Xác nhận cất hàng' },
+      { context: 'Lô NK-2608-04', big: 'Đã cất đủ 3 / 3 dòng',
+        list: [['Vợt Astrox 88D Xanh · A-01-03', '20', true], ['Quấn cán AC102 · A-05-01', '100', true], ['Vợt Astrox 88D Đỏ · A-01-04', '10', true]],
+        action: 'Hoàn tất nhập kho' }
+    ]
+  },
+  {
+    id: 'lookup', label: 'Tra cứu', sub: 'Quét để xem mã hàng và tồn tại chỗ', count: 'bất kỳ lúc nào',
+    doneToast: 'Đã đóng tra cứu.',
+    steps: [
+      { context: 'Tra cứu nhanh', big: 'Quét một mã bất kỳ',
+        field: 'Quét mã hàng hoặc mã vị trí', placeholder: '4550086123456',
+        action: 'Tra cứu' },
+      { context: 'SP-74B108D4-DEFAULT', big: 'Khả dụng 104',
+        list: [['Thực có', '110', false], ['Đang giữ cho đơn', '6', false], ['Vị trí', 'A-01-03 · KHO-HN', false]],
+        action: 'Xong', alt: 'Điều chỉnh tồn', altToast: 'Mở phiếu điều chỉnh tồn cho SP-74B108D4-DEFAULT.' }
+    ]
+  },
+  {
+    id: 'count', label: 'Kiểm kho', sub: 'Đếm thực tế và ghi lệch', count: '1 khu đang kiểm',
+    doneToast: 'Đã ghi lệch cho khu A-01. Phiếu kiểm chờ quản lý kho duyệt.',
+    steps: [
+      { context: 'Khu A-01 · phiếu kiểm KK-2608-01', big: 'Ô A-01-03',
+        field: 'Quét mã hàng trong ô', placeholder: 'SP-74B108D4-DEFAULT', expect: 'SP-74B108D4-DEFAULT',
+        action: 'Bắt đầu đếm' },
+      { context: 'SP-74B108D4-DEFAULT tại A-01-03', big: 'Sổ ghi 110',
+        field: 'Nhập số đếm được', placeholder: '108',
+        list: [['Sổ ghi', '110', false], ['Đang giữ cho đơn', '6', false]],
+        action: 'Ghi số đếm', alt: 'Bỏ qua ô này', altToast: 'Đã bỏ qua ô A-01-03.' },
+      { context: 'A-01-03 · lệch −2', big: 'Vì sao lệch?',
+        list: [['Hàng hỏng, huỷ bỏ', 'chọn', false], ['Hàng thất lạc', 'chọn', false], ['Sửa sai lệch nhập liệu', 'chọn', false]],
+        action: 'Ghi lệch và sang ô kế' }
+    ]
+  }
+];
+</script>
+
+<script>
+/* =========================================================================
+   4d · MODULE INVOICE — hoá đơn điện tử (hai trục trạng thái)
+   ========================================================================= */
+
+var TAX_STATE = {
+  UNSUBMITTED: { label: 'Chưa gửi cơ quan thuế', chip: 'neutral' },
+  SUBMITTED:   { label: 'Đã gửi, chờ phản hồi',  chip: 'warning' },
+  APPROVED:    { label: 'Cơ quan thuế đã nhận',  chip: 'success' },
+  REJECTED:    { label: 'Cơ quan thuế từ chối',  chip: 'error' }
+};
+var BIZ_STATE = {
+  DRAFT:     { label: 'Nháp',           chip: 'neutral' },
+  ISSUED:    { label: 'Đã phát hành',   chip: 'success' },
+  ADJUSTED:  { label: 'Đã điều chỉnh',  chip: 'warning' },
+  REPLACED:  { label: 'Đã bị thay thế', chip: 'warning' }
+};
+
+var INVOICES = [
+  { no: 'C26TKA/0001842', id: 'C26TKA/0001842', buyer: 'CT TNHH An Phát', mst: '0106xxxxxx',
+    addr: 'Lô B2 KCN Tân Thuận, Q.7, TP.HCM', net: 830000, vat: 66400, total: 896400, rate: '8%',
+    tax: 'APPROVED', biz: 'ISSUED', at: '11/08 18:02', prov: 'Viettel SInvoice', series: '1/C26TKA',
+    cqt: 'M1-26-0AB8C-00001842', order: '241012-SPE-0088', rel: '', pdf: true },
+
+  { no: 'C26TKA/0001843', id: 'C26TKA/0001843', buyer: 'Nguyễn Thị Hà', mst: 'cá nhân, không có',
+    addr: '18 ngõ 4 Trần Thái Tông, Q. Cầu Giấy, Hà Nội', net: 1175926, vat: 94074, total: 1270000, rate: '8%',
+    tax: 'SUBMITTED', biz: 'ISSUED', at: '12/08 16:40', prov: 'Viettel SInvoice', series: '1/C26TKA',
+    cqt: '—', order: '585503416692409354', rel: '', pdf: false },
+
+  { no: 'C26TKA/0001839', id: 'C26TKA/0001839', buyer: 'Trần Văn Long', mst: 'cá nhân, không có',
+    addr: '210 Nguyễn Văn Linh, Q. Hải Châu, Đà Nẵng', net: 3078704, vat: 246296, total: 3325000, rate: '8%',
+    tax: 'REJECTED', biz: 'ISSUED', at: '12/08 10:15', prov: 'Viettel SInvoice', series: '1/C26TKA',
+    cqt: '—', order: '585501321346450442', rel: '', pdf: false,
+    reject: 'Mã lỗi 20001 · Sai định dạng dữ liệu: ký hiệu mẫu số trên hoá đơn gốc không khớp' },
+
+  { no: 'C26TKA/0001836', id: 'C26TKA/0001836', buyer: 'Phạm Quỳnh Anh', mst: 'cá nhân, không có',
+    addr: 'Q.7, TP.HCM', net: 843519, vat: 67481, total: 911000, rate: '8%',
+    tax: 'APPROVED', biz: 'REPLACED', at: '10/08 09:20', prov: 'Viettel SInvoice', series: '1/C26TKA',
+    cqt: 'M1-26-0AB8C-00001836', order: '241012-SPE-0067', rel: 'Đã được thay thế bởi C26TKA/0001841', pdf: true },
+
+  { no: 'Nháp', id: 'HD-NHAP-0044', buyer: 'Vũ Đức Kiên', mst: 'cá nhân, không có',
+    addr: 'Q. Ngô Quyền, Hải Phòng', net: 1470370, vat: 117630, total: 1588000, rate: '8%',
+    tax: 'UNSUBMITTED', biz: 'DRAFT', at: '12/08 11:30', prov: 'Viettel SInvoice', series: '1/C26TKA',
+    cqt: '—', order: '241012-SPE-0104', rel: '', pdf: false }
+];
+
+DATASETS.invoices = {
+  module: 'invoice', kind: 'invoice.doc', key: 'id', perm: 'invoice:read',
+  group: 'Tài chính', title: 'Hoá đơn', sub: 'Hoá đơn điện tử đã phát hành và bản nháp',
+  searchHint: 'Tìm số hoá đơn, người mua, mã số thuế…',
+  rows: INVOICES,
+  search: function (i) { return i.no + ' · ' + i.buyer + ' · ' + i.order; },
+  sum: function (i) { return i.total; },
+  views: [
+    { id: 'all',      label: 'Tất cả',            f: function () { return true; } },
+    { id: 'waiting',  label: 'Chờ cơ quan thuế',  f: function (i) { return i.tax === 'SUBMITTED'; } },
+    { id: 'rejected', label: 'Bị từ chối',        f: function (i) { return i.tax === 'REJECTED'; } },
+    { id: 'draft',    label: 'Nháp',              f: function (i) { return i.biz === 'DRAFT'; } }
+  ],
+  filters: [
+    { label: 'Khoảng ngày', toast: 'Khoảng ngày · lọc theo ngày lập hoá đơn.' },
+    { label: 'Ký hiệu', toast: 'Ký hiệu · lọc theo mẫu số và ký hiệu hoá đơn.' }
+  ],
+  headActions: '<button class="btn btn-sm btn-cancel" type="button" data-toast="Mở bản nháp mới để soát trước khi phát hành.">Tạo nháp</button>' +
+    '<button class="btn btn-md btn-primary" type="button" data-toast="Mở trình tự phát hành: chọn ký hiệu → người mua → dòng hàng → soát → phát hành.">Phát hành hoá đơn</button>',
+  bulkActions: [
+    { label: 'Tải PDF', toast: 'Đã tải các hoá đơn đang chọn.' },
+    { label: 'Xuất Excel', toast: 'Đã xuất danh sách đang chọn.' }
+  ],
+  emptyTitle: 'Chưa có hoá đơn nào ở đây',
+  emptyBody: 'Không có hoá đơn nào thoả bộ lọc hiện tại.',
+  emptyAction: '<button class="btn btn-sm btn-secondary" type="button" data-view="all">Xem tất cả</button>',
+  cols: [
+    { label: 'Số hoá đơn', mono: true, cell: function (i) { return i.no; } },
+    { label: 'Người mua', cell: function (i) { return '<b>' + i.buyer + '</b><span class="second">' + i.mst + '</span>'; } },
+    { label: 'Tổng tiền', num: true, cell: function (i) { return '<b>' + vnd(i.total) + '</b>'; } },
+    { label: 'Cơ quan thuế', cell: function (i) { return chip(TAX_STATE[i.tax].chip, TAX_STATE[i.tax].label); } },
+    { label: 'Nghiệp vụ', cell: function (i) { return chip(BIZ_STATE[i.biz].chip, BIZ_STATE[i.biz].label); } },
+    { label: 'Đơn hàng', mono: true, cell: function (i) { return i.order; } },
+    { label: 'Lập lúc', cell: function (i) { return i.at; } }
+  ]
+};
+
+OBJECTS['invoice.doc'] = {
+  title: function (i) { return i.no === 'Nháp' ? 'Hoá đơn nháp' : i.no; },
+  sub: function (i) { return i.buyer + ' · ' + i.prov + ' · ký hiệu ' + i.series; },
+  chips: function (i) {
+    return chip(TAX_STATE[i.tax].chip, TAX_STATE[i.tax].label) +
+      chip(BIZ_STATE[i.biz].chip, BIZ_STATE[i.biz].label);
+  },
+  actions: function (i) {
+    var replace = i.tax === 'APPROVED' && i.biz !== 'REPLACED'
+      ? '<button class="btn btn-md btn-primary" type="button" data-confirm="Lập hoá đơn thay thế?|' +
+        'Hoá đơn thay thế được phát hành thật lên cơ quan thuế và không thu hồi được. Hoá đơn ' + i.no +
+        ' sẽ chuyển sang trạng thái đã bị thay thế.|Lập hoá đơn thay thế|Đã gửi hoá đơn thay thế cho ' + i.no + '.">Lập hoá đơn thay thế</button>'
+      : '<button class="btn btn-md btn-primary" type="button" disabled title="' +
+        (i.biz === 'REPLACED' ? 'Hoá đơn này đã bị thay thế một lần rồi.' : 'Chỉ lập được hoá đơn thay thế khi cơ quan thuế đã nhận hoá đơn gốc.') +
+        '">Lập hoá đơn thay thế</button>';
+    var files = i.pdf
+      ? '<button class="btn btn-sm btn-cancel" type="button" data-toast="Đang tải ' + i.no + '.pdf">Tải PDF</button>'
+      : '<button class="btn btn-sm btn-cancel" type="button" disabled title="Nhà cung cấp chưa trả tệp về. Đây không phải lỗi — tệp sẽ có sau khi cơ quan thuế phản hồi.">Tải PDF</button>';
+    return files + replace;
+  },
+  tabs: [
+    { id: 'sum',   label: 'Tổng quan', by: 'invoice', order: 10, perm: 'invoice:read' },
+    { id: 'lines', label: 'Dòng hàng', by: 'invoice', order: 20, perm: 'invoice:read' }
+  ],
+  panel: function (tab, i, compact) {
+    if (tab === 'sum') {
+      var buyer = '<div class="card"><h3>Người mua</h3>' + dl([
+        ['Tên', i.buyer], ['Mã số thuế', i.mst], ['Địa chỉ', i.addr]
+      ]) + '</div>';
+      var money = '<div class="card"><h3>Tiền</h3>' +
+        lrow('Cộng tiền hàng', vnd(i.net)) + lrow('Thuế giá trị gia tăng ' + i.rate, vnd(i.vat)) +
+        '<div class="total"><span>Tổng thanh toán</span><span class="r">' + vnd(i.total) + '</span></div></div>';
+      var tax = '<div class="card"><h3>Cơ quan thuế</h3>' + dl([
+        ['Trạng thái', TAX_STATE[i.tax].label], ['Mã của cơ quan thuế', i.cqt],
+        ['Nhà cung cấp', i.prov], ['Ký hiệu', i.series]
+      ]) +
+      (i.reject ? '<div style="margin-top:12px;background:var(--st-error-bg);color:var(--st-error-fg);border-radius:8px;padding:11px 13px;font-size:13px"><b>Lý do từ chối:</b> ' + i.reject + '</div>' : '') +
+      (i.rel ? '<div style="margin-top:12px;font-size:13px;color:var(--ink-2)">' + i.rel + '</div>' : '') +
+      '</div>';
+      if (compact) return tax + money;
+      return '<div class="grid2"><div>' + buyer + money + '</div><div>' + tax +
+        '<div class="card"><h3>Nguồn</h3>' +
+        '<div class="lrow"><span class="l">Đơn hàng</span><button class="lnk" type="button" data-open="oms|oms.order|' + i.order + '">' + i.order + '</button></div>' +
+        '</div></div></div>';
+    }
+    return '<div class="card"><h3>Dòng hàng</h3>' +
+      lrow('Vợt cầu lông Yonex Astrox 88D Pro', vnd(i.net), '<span class="second">1 × ' + vnd(i.net) + ' · thuế ' + i.rate + '</span>') +
+      '<div class="total"><span>Tổng thanh toán</span><span class="r">' + vnd(i.total) + '</span></div></div>';
+  }
+};
+
+QUEUES.push({
+  id: 'inv-reject', label: 'Cơ quan thuế từ chối', module: 'invoice', perm: 'invoice:read', color: '#c62828',
+  items: [
+    {
+      title: 'Hoá đơn C26TKA/0001839 bị từ chối', sub: 'Trần Văn Long · ' + vnd(3325000),
+      age: '6 giờ', urgent: true,
+      irreversible: true,
+      confirm: 'Hoá đơn thay thế được phát hành thật lên cơ quan thuế và không thu hồi được.',
+      why: '<b>Vì sao việc này ở đây:</b> cơ quan thuế trả về mã lỗi 20001 — sai định dạng dữ liệu. Hoá đơn này chưa có giá trị pháp lý; khách đã nhận hàng nên phải phát hành lại bằng hoá đơn thay thế.',
+      facts: [['Số hoá đơn', 'C26TKA/0001839'], ['Người mua', 'Trần Văn Long'], ['Tổng tiền', vnd(3325000)],
+              ['Mã lỗi', '20001'], ['Đơn hàng', '585501321346450442'], ['Nhà cung cấp', 'Viettel SInvoice']],
+      linesTitle: 'Nguyên văn lý do từ chối',
+      lines: [['Sai định dạng dữ liệu: ký hiệu mẫu số trên hoá đơn gốc không khớp', 'mã 20001']],
+      links: [{ label: 'Hoá đơn', module: 'invoice', kind: 'invoice.doc', id: 'C26TKA/0001839' },
+              { label: 'Đơn hàng', module: 'oms', kind: 'oms.order', id: '585501321346450442' }],
+      timeline: [['', 'Cơ quan thuế từ chối', '12/08 10:22'], ['past', 'Đã gửi', '12/08 10:15'], ['past', 'Phát hành', '12/08 10:15']],
+      action: 'Sửa dữ liệu và phát hành lại', action2: 'Chuyển cho kế toán trưởng'
+    }
+  ]
+});
+
+QUEUES.push({
+  id: 'inv-wait', label: 'Chờ cơ quan thuế', module: 'invoice', perm: 'invoice:read', color: '#ef6c00',
+  items: [
+    {
+      title: 'Hoá đơn C26TKA/0001843 chờ phản hồi', sub: 'Nguyễn Thị Hà · ' + vnd(1270000),
+      age: '52 phút', urgent: false,
+      why: '<b>Vì sao việc này ở đây:</b> hoá đơn đã gửi 52 phút mà cơ quan thuế chưa phản hồi. Ngưỡng theo dõi là 5 phút, nên đây là ca cần người nhìn. <b>Không phát hành lại</b> — phát hành lại sẽ đẻ hoá đơn trùng mà theo quy định hiện hành thì không huỷ được.',
+      facts: [['Số hoá đơn', 'C26TKA/0001843'], ['Gửi lúc', '12/08 16:40'], ['Chờ', '52 phút'],
+              ['Ngưỡng theo dõi', '5 phút'], ['Nhà cung cấp', 'Viettel SInvoice'], ['Đơn hàng', '585503416692409354']],
+      linesTitle: 'Việc được phép làm',
+      lines: [['Dò lại trạng thái ở nhà cung cấp', 'an toàn'], ['Phát hành lại', 'CẤM — sinh hoá đơn trùng']],
+      links: [{ label: 'Hoá đơn', module: 'invoice', kind: 'invoice.doc', id: 'C26TKA/0001843' }],
+      action: 'Dò lại trạng thái', action2: 'Báo cho kế toán trưởng'
+    }
+  ]
+});
+
+/* =========================================================================
+   4e · MODULE CHANNEL — kết nối sàn, đồng bộ
+   ========================================================================= */
+
+var AUTH_STATE = {
+  ACTIVE:   { label: 'Đang kết nối',        chip: 'success' },
+  EXPIRING: { label: 'Đang làm mới',        chip: 'in-progress' },
+  EXPIRED:  { label: 'Hết hạn uỷ quyền',    chip: 'error' },
+  REVOKED:  { label: 'Đã ngắt kết nối',     chip: 'error' }
+};
+var JOB_STATE = {
+  PENDING:    { label: 'Chờ xử lý',  chip: 'in-progress' },
+  PROCESSING: { label: 'Đang chạy',  chip: 'in-progress' },
+  DONE:       { label: 'Thành công', chip: 'success' },
+  FAILED:     { label: 'Lỗi',        chip: 'error' }
+};
+
+var CHANNELS = [
+  { id: 'tiktok-topvn', shop: 'TopVNSport', ch: 'TikTok Shop', shopId: '7495012288844',
+    st: 'ACTIVE', tokenExp: '12/08 20:22 · còn 4 giờ', authExp: '14/11/2026 · còn 91 ngày',
+    listings: 62, jobsFailed: 1, mapCat: '18 / 18', mapBrand: '4 / 5', mapAttr: '11 / 11' },
+  { id: 'shopee-topvn', shop: 'TopVNSport', ch: 'Shopee', shopId: '221904471',
+    st: 'ACTIVE', tokenExp: '12/08 19:40 · còn 3 giờ', authExp: '21/08/2026 · còn 9 ngày',
+    listings: 48, jobsFailed: 0, mapCat: '15 / 18', mapBrand: '5 / 5', mapAttr: '9 / 12' },
+  { id: 'tiktok-anbinh', shop: 'An Bình Sport', ch: 'TikTok Shop', shopId: '7495017740021',
+    st: 'EXPIRED', tokenExp: 'đã hết hạn', authExp: '02/08/2026 · đã quá 10 ngày',
+    listings: 0, jobsFailed: 3, mapCat: '0 / 12', mapBrand: '0 / 3', mapAttr: '0 / 9' }
+];
+
+DATASETS.channels = {
+  module: 'channel', kind: 'channel.account', key: 'id', perm: 'channel:read',
+  group: 'Bán hàng', title: 'Kênh bán', sub: 'Shop đã uỷ quyền và tình trạng đồng bộ',
+  searchHint: 'Tìm tên shop, mã shop, sàn…',
+  rows: CHANNELS,
+  search: function (c) { return c.shop + ' · ' + c.ch + ' · ' + c.shopId; },
+  views: [
+    { id: 'all',    label: 'Tất cả',           f: function () { return true; } },
+    { id: 'need',   label: 'Cần xử lý',        f: function (c) { return c.st !== 'ACTIVE' || c.jobsFailed > 0; } },
+    { id: 'active', label: 'Đang kết nối',     f: function (c) { return c.st === 'ACTIVE'; } }
+  ],
+  filters: [ { label: 'Sàn', toast: 'Sàn · lọc theo TikTok Shop hoặc Shopee.' } ],
+  headActions: '<button class="btn btn-md btn-primary" type="button" data-toast="Mở trang uỷ quyền của sàn. Sau khi người bán đồng ý, shop được nối vào gian hàng này.">Kết nối shop</button>',
+  bulkActions: [],
+  emptyTitle: 'Chưa nối shop nào',
+  emptyBody: 'Gian hàng này chưa nối với sàn nào. Nối shop để kéo đơn về và đẩy sản phẩm lên sàn.',
+  emptyAction: '<button class="btn btn-sm btn-secondary" type="button" data-toast="Mở trang uỷ quyền của sàn.">Kết nối shop</button>',
+  cols: [
+    { label: 'Shop', cell: function (c) { return '<b>' + c.shop + '</b><span class="second">' + c.ch + '</span>'; } },
+    { label: 'Mã shop', mono: true, cell: function (c) { return c.shopId; } },
+    { label: 'Kết nối', cell: function (c) { return chip(AUTH_STATE[c.st].chip, AUTH_STATE[c.st].label); } },
+    { label: 'Hạn uỷ quyền', cell: function (c) { return c.authExp; } },
+    { label: 'Sản phẩm', num: true, cell: function (c) { return num(c.listings); } },
+    { label: 'Việc lỗi', num: true, cell: function (c) {
+        return c.jobsFailed ? chip('error', num(c.jobsFailed)) : '—'; } }
+  ]
+};
+
+OBJECTS['channel.account'] = {
+  title: function (c) { return c.shop + ' · ' + c.ch; },
+  sub: function (c) { return 'Mã shop ' + c.shopId; },
+  chips: function (c) {
+    return chip(AUTH_STATE[c.st].chip, AUTH_STATE[c.st].label) +
+      (c.jobsFailed ? chip('error', c.jobsFailed + ' việc lỗi') : chip('success', 'Đồng bộ sạch'));
+  },
+  actions: function (c) {
+    if (c.st !== 'ACTIVE') {
+      return '<button class="btn btn-md btn-primary" type="button" data-toast="Mở trang uỷ quyền của ' + c.ch + ' để nối lại shop ' + c.shop + '.">Kết nối lại</button>';
+    }
+    return '<button class="btn btn-sm btn-cancel" type="button" data-confirm="Ngắt kết nối ' + c.shop + '?|' +
+      'Shop sẽ ngừng nhận đơn mới và ngừng đẩy tồn kho, giá. Nối lại phải qua trang uỷ quyền của sàn.|Ngắt kết nối|Đã ngắt kết nối ' + c.shop + '.">Ngắt kết nối</button>';
+  },
+  tabs: [
+    { id: 'sum', label: 'Tổng quan', by: 'channel', order: 10, perm: 'channel:read' },
+    { id: 'map', label: 'Ánh xạ',    by: 'channel', order: 20, perm: 'channel:read' }
+  ],
+  panel: function (tab, c, compact) {
+    if (tab === 'sum') {
+      var auth = '<div class="card"><h3>Uỷ quyền</h3>' + dl([
+        ['Trạng thái', AUTH_STATE[c.st].label], ['Hạn uỷ quyền của shop', c.authExp],
+        ['Hạn phiên làm việc', c.tokenExp], ['Sàn', c.ch], ['Mã shop', c.shopId]
+      ]) + '</div>';
+      var sync = '<div class="card"><h3>Đồng bộ</h3>' +
+        lrow('Sản phẩm đang niêm yết', num(c.listings)) +
+        lrow('Việc đang lỗi', c.jobsFailed ? chip('error', num(c.jobsFailed)) : chip('success', 'không có')) + '</div>';
+      if (compact) return auth + sync;
+      return '<div class="grid2"><div>' + auth + sync + '</div><div>' +
+        '<div class="card"><h3>Ánh xạ còn thiếu</h3>' +
+        lrow('Ngành hàng', c.mapCat) + lrow('Thương hiệu', c.mapBrand) + lrow('Thuộc tính', c.mapAttr) +
+        '</div></div></div>';
+    }
+    return '<div class="card"><h3>Ánh xạ dữ liệu sang ' + c.ch + '</h3>' +
+      lrow('Ngành hàng đã ánh xạ', c.mapCat) +
+      lrow('Thương hiệu đã ánh xạ', c.mapBrand) +
+      lrow('Thuộc tính bắt buộc đã ánh xạ', c.mapAttr) +
+      '<div style="margin-top:14px"><button class="btn btn-sm btn-secondary" type="button" data-toast="Mở bảng ánh xạ ngành hàng: cây ngành hàng của sàn ở bên phải, danh mục của bạn ở bên trái.">Mở bảng ánh xạ</button></div></div>';
+  }
+};
+
+QUEUES.push({
+  id: 'ch-auth', label: 'Uỷ quyền cần xử lý', module: 'channel', perm: 'channel:read', color: '#c62828',
+  items: [
+    {
+      title: 'Uỷ quyền Shopee còn 9 ngày', sub: 'TopVNSport · hết hạn 21/08/2026',
+      age: '—', urgent: true,
+      why: '<b>Vì sao việc này ở đây:</b> hết hạn uỷ quyền là shop ngừng nhận đơn và ngừng đẩy tồn kho — không có cách chữa nào ngoài việc người bán vào Shopee cấp quyền lại. Shop này mang 412 đơn trong 30 ngày qua.',
+      facts: [['Sàn', 'Shopee'], ['Shop', 'TopVNSport'], ['Hết hạn', '21/08/2026'],
+              ['Đơn 30 ngày qua', '412'], ['Sản phẩm đang niêm yết', '48'],
+              ['Mất gì nếu hết hạn', 'ngừng nhận đơn, ngừng đẩy tồn và giá']],
+      linesTitle: 'Đang chạy nhờ uỷ quyền này',
+      lines: [['Nhận đơn từ sàn', 'đang chạy'], ['Đẩy tồn kho', 'đang chạy'], ['Đẩy giá bán', 'đang chạy'], ['Đăng sản phẩm', 'đang chạy']],
+      links: [{ label: 'Kênh bán', module: 'channel', kind: 'channel.account', id: 'shopee-topvn' }],
+      action: 'Gửi liên kết gia hạn cho người bán', action2: 'Nhắc lại sau 3 ngày'
+    },
+    {
+      title: 'An Bình Sport đã mất uỷ quyền TikTok', sub: 'Quá hạn 10 ngày · 3 việc đồng bộ đang lỗi',
+      age: '10 ngày', urgent: true,
+      why: '<b>Vì sao việc này ở đây:</b> uỷ quyền đã hết hạn từ 02/08. Shop này hiện không nhận được đơn nào và mọi việc đồng bộ đều lỗi. Ánh xạ ngành hàng cũng chưa làm, nên kể cả nối lại vẫn chưa đẩy được sản phẩm.',
+      facts: [['Sàn', 'TikTok Shop'], ['Shop', 'An Bình Sport'], ['Hết hạn từ', '02/08/2026'],
+              ['Việc đang lỗi', '3'], ['Ngành hàng đã ánh xạ', '0 / 12'], ['Sản phẩm niêm yết', '0']],
+      linesTitle: 'Phải làm theo thứ tự',
+      lines: [['1 · Người bán cấp quyền lại trên TikTok', 'chưa làm'],
+              ['2 · Ánh xạ 12 ngành hàng', 'chưa làm'],
+              ['3 · Đẩy lại sản phẩm', 'chưa làm']],
+      links: [{ label: 'Kênh bán', module: 'channel', kind: 'channel.account', id: 'tiktok-anbinh' }],
+      action: 'Gửi liên kết uỷ quyền lại', action2: 'Tạm dừng shop này'
+    }
+  ]
+});
+
+QUEUES.push({
+  id: 'ch-job', label: 'Việc đồng bộ lỗi', module: 'channel', perm: 'channel:read', color: '#ef6c00',
+  items: [
+    {
+      title: 'Đăng sản phẩm lên TikTok thất bại', sub: 'SP-90D3E551 · Bóng đá Động Lực UHV 2.07',
+      age: '2 giờ', urgent: false,
+      why: '<b>Vì sao việc này ở đây:</b> sàn từ chối vì thiếu thuộc tính bắt buộc của ngành hàng. Đây là lỗi dữ liệu, thử lại mà không sửa thì sẽ hỏng đúng như cũ.',
+      facts: [['Loại việc', 'Đăng sản phẩm'], ['Sản phẩm', 'SP-90D3E551'], ['Sàn', 'TikTok Shop'],
+              ['Mã lỗi sàn', '36004'], ['Số lần lỗi', '3'], ['Mã tra cứu với sàn', 'rq-8841-0f2a']],
+      linesTitle: 'Sàn đòi',
+      lines: [['Thuộc tính Chất liệu', 'chưa có trong hồ sơ'], ['Thuộc tính Kích cỡ chuẩn', 'chưa có trong hồ sơ']],
+      links: [{ label: 'Sản phẩm', module: 'pim', kind: 'pim.product', id: 'SP-90D3E551' }],
+      action: 'Mở sản phẩm để bổ sung', action2: 'Bỏ đăng sản phẩm này'
+    }
+  ]
+});
+
+/* ---------------- lệnh tĩnh cho thanh lệnh ---------------- */
+COMMANDS = [
+  { group: 'Hành động', module: 'oms', label: 'Lập đơn hàng mới', perm: 'oms:write',
+    run: function () { go('orders'); toast('Mở trình tự lập đơn.'); } },
+  { group: 'Hành động', module: 'pim', label: 'Thêm sản phẩm', perm: 'pmi:write',
+    run: function () { go('products'); toast('Mở trình soạn sản phẩm.'); } },
+  { group: 'Hành động', module: 'wms', label: 'Điều chỉnh tồn kho', perm: 'wms:write',
+    run: function () { go('stock'); openDrawer('adjust'); } },
+  { group: 'Hành động', module: 'invoice', label: 'Phát hành hoá đơn', perm: 'invoice:write',
+    run: function () { go('invoices'); toast('Mở trình tự phát hành hoá đơn.'); } },
+  { group: 'Hành động', module: 'wms', label: 'Mở máy quét · nhặt hàng', perm: 'wms:read',
+    run: function () { go('scan'); startScanTask('pick'); } },
+  { group: 'Hành động', module: 'channel', label: 'Kết nối shop mới', perm: 'channel:write',
+    run: function () { go('channels'); toast('Mở trang uỷ quyền của sàn.'); } },
+  { group: 'Hành động', module: 'identity', label: 'Đổi gian hàng', perm: null,
+    run: function () { el('sellerbtn').click(); } }
+];
+</script>
+
+<script>
+/* =========================================================================
+   4f · TAB ĐÓNG GÓP CHÉO MODULE
+   Mỗi module khai một mặt của mình trên trang đối tượng do module khác sở hữu.
+   Module sở hữu không biết những tab này tồn tại.
+   ========================================================================= */
+
+/* --- WMS góp mặt "Kho" vào trang Đơn hàng --- */
+contributeTab('oms.order', {
+  id: 'wms', label: 'Kho', by: 'wms', order: 30, perm: 'wms:read',
+  render: function (o) {
+    if (!o.ff.length) {
+      return '<div class="card"><h3>Kho</h3><div class="empty" style="padding:22px 12px">' +
+        '<div class="ttl">Chưa có phiếu kho</div><p>Đơn chưa được duyệt nên kho chưa giữ hàng và chưa tạo phiếu xuất.</p></div></div>';
+    }
+    var slow = o.ff.slice().sort(function (a, b) {
+      var ord = ['CANCELLED', 'PENDING', 'PICKING', 'PICKED', 'PACKING', 'PACKED', 'SHIPPED'];
+      return ord.indexOf(a.st) - ord.indexOf(b.st);
+    })[0];
+    return '<div class="card"><h3>Phiếu kho · ' + o.ff.length + ' kho</h3>' +
+      o.ff.map(function (f) {
+        return lrow(f.no + ' · ' + f.wh, chip(FF_STATUS[f.st].chip, FF_STATUS[f.st].label),
+          '<span class="second">' + (f.carrier !== '—' ? f.carrier + ' · ' + f.track : 'chưa có vận đơn') + '</span>');
+      }).join('') +
+      (o.ff.length > 1
+        ? '<div style="margin-top:12px;font-size:12.5px;color:var(--muted)">Đơn chia ' + o.ff.length +
+          ' kho. Trạng thái của cả đơn đi theo kho chậm nhất: <b>' + FF_STATUS[slow.st].label + '</b> tại ' + slow.wh + '.</div>'
+        : '') +
+      '</div>';
+  }
+});
+
+/* --- Invoice góp mặt "Hoá đơn" vào trang Đơn hàng --- */
+contributeTab('oms.order', {
+  id: 'invoice', label: 'Hoá đơn', by: 'invoice', order: 40, perm: 'invoice:read',
+  render: function (o) {
+    var inv = INVOICES.filter(function (i) { return i.order === o.id; })[0];
+    if (!inv) {
+      return '<div class="card"><h3>Hoá đơn</h3><div class="empty" style="padding:22px 12px">' +
+        '<div class="ttl">Chưa lập hoá đơn</div><p>Đơn này chưa có hoá đơn nào. Hoá đơn được lập khi đơn hoàn tất hoặc khi khách yêu cầu.</p>' +
+        '<button class="btn btn-sm btn-secondary" type="button" data-toast="Mở trình tự phát hành hoá đơn cho đơn ' + o.id + '.">Lập hoá đơn</button></div></div>';
+    }
+    return '<div class="card"><h3>Hoá đơn</h3>' +
+      '<div class="lrow"><span class="l"><b>' + inv.no + '</b><span class="second">' + inv.buyer + '</span></span>' +
+      '<span class="r">' + vnd(inv.total) + '</span></div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin:12px 0">' +
+        chip(TAX_STATE[inv.tax].chip, TAX_STATE[inv.tax].label) +
+        chip(BIZ_STATE[inv.biz].chip, BIZ_STATE[inv.biz].label) + '</div>' +
+      (inv.reject ? '<div style="background:var(--st-error-bg);color:var(--st-error-fg);border-radius:8px;padding:11px 13px;font-size:13px;margin-bottom:12px"><b>Cơ quan thuế từ chối:</b> ' + inv.reject + '</div>' : '') +
+      '<button class="btn btn-sm btn-cancel" type="button" data-open="invoice|invoice.doc|' + inv.id + '">Mở hoá đơn</button></div>';
+  }
+});
+
+/* --- Channel góp mặt "Kênh" vào trang Đơn hàng --- */
+contributeTab('oms.order', {
+  id: 'channel', label: 'Kênh', by: 'channel', order: 50, perm: 'channel:read',
+  render: function (o) {
+    return '<div class="card"><h3>Nguồn từ sàn</h3>' + dl([
+      ['Sàn', o.ch],
+      ['Mã đơn trên sàn', o.chId],
+      ['Trạng thái sàn báo về', '<span title="Nguyên văn của sàn, giữ để tra cứu khi khiếu nại">' + o.chRaw + '</span>'],
+      ['Nhận về lúc', o.at]
+    ]) +
+    '<div style="margin-top:12px;font-size:12.5px;color:var(--muted)">Trạng thái hiển thị trong VOMA là <b>' +
+    ORDER_STATUS[o.st].label + '</b>. Chuỗi bên trên là nguyên văn của sàn, giữ nguyên để khiếu nại.</div></div>';
+  }
+});
+
+/* --- WMS góp mặt "Tồn kho" vào trang Sản phẩm --- */
+contributeTab('pim.product', {
+  id: 'stock', label: 'Tồn kho', by: 'wms', order: 30, perm: 'wms:read',
+  render: function (p) {
+    var rows = STOCK.filter(function (s) { return s.sku.indexOf(p.sku) === 0; });
+    if (!rows.length) {
+      return '<div class="card"><h3>Tồn kho</h3><div class="empty" style="padding:22px 12px">' +
+        '<div class="ttl">Kho chưa có mã hàng này</div><p>Mã hàng chưa từng được nhập kho, hoặc chưa có mã vạch nối với kho.</p></div></div>';
+    }
+    return '<div class="card"><h3>Tồn theo vị trí</h3>' +
+      rows.map(function (s) {
+        return lrow(s.sku + ' · ' + s.loc,
+          '<b>' + num(avail(s)) + '</b> khả dụng',
+          '<span class="second">' + s.wh + ' · thực có ' + num(s.onhand) + (s.reserved ? ' · đang giữ ' + s.reserved : '') + '</span>');
+      }).join('') +
+      '<div style="margin-top:12px;font-size:12.5px;color:var(--muted)">Khả dụng = thực có trừ phần đang giữ cho đơn đã duyệt.</div></div>';
+  }
+});
+
+/* --- Channel góp mặt "Kênh bán" vào trang Sản phẩm --- */
+contributeTab('pim.product', {
+  id: 'listing', label: 'Kênh bán', by: 'channel', order: 40, perm: 'channel:read',
+  render: function (p) {
+    if (!p.listings.length) {
+      return '<div class="card"><h3>Kênh bán</h3><div class="empty" style="padding:22px 12px">' +
+        '<div class="ttl">Chưa niêm yết ở đâu</div><p>Sản phẩm chưa lên sàn nào. Cần đủ dữ liệu bắt buộc và ánh xạ ngành hàng trước khi đẩy.</p>' +
+        '<button class="btn btn-sm btn-secondary" type="button" data-toast="Mở bước soát trước khi đẩy.">Đẩy lên sàn</button></div></div>';
+    }
+    return '<div class="card"><h3>Niêm yết trên sàn</h3>' +
+      p.listings.map(function (l) {
+        var st = l.st === 'linked' ? chip('success', 'Đang bán') :
+                 (l.st === 'error' ? chip('error', 'Đăng lỗi') : chip('neutral', 'Chưa đăng'));
+        return lrow(l.ch, st, l.ext ? '<span class="second">Mã trên sàn ' + l.ext + '</span>' :
+          '<span class="second">chưa có mã trên sàn</span>');
+      }).join('') + '</div>';
+  }
+});
+
+/* --- OMS góp mặt "Đơn hàng" vào trang Hoá đơn --- */
+contributeTab('invoice.doc', {
+  id: 'order', label: 'Đơn hàng', by: 'oms', order: 30, perm: 'oms:read',
+  render: function (i) {
+    var o = ORDERS.filter(function (x) { return x.id === i.order; })[0];
+    if (!o) {
+      return '<div class="card"><h3>Đơn hàng</h3><div class="empty" style="padding:22px 12px">' +
+        '<div class="ttl">Hoá đơn lập tay</div><p>Hoá đơn này không gắn với đơn hàng nào trong hệ thống.</p></div></div>';
+    }
+    return '<div class="card"><h3>Đơn hàng nguồn</h3>' + dl([
+      ['Mã đơn', o.id], ['Kênh bán', o.ch], ['Người mua', o.cus],
+      ['Khách trả', vnd(orderTotal(o))], ['Trạng thái', ORDER_STATUS[o.st].label]
+    ]) + '<div style="margin-top:12px"><button class="btn btn-sm btn-cancel" type="button" data-open="oms|oms.order|' + o.id + '">Mở đơn hàng</button></div></div>';
+  }
+});
+
+/* --- Channel góp mặt "Đồng bộ" vào trang Tồn kho --- */
+contributeTab('wms.stock', {
+  id: 'push', label: 'Đẩy lên sàn', by: 'channel', order: 30, perm: 'channel:read',
+  render: function (s) {
+    return '<div class="card"><h3>Đẩy tồn lên sàn</h3>' +
+      lrow('TikTok Shop', chip('success', 'Đã đẩy ' + num(avail(s))), '<span class="second">12/08 15:04</span>') +
+      lrow('Shopee', chip('success', 'Đã đẩy ' + num(avail(s))), '<span class="second">12/08 15:04</span>') +
+      '<div style="margin-top:12px;font-size:12.5px;color:var(--muted)">Số đẩy lên sàn là số khả dụng, không phải số thực có.</div></div>';
+  }
+});
+
+/* Nối hàm render của tab đóng góp vào panel của từng đối tượng. */
+Object.keys(OBJECTS).forEach(function (kind) {
+  var obj = OBJECTS[kind];
+  var own = obj.panel;
+  obj.panel = function (tab, row, compact) {
+    var t = obj.tabs.filter(function (x) { return x.id === tab; })[0];
+    if (t && t.render) return t.render(row, compact);
+    return own(tab, row, compact);
+  };
+});
+</script>
+
+<script>
+/* =========================================================================
+   4g · SẮP XẾP THEO CỘT
+   Chỉ cột nào khai `sk` mới sắp được — và chỉ cột đó mới đổi con trỏ chuột.
+   Cột không khai thì không hứa gì cả (bảng Kênh bán cố ý để trống).
+   ========================================================================= */
+
+function rank(dict, key) { var ks = Object.keys(dict); var i = ks.indexOf(key); return i === -1 ? 999 : i; }
+
+var SORT_KEYS = {
+  orders: {
+    'Mã đơn':     function (o) { return o.id; },
+    'Khách hàng': function (o) { return o.cus; },
+    'Kênh':       function (o) { return o.ch; },
+    'Giá trị':    function (o) { return orderTotal(o); },
+    'Thanh toán': function (o) { return rank(PAY_STATUS, o.pay); },
+    'Trạng thái': function (o) { return rank(ORDER_STATUS, o.st); },
+    'Tạo lúc':    function (o) { return o.at; }
+  },
+  products: {
+    'SKU cha':      function (p) { return p.sku; },
+    'Tên sản phẩm': function (p) { return p.name; },
+    'Phân loại':    function (p) { return p.variants.length; },
+    'Giá bán':      function (p) { return p.price[0]; },
+    'Khả dụng':     function (p) { return p.avail; },
+    'Dữ liệu':      function (p) { return p.ready; },
+    'Trạng thái':   function (p) { return rank(PRODUCT_STATUS, p.st); }
+  },
+  stock: {
+    'Mã SKU':   function (s) { return s.sku; },
+    'Tên hàng': function (s) { return s.name; },
+    'Vị trí':   function (s) { return s.loc; },
+    'Khả dụng': function (s) { return avail(s); },
+    'Đang giữ': function (s) { return s.reserved; },
+    'Thực có':  function (s) { return s.onhand; }
+  },
+  invoices: {
+    'Số hoá đơn':   function (i) { return i.no; },
+    'Người mua':    function (i) { return i.buyer; },
+    'Tổng tiền':    function (i) { return i.total; },
+    'Cơ quan thuế': function (i) { return rank(TAX_STATE, i.tax); },
+    'Nghiệp vụ':    function (i) { return rank(BIZ_STATE, i.biz); },
+    'Lập lúc':      function (i) { return i.at; }
+  }
+};
+
+Object.keys(SORT_KEYS).forEach(function (screen) {
+  var ds = DATASETS[screen];
+  if (!ds) return;
+  ds.cols.forEach(function (c) {
+    if (SORT_KEYS[screen][c.label]) c.sk = SORT_KEYS[screen][c.label];
+  });
+});
+
+/* Mặc định của mỗi VIEW là câu trả lời đúng cho câu hỏi của view đó.
+   Làm đúng chỗ này thì phần lớn người dùng không bao giờ phải bấm sort. */
+var VIEW_SORT = {
+  orders:   { todo: ['Tạo lúc', 1], unpaid: ['Giá trị', -1], ship: ['Tạo lúc', 1] },
+  products: { gap: ['Dữ liệu', 1], unlisted: ['Tên sản phẩm', 1] },
+  stock:    { low: ['Khả dụng', 1], reserved: ['Đang giữ', -1] },
+  invoices: { rejected: ['Lập lúc', 1] }
+};
+Object.keys(VIEW_SORT).forEach(function (screen) {
+  var ds = DATASETS[screen];
+  if (!ds) return;
+  ds.views.forEach(function (v) {
+    var d = VIEW_SORT[screen][v.id];
+    if (d) v.defSort = { label: d[0], dir: d[1] };
+  });
+});
+
+/* Ba nhịp: tăng → giảm → về mặc định của view. Nhịp thứ ba luôn cần và hay bị quên. */
+function sortState(screen) {
+  var s = S.sort[screen];
+  if (s) return s;
+  var v = currentView(screen);
+  return v && v.defSort ? { label: v.defSort.label, dir: v.defSort.dir, auto: true } : null;
+}
+function cycleSort(screen, label) {
+  var s = S.sort[screen];
+  if (!s || s.label !== label) S.sort[screen] = { label: label, dir: 1 };
+  else if (s.dir === 1) S.sort[screen] = { label: label, dir: -1 };
+  else S.sort[screen] = null;
+}
+function applySort(screen, rows) {
+  var st = sortState(screen);
+  if (!st) return rows;
+  var ds = DATASETS[screen];
+  var col = ds.cols.filter(function (c) { return c.label === st.label; })[0];
+  if (!col || !col.sk) return rows;
+  return rows.slice().sort(function (a, b) {
+    var x = col.sk(a), y = col.sk(b);
+    /* Không rõ luôn xuống cuối, bất kể chiều — xem Luật 12. */
+    if (x === null || x === undefined) return 1;
+    if (y === null || y === undefined) return -1;
+    if (typeof x === 'string') return x.localeCompare(y, 'vi') * st.dir;
+    return (x < y ? -1 : x > y ? 1 : 0) * st.dir;
+  });
+}
+</script>
+
+<script>
+/* =========================================================================
+   5 · MÀN HÌNH — năm loại trang, dùng chung một bộ khuôn
+   ========================================================================= */
+
+/* ---------------- truy vấn dữ liệu ---------------- */
+function currentView(screen) {
+  var ds = DATASETS[screen];
+  var id = S.view[screen] || ds.views[0].id;
+  return ds.views.filter(function (v) { return v.id === id; })[0] || ds.views[0];
+}
+function filteredRows(screen) {
+  var ds = DATASETS[screen];
+  if (!ds) return [];
+  var v = currentView(screen);
+  var q = (S.query[screen] || '').trim().toLowerCase();
+  var rows = ds.rows.filter(v.f).filter(function (r) {
+    if (!q) return true;
+    return ds.search(r).toLowerCase().indexOf(q) !== -1;
+  });
+  return applySort(screen, rows);
+}
+function currentRow(screen) {
+  var rows = filteredRows(screen);
+  if (!rows.length) return null;
+  var i = Math.min(S.cursor[screen] || 0, rows.length - 1);
+  return rows[i];
+}
+function markedRows(screen) {
+  var ds = DATASETS[screen];
+  var m = S.marked[screen] || {};
+  return ds.rows.filter(function (r) { return m[r[ds.key]]; });
+}
+function rowById(kind, id) {
+  var found = null;
+  Object.keys(DATASETS).forEach(function (k) {
+    var ds = DATASETS[k];
+    if (ds.kind !== kind) return;
+    ds.rows.forEach(function (r) { if (String(r[ds.key]) === String(id)) found = r; });
+  });
+  return found;
+}
+function moduleBadge(moduleId) {
+  var n = 0, hot = false;
+  QUEUES.forEach(function (q) {
+    if (q.module !== moduleId) return;
+    n += q.items.length;
+    if (q.items.some(function (i) { return i.urgent; })) hot = true;
+  });
+  return n ? { n: n, hot: hot } : null;
+}
+function totalQueueCount() {
+  return QUEUES.filter(function (q) { return can(q.perm); })
+    .reduce(function (a, q) { return a + q.items.length; }, 0);
+}
+
+/* =========================================================================
+   Trang 1 · VIỆC CỦA TÔI
+   ========================================================================= */
+function visibleQueues() { return QUEUES.filter(function (q) { return can(q.perm); }); }
+function currentQueue() {
+  var qs = visibleQueues();
+  if (!qs.length) return null;
+  var q = qs.filter(function (x) { return x.id === S.queue; })[0];
+  if (!q) { q = qs.filter(function (x) { return x.items.length; })[0] || qs[0]; S.queue = q.id; }
+  return q;
+}
+function queueItems() { var q = currentQueue(); return q ? q.items : []; }
+
+SCREENS.work = function () {
+  var qs = visibleQueues();
+  var q = currentQueue();
+  var items = q ? q.items : [];
+  if (S.qIndex >= items.length) S.qIndex = Math.max(0, items.length - 1);
+  var it = items[S.qIndex];
+  var totalLeft = totalQueueCount();
+
+  var rail = '<div class="cap">Việc của tôi · ' + seller().name + '</div>';
+  qs.forEach(function (x) {
+    var hot = x.items.some(function (i) { return i.urgent; });
+    rail += '<button class="qb ' + (x.items.length ? '' : 'done') + '" type="button" data-queue="' + x.id + '"' +
+      ' aria-current="' + (q && x.id === q.id) + '">' +
+      '<span class="sq" style="background:' + x.color + '"></span><span>' + x.label + '</span>' +
+      '<span class="n ' + (hot ? 'hot' : '') + '">' + x.items.length + '</span></button>';
+  });
+
+  var done = S.qDone;
+  var total = items.length + done;
+  var list = '<div class="qhead"><h2>' + (q ? q.label : 'Việc của tôi') + '</h2>' +
+    '<div class="meta">' + (items.length ? 'Còn ' + items.length + ' việc' : 'Đã xong nhóm này') +
+    ' · đã xử lý ' + done + ' hôm nay</div>' +
+    '<div class="qbar"><i style="width:' + (total ? Math.round(done / total * 100) : 100) + '%"></i></div></div>';
+  if (!items.length) {
+    list += '<div class="empty"><div class="ttl">Sạch hàng đợi</div><p>Không còn việc nào trong nhóm này.</p></div>';
+  } else {
+    items.forEach(function (x, i) {
+      list += '<button class="qitem ' + (x.urgent ? 'urgent' : '') + '" type="button" data-qitem="' + i + '"' +
+        ' aria-current="' + (i === S.qIndex) + '">' +
+        '<div class="t1">' + x.title + '</div><div class="t2">' + x.sub + '</div>' +
+        '<div class="t3"><span>' + q.module + '</span><span class="age">' + x.age + '</span></div></button>';
+    });
+  }
+
+  var pane;
+  if (!it) {
+    var nextQ = qs.filter(function (x) { return x.items.length; })[0];
+    pane = '<div class="empty" style="padding-top:80px"><div class="ttl">' +
+      (totalLeft ? 'Xong nhóm này' : 'Hết việc hôm nay') + '</div>' +
+      '<p>' + (totalLeft ? 'Còn ' + totalLeft + ' việc ở nhóm khác.' : 'Không còn việc nào đang chờ bạn ở gian hàng ' + seller().name + '.') + '</p>' +
+      (nextQ ? '<button class="btn btn-md btn-primary" type="button" data-queue="' + nextQ.id + '">Sang ' + nextQ.label.toLowerCase() + '</button>' : '') +
+      '</div>';
+  } else {
+    pane =
+      '<div class="whead"><h1>' + it.title + '</h1>' +
+      '<div class="sub">' + it.sub + ' · chờ ' + it.age + ' · việc ' + (S.qIndex + 1) + '/' + items.length + '</div></div>' +
+      '<div class="why">' + it.why + '</div>' +
+      '<div class="grid2"><div>' +
+        '<div class="card"><h3>Dữ kiện để quyết</h3>' + dl(it.facts) + '</div>' +
+        (it.lines ? '<div class="card"><h3>' + (it.linesTitle || 'Chi tiết') + '</h3>' +
+          it.lines.map(function (l) { return lrow(l[0], l[1]); }).join('') + '</div>' : '') +
+      '</div><div>' +
+        '<div class="card"><h3>Liên quan</h3>' +
+          (it.links || []).map(function (l) {
+            return '<div class="lrow"><span class="l">' + l.label + '</span>' +
+              '<button class="lnk" type="button" data-open="' + l.module + '|' + l.kind + '|' + l.id + '">' + l.id + '</button></div>';
+          }).join('') +
+        '</div>' +
+        (it.timeline ? '<div class="card"><h3>Dòng thời gian</h3><div class="tl">' +
+          it.timeline.map(function (t) { return tlEvent(t[0], t[1], t[2]); }).join('') + '</div></div>' : '') +
+      '</div></div>' +
+      '<div class="actionbar">' +
+        '<button class="btn btn-md btn-primary" type="button" data-do="primary">' + it.action + '<kbd>E</kbd></button>' +
+        (it.action2 ? '<button class="btn btn-sm btn-cancel" type="button" data-do="alt">' + it.action2 + '</button>' : '') +
+        '<button class="btn btn-sm btn-cancel" type="button" data-do="later">Để sau<kbd>X</kbd></button>' +
+        '<span class="hint"><span class="kbd">J</span><span class="kbd">K</span> đổi việc · xong là tự sang việc kế tiếp</span>' +
+      '</div>';
+  }
+
+  return '<div class="work">' +
+    '<div class="qrail">' + rail + '</div>' +
+    '<div class="qitems">' + list + '</div>' +
+    '<div class="workpane">' + pane + '</div>' +
+    '</div>';
+};
+
+function doQueueAction(which) {
+  var q = currentQueue();
+  if (!q || !q.items.length) return;
+  var it = q.items[S.qIndex];
+  if (which === 'later') {
+    S.qIndex = (S.qIndex + 1) % q.items.length;
+    render();
+    toast('Để sau — việc vẫn nằm trong hàng đợi.');
+    return;
+  }
+  var label = which === 'alt' ? it.action2 : it.action;
+  var finish = function () {
+    q.items.splice(S.qIndex, 1);
+    S.qDone++;
+    if (S.qIndex >= q.items.length) S.qIndex = Math.max(0, q.items.length - 1);
+    render();
+    toast(label + ' — ' + it.title + '.', it.irreversible ? null : 'Hoàn tác');
+  };
+  if (which !== 'alt' && it.irreversible) {
+    confirmModal(label + '?', it.confirm || 'Việc này gửi dữ liệu ra ngoài hệ thống và không hoàn tác được.', label, finish);
+  } else {
+    finish();
+  }
+}
+
+/* =========================================================================
+   Trang 2 · DANH SÁCH (bàn dữ liệu hai khung)
+   ========================================================================= */
+function dataScreen(screen) {
+  var ds = DATASETS[screen];
+  var rows = filteredRows(screen);
+  var cur = Math.min(S.cursor[screen] || 0, Math.max(0, rows.length - 1));
+  var marks = S.marked[screen] || {};
+  var nMarked = Object.keys(marks).filter(function (k) { return marks[k]; }).length;
+
+  /* Băng 1: đường dẫn · tên trang · view tab · hành động — cùng một dòng.
+     Băng 2: tìm · lọc · đếm. Bốn băng cũ gộp còn hai, bảng bắt đầu cao hơn ~70px. */
+  var head =
+    '<div class="phead">' +
+      '<span class="crumb">' + ds.group + '</span>' +
+      '<h1>' + ds.title + '</h1>' +
+      '<span class="sep"></span>' +
+      '<div class="viewtabs">' +
+        ds.views.map(function (v) {
+          return '<button class="viewtab" type="button" data-view="' + v.id + '" aria-pressed="' +
+            (currentView(screen).id === v.id) + '">' + v.label + '<span class="n">' + ds.rows.filter(v.f).length + '</span></button>';
+        }).join('') +
+        '<button class="viewtab ghost" type="button" data-toast="Đã lưu view. Mọi bộ lọc nằm trên URL nên gửi liên kết là gửi cả câu hỏi.">+ Lưu view</button>' +
+      '</div>' +
+      '<div class="acts">' + (ds.headActions || '') + '</div>' +
+    '</div>' +
+    '<div class="filterbar">' +
+      '<div class="searchbox"><span aria-hidden="true" style="color:var(--muted)">⌕</span>' +
+      '<input id="listsearch" value="' + esc(S.query[screen] || '') + '" placeholder="' + ds.searchHint + '" aria-label="Tìm trong ' + ds.title + '"></div>' +
+      (ds.filters || []).map(function (f) { return '<button class="fbtn' + (f.on ? ' on' : '') + '" type="button" data-toast="' + esc(f.toast || 'Bộ lọc ' + f.label) + '">' + f.label + '</button>'; }).join('') +
+      '<span class="count">' + rows.length + ' / ' + ds.rows.length + ' dòng</span>' +
+    '</div>';
+
+  var table;
+  if (!rows.length) {
+    table = '<div class="empty"><div class="ttl">' + ds.emptyTitle + '</div><p>' + ds.emptyBody + '</p>' +
+      (ds.emptyAction || '') + '</div>';
+  } else {
+    var st = sortState(screen);
+    var nOn = rows.filter(function (r) { return marks[r[ds.key]]; }).length;
+    var allCls = nOn === 0 ? '' : (nOn === rows.length ? 'on' : 'some');
+    var allSym = allCls === 'some' ? '–' : '✓';
+    table = '<div class="tablewrap"><table><thead><tr>' +
+      '<th class="pick"><span class="tick head ' + allCls + '" data-all="1" role="checkbox"' +
+        ' aria-checked="' + (allCls === 'on' ? 'true' : allCls === 'some' ? 'mixed' : 'false') + '"' +
+        ' title="Chọn tất cả ' + rows.length + ' dòng đang lọc">' + allSym + '</span></th>' +
+      ds.cols.map(function (c) {
+        var on = st && st.label === c.label;
+        return '<th class="' + (c.num ? 'num ' : '') + (c.sk ? 'sortable ' : '') + (on ? 'sorted' : '') + '"' +
+          (c.sk ? ' data-sort="' + esc(c.label) + '"' : '') + '>' + c.label +
+          (on ? '<span class="ar">' + (st.dir === 1 ? '▲' : '▼') + '</span>' : '') + '</th>';
+      }).join('') +
+      '</tr></thead><tbody>' +
+      rows.map(function (r, i) {
+        var id = r[ds.key];
+        return '<tr data-row="' + i + '" class="' + (i === cur ? 'cur' : '') + ' ' + (marks[id] ? 'marked' : '') + '">' +
+          '<td><span class="tick ' + (marks[id] ? 'on' : '') + '" data-tick="' + id + '">✓</span></td>' +
+          ds.cols.map(function (c) {
+            return '<td class="' + (c.num ? 'num ' : '') + (c.mono ? 'mono' : '') + '">' + c.cell(r) + '</td>';
+          }).join('') + '</tr>';
+      }).join('') + '</tbody></table></div>';
+  }
+
+  /* Hành động trên tập không nhìn thấy hết phải xác nhận có nêu cả số lẫn bộ lọc đang áp. */
+  var vlabel = currentView(screen).label;
+  var allSel = nMarked && nMarked === rows.length;
+  var bulk = nMarked ? '<div class="bulk"><b>' + nMarked + '</b> dòng đang chọn' +
+    (allSel ? ' · toàn bộ kết quả của view “' + vlabel + '”' : '') +
+    (ds.bulkActions || []).map(function (b) {
+      return '<button type="button" data-toast="' + esc(b.label + ' · ' + nMarked + ' dòng đang lọc theo “' + vlabel + '”. ' + b.toast) + '">' + b.label + '</button>';
+    }).join('') + '</div>' : '';
+
+  return head + '<div class="split"><div style="display:flex;flex-direction:column;min-height:0;position:relative">' +
+    table + bulk + '</div>' + peekPane(screen, rows[cur]) + '</div>';
+}
+
+function peekPane(screen, row) {
+  var ds = DATASETS[screen];
+  var pins = '<div class="pinbar">' +
+    (S.pins.length
+      ? S.pins.map(function (p, i) {
+          return '<button class="pin" type="button" data-gopin="' + i + '">' + p.id +
+            '<span class="x" data-unpin="' + i + '">×</span></button>';
+        }).join('')
+      : '<span class="empty">Chưa ghim gì · nhấn P để ghim và đối chiếu</span>') +
+    '</div>';
+
+  if (!row) {
+    return '<aside class="peek">' + pins +
+      '<div class="empty"><div class="ttl">Chưa chọn dòng nào</div><p>Bấm một dòng hoặc dùng phím ↑ ↓.</p></div></aside>';
+  }
+
+  var obj = OBJECTS[ds.kind];
+  var tabs = obj.tabs.filter(function (t) { return can(t.perm); });
+  if (!tabs.some(function (t) { return t.id === S.peekTab; })) S.peekTab = tabs[0].id;
+  var pinned = S.pins.some(function (p) { return String(p.id) === String(row[ds.key]); });
+
+  return '<aside class="peek">' + pins +
+    '<div class="otabs">' + tabs.map(function (t) {
+      return '<button class="otab" type="button" data-peektab="' + t.id + '" aria-selected="' + (S.peekTab === t.id) + '">' +
+        '<span>' + t.label + '</span><span class="src">' + t.by + '</span></button>';
+    }).join('') + '</div>' +
+    '<div class="peekbody">' +
+      '<h2>' + obj.title(row) + '</h2>' +
+      '<div class="psub">' + obj.sub(row) + '</div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">' + obj.chips(row) + '</div>' +
+      obj.panel(S.peekTab, row, true) +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">' +
+        obj.actions(row) +
+        '<button class="btn btn-sm btn-cancel" type="button" data-pin="1">' + (pinned ? 'Bỏ ghim' : 'Ghim') + '</button>' +
+        '<button class="btn btn-sm btn-cancel" type="button" data-open="' + ds.module + '|' + ds.kind + '|' + row[ds.key] + '">Mở trang đầy đủ</button>' +
+      '</div>' +
+    '</div></aside>';
+}
+
+/* =========================================================================
+   Trang 3 · ĐỐI TƯỢNG (trang đầy đủ)
+   ========================================================================= */
+SCREENS.object = function () {
+  var o = S.obj;
+  var row = rowById(o.kind, o.id);
+  var obj = OBJECTS[o.kind];
+  if (!row) {
+    return '<div class="scrollarea"><div class="empty"><div class="ttl">Không tìm thấy</div>' +
+      '<p>Đối tượng ' + o.id + ' không còn tồn tại hoặc không thuộc gian hàng ' + seller().name + '.</p></div></div>';
+  }
+  var tabs = obj.tabs.filter(function (t) { return can(t.perm); });
+  if (!tabs.some(function (t) { return t.id === o.tab; })) o.tab = tabs[0].id;
+  var m = MODULES.filter(function (x) { return x.id === o.module; })[0];
+  var pinned = S.pins.some(function (p) { return String(p.id) === String(o.id); });
+
+  return '<div class="phead">' +
+      '<div class="crumbs"><button class="lnk" type="button" data-go="' + m.screen + '">' + m.label + '</button>' +
+      '<span>·</span><span>' + o.id + '</span></div>' +
+      '<div class="ptitle"><div><h1>' + obj.title(row) + '</h1><div class="sub">' + obj.sub(row) + '</div></div>' +
+      '<div class="acts">' + obj.actions(row) +
+      '<button class="btn btn-sm btn-cancel" type="button" data-pin="1">' + (pinned ? 'Bỏ ghim' : 'Ghim') + '</button></div></div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 10px">' + obj.chips(row) + '</div>' +
+    '</div>' +
+    '<div class="otabs" style="padding:0 22px">' + tabs.map(function (t) {
+      return '<button class="otab" type="button" data-tab="' + t.id + '" aria-selected="' + (o.tab === t.id) + '">' +
+        '<span>' + t.label + '</span><span class="src">' + t.by + '</span></button>';
+    }).join('') + '</div>' +
+    '<div class="scrollarea">' + obj.panel(o.tab, row, false) + '</div>';
+};
+
+/* =========================================================================
+   Trang 4 · MÁY QUÉT
+   ========================================================================= */
+SCREENS.scan = function () {
+  if (!S.scanTask) {
+    return '<div class="scanwrap"><div class="scan">' +
+      '<div class="scanhead"><h1>Máy quét</h1></div>' +
+      '<p style="color:var(--muted);font-size:13.5px;margin:0 0 18px">Chọn việc cần làm. Màn quét dùng mật độ lớn, không có menu bên, và phím Enter luôn là gửi.</p>' +
+      SCAN_TASKS.map(function (t) {
+        return '<button class="radio" type="button" data-scan="' + t.id + '" aria-checked="false" style="width:100%;text-align:left">' +
+          '<span class="dot"></span><span class="txt"><b>' + t.label + '</b><span>' + t.sub + '</span></span>' +
+          '<span class="chip chip-neutral sm" style="margin-left:auto">' + t.count + '</span></button>';
+      }).join('') +
+      '</div></div>';
+  }
+  var t = SCAN_TASKS.filter(function (x) { return x.id === S.scanTask; })[0];
+  var step = t.steps[Math.min(S.scanStep, t.steps.length - 1)];
+  return '<div class="scanwrap"><div class="scan">' +
+    '<div class="scanhead"><h1>' + t.label + '</h1>' +
+      '<button class="btn btn-sm btn-cancel" type="button" data-go="scan">Thoát</button></div>' +
+    '<div class="scanstep">' + t.steps.map(function (s, i) {
+      return '<div class="' + (i < S.scanStep ? 'ok' : (i === S.scanStep ? 'on' : '')) + '"></div>';
+    }).join('') + '</div>' +
+    '<div class="scanbig"><div class="lbl">' + step.context + '</div><div class="val">' + step.big + '</div></div>' +
+    (step.field
+      ? '<div class="scanfield' + (S.scanErr ? ' err' : '') + '"><div class="cap">' +
+        (S.scanErr ? S.scanErr : step.field) + '</div>' +
+        '<input id="scaninput" inputmode="none" autocomplete="off" aria-label="' + step.field + '" placeholder="' + step.placeholder + '"></div>'
+      : '') +
+    (step.list ? '<div class="scanbig scanlist">' + step.list.map(function (l) {
+      return '<div class="r ' + (l[2] ? 'done' : '') + '"><span>' + l[0] + '</span><b>' + l[1] + '</b></div>';
+    }).join('') + '</div>' : '') +
+    '<div style="display:flex;gap:10px;margin-top:6px">' +
+      '<button class="btn btn-md btn-primary" type="button" data-scanstep="1" style="flex:1">' + step.action + '</button>' +
+      (step.alt ? '<button class="btn btn-md btn-cancel" type="button" data-toast="' + esc(step.altToast || step.alt) + '">' + step.alt + '</button>' : '') +
+    '</div>' +
+    '<p style="color:var(--muted);font-size:12.5px;margin-top:14px;text-align:center">Máy quét phát Enter để gửi. Ô quét luôn giữ con trỏ.</p>' +
+    '</div></div>';
+};
+
+function startScanTask(id) { S.scanTask = id; S.scanStep = 0; S.scanErr = null; render(); }
+function scanAdvance() {
+  var t = SCAN_TASKS.filter(function (x) { return x.id === S.scanTask; })[0];
+  S.scanErr = null;
+  if (S.scanStep < t.steps.length - 1) { S.scanStep++; render(); }
+  else { toast(t.doneToast); S.scanTask = null; S.scanStep = 0; render(); }
+}
+function scanSubmit(value) {
+  var t = SCAN_TASKS.filter(function (x) { return x.id === S.scanTask; })[0];
+  var step = t.steps[S.scanStep];
+  if (step.expect && value && value.trim() && value.trim().toUpperCase().indexOf(step.expect) === -1) {
+    S.scanErr = 'Sai mã — cần ' + step.expect + ', vừa quét ' + esc(value.trim());
+    render();
+    return;
+  }
+  scanAdvance();
+}
+
+/* =========================================================================
+   Trang 5 · CẤU HÌNH và 403
+   ========================================================================= */
+SCREENS.settings = function () {
+  return '<div class="phead"><div class="crumbs"><span>Hệ thống</span><span>·</span><span>Cấu hình</span></div>' +
+    '<div class="ptitle"><div><h1>Cấu hình</h1><div class="sub">' + seller().name + '</div></div></div></div>' +
+    '<div class="scrollarea"><div class="grid3">' +
+    SETTINGS_GROUPS.map(function (g) {
+      return '<div class="card"><h3>' + g.by + '</h3>' +
+        '<div style="font-size:15px;font-weight:700;margin-bottom:4px">' + g.label + '</div>' +
+        '<div style="font-size:13px;color:var(--ink-2);margin-bottom:12px">' + g.desc + '</div>' +
+        (g.scope ? '<div style="margin-bottom:12px">' + chip(g.scopeKind, g.scope) + '</div>' : '') +
+        '<button class="btn btn-sm btn-secondary" type="button" data-toast="' + esc(g.toast) + '">Mở</button></div>';
+    }).join('') + '</div></div>';
+};
+
+SCREENS.denied = function () {
+  var m = S.deniedFor || { label: 'màn hình này', perm: '' };
+  return '<div class="scrollarea"><div class="deny">' +
+    '<div class="code">403 · thiếu quyền</div>' +
+    '<h2>Tài khoản của bạn không mở được ' + m.label.toLowerCase() + '</h2>' +
+    '<p>Màn hình này cần quyền <code>' + m.perm + '</code>. Vai trò <code>' + S.role + '</code> hiện có: <code>' +
+    ROLES[S.role].perms.join(' ') + '</code>.</p>' +
+    '<p style="color:var(--muted)">Phiên đăng nhập của bạn vẫn còn. Nếu bạn cần quyền này để làm việc, hãy đề nghị quản trị viên của gian hàng cấp thêm.</p>' +
+    '<button class="btn btn-sm btn-secondary" type="button" data-go="work">Về Việc của tôi</button>' +
+    '</div></div>';
+};
+</script>
+
+<script>
+/* Mọi màn danh sách dùng chung một khuôn bàn dữ liệu. */
+Object.keys(DATASETS).forEach(function (screen) {
+  SCREENS[screen] = function () { return dataScreen(screen); };
+});
+</script>
+
+<script>
+/* =========================================================================
+   6 · CHẠY MÁY — điều hướng, thanh lệnh, lớp phủ, bàn phím
+   ========================================================================= */
+
+/* ---------------- sidebar ---------------- */
+function renderSidebar() {
+  var h = '';
+  var work = MODULES.filter(function (m) { return m.id === 'work'; })[0];
+  var qTotal = totalQueueCount();
+  h += '<button class="navb" type="button" data-go="work" ' + (S.screen === 'work' ? 'aria-current="page"' : '') + '>' +
+    svgIcon(work.icon) + '<span class="lbl">' + work.label + '</span>' +
+    (qTotal ? '<span class="badge hot lbl">' + qTotal + '</span>' : '') + '</button>';
+
+  GROUPS.forEach(function (g) {
+    var items = MODULES.filter(function (m) { return m.group === g && can(m.perm); });
+    if (!items.length) return;
+    h += '<div class="grp">' + g + '</div>';
+    items.sort(function (a, b) { return a.order - b.order; }).forEach(function (m) {
+      var active = S.screen === m.screen || (S.screen === 'object' && S.obj && S.obj.module === m.id);
+      var badge = moduleBadge(m.id);
+      h += '<button class="navb" type="button" data-go="' + m.screen + '"' + (active ? ' aria-current="page"' : '') + '>' +
+        svgIcon(m.icon) + '<span class="lbl">' + m.label + '</span>' +
+        (badge ? '<span class="badge ' + (badge.hot ? 'hot' : '') + ' lbl">' + badge.n + '</span>' : '') + '</button>';
+    });
+  });
+  el('sidebar').innerHTML = h;
+  each(el('sidebar'), '[data-go]', function (b) {
+    b.onclick = function () { go(b.dataset.go); };
+  });
+}
+
+function go(screen) {
+  var m = moduleOf(screen);
+  if (m && !can(m.perm)) { S.screen = 'denied'; S.deniedFor = m; render(); return; }
+  S.screen = screen;
+  S.obj = null;
+  if (screen === 'scan') { S.scanTask = null; S.scanStep = 0; S.scanPicked = []; }
+  render();
+}
+
+function openObject(module, kind, id, tab) {
+  S.obj = { module: module, kind: kind, id: id, tab: tab || 'sum' };
+  S.screen = 'object';
+  render();
+}
+
+/* ---------------- thanh dưới ---------------- */
+function renderStatusbar() {
+  var bar = el('statusbar');
+  var ds = DATASETS[S.screen];
+  if (!ds) {
+    bar.innerHTML = '<span>' + seller().name + ' · ' + seller().note + '</span>' +
+      '<span class="keys"><span class="kbd">Ctrl K</span> thanh lệnh</span>';
+    return;
+  }
+  var rows = filteredRows(S.screen);
+  var marks = markedRows(S.screen);
+  var agg = '';
+  if (marks.length) {
+    var t = marks.reduce(function (a, r) { return a + (ds.sum ? ds.sum(r) : 0); }, 0);
+    agg = '<span class="agg">' + marks.length + ' dòng chọn' + (ds.sum ? ' · ' + (ds.sumFmt ? ds.sumFmt(t) : vnd(t)) : '') + '</span>';
+  }
+  bar.innerHTML = '<span><b>' + rows.length + '</b> / ' + ds.rows.length + ' dòng</span>' + agg +
+    '<span class="keys"><span class="kbd">↑</span><span class="kbd">↓</span> di chuyển' +
+    '<span class="kbd">Space</span> chọn<span class="kbd">P</span> ghim<span class="kbd">Enter</span> mở' +
+    '<span class="kbd">Ctrl K</span> lệnh</span>';
+}
+
+/* ---------------- vẽ toàn bộ ---------------- */
+function render() {
+  document.documentElement.setAttribute('data-density', S.density);
+  el('sellername').textContent = seller().name;
+  el('whoname').textContent = ROLES[S.role].name;
+  el('whorole').textContent = S.role;
+  el('whorole').className = 'rolebadge r' + ROLES[S.role].rank;
+  el('whoav').textContent = ROLES[S.role].name.charAt(0);
+  el('body').className = 'body' + (S.screen === 'scan' && S.scanTask ? ' scan' : '');
+  renderSidebar();
+  var fn = SCREENS[S.screen] || SCREENS.work;
+  el('canvas').innerHTML = fn();
+  renderStatusbar();
+  bindCanvas();
+}
+
+/* ---------------- ràng buộc sự kiện trong canvas ---------------- */
+function bindCanvas() {
+  var c = el('canvas');
+  each(c, '[data-go]', function (b) { b.onclick = function () { go(b.dataset.go); }; });
+  each(c, '[data-view]', function (b) {
+    b.onclick = function () { S.view[S.screen] = b.dataset.view; S.cursor[S.screen] = 0; S.marked[S.screen] = {}; render(); };
+  });
+  each(c, '[data-all]', function (b) {
+    b.onclick = function () {
+      var ds = DATASETS[S.screen], rows = filteredRows(S.screen);
+      var m = S.marked[S.screen] || (S.marked[S.screen] = {});
+      var nOn = rows.filter(function (r) { return m[r[ds.key]]; }).length;
+      var turnOn = nOn < rows.length;   /* chọn một phần thì bấm là chọn hết, không phải bỏ hết */
+      rows.forEach(function (r) { m[r[ds.key]] = turnOn; });
+      render();
+    };
+  });
+  each(c, '[data-sort]', function (th) {
+    th.onclick = function () { cycleSort(S.screen, th.dataset.sort); S.cursor[S.screen] = 0; render(); };
+  });
+  each(c, '[data-row]', function (tr) {
+    tr.onclick = function (e) {
+      if (e.target.dataset && e.target.dataset.tick !== undefined) {
+        toggleMark(S.screen, e.target.dataset.tick); render(); return;
+      }
+      S.cursor[S.screen] = +tr.dataset.row; S.peekTab = 'sum'; render();
+    };
+    tr.ondblclick = function () {
+      var ds = DATASETS[S.screen], r = filteredRows(S.screen)[+tr.dataset.row];
+      if (ds && r) openObject(ds.module, ds.kind, r[ds.key]);
+    };
+  });
+  each(c, '[data-open]', function (b) {
+    b.onclick = function (e) {
+      e.stopPropagation();
+      var p = b.dataset.open.split('|');
+      openObject(p[0], p[1], p[2], p[3]);
+    };
+  });
+  each(c, '[data-tab]', function (b) {
+    b.onclick = function () { if (S.obj) S.obj.tab = b.dataset.tab; render(); };
+  });
+  each(c, '[data-peektab]', function (b) { b.onclick = function () { S.peekTab = b.dataset.peektab; render(); }; });
+  each(c, '[data-pin]', function (b) { b.onclick = function () { togglePin(); render(); }; });
+  each(c, '[data-unpin]', function (b) {
+    b.onclick = function (e) { e.stopPropagation(); S.pins.splice(+b.dataset.unpin, 1); render(); };
+  });
+  each(c, '[data-gopin]', function (b) {
+    b.onclick = function () { var p = S.pins[+b.dataset.gopin]; openObject(p.module, p.kind, p.id); };
+  });
+  each(c, '[data-queue]', function (b) {
+    b.onclick = function () { S.queue = b.dataset.queue; S.qIndex = 0; render(); };
+  });
+  each(c, '[data-qitem]', function (b) { b.onclick = function () { S.qIndex = +b.dataset.qitem; render(); }; });
+  each(c, '[data-do]', function (b) { b.onclick = function () { doQueueAction(b.dataset.do); }; });
+  each(c, '[data-toast]', function (b) { b.onclick = function () { toast(b.dataset.toast); }; });
+  each(c, '[data-confirm]', function (b) {
+    b.onclick = function () {
+      var p = b.dataset.confirm.split('|');
+      confirmModal(p[0], p[1], p[2], function () { toast(p[3] || p[0]); });
+    };
+  });
+  each(c, '[data-scan]', function (b) { b.onclick = function () { startScanTask(b.dataset.scan); }; });
+  each(c, '[data-scanstep]', function (b) { b.onclick = function () { scanAdvance(); }; });
+  each(c, '[data-drawer]', function (b) { b.onclick = function () { openDrawer(b.dataset.drawer); }; });
+
+  var q = el('listsearch');
+  if (q) {
+    q.oninput = function () {
+      var pos = q.selectionStart;
+      S.query[S.screen] = q.value;
+      S.cursor[S.screen] = 0;
+      render();
+      var n = el('listsearch');
+      if (n) { n.focus(); n.setSelectionRange(pos, pos); }
+    };
+  }
+  var sf = el('scaninput');
+  if (sf) {
+    sf.focus();
+    sf.onkeydown = function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); scanSubmit(sf.value); }
+    };
+  }
+}
+
+function toggleMark(screen, id) {
+  if (!S.marked[screen]) S.marked[screen] = {};
+  S.marked[screen][id] = !S.marked[screen][id];
+}
+function togglePin() {
+  var ds = DATASETS[S.screen];
+  var r = currentRow(S.screen);
+  if (S.obj) { r = { }; }
+  var id, module, kind;
+  if (S.obj) { id = S.obj.id; module = S.obj.module; kind = S.obj.kind; }
+  else if (ds && r) { id = r[ds.key]; module = ds.module; kind = ds.kind; }
+  else return;
+  var at = -1;
+  S.pins.forEach(function (p, i) { if (p.id === id) at = i; });
+  if (at >= 0) S.pins.splice(at, 1);
+  else S.pins.push({ id: id, module: module, kind: kind });
+}
+
+/* ---------------- toast ---------------- */
+var toastTimer;
+function toast(msg, undoLabel) {
+  var t = el('toast');
+  t.innerHTML = '<span>' + msg + '</span>' + (undoLabel ? '<button type="button" id="undobtn">' + undoLabel + '</button>' : '');
+  t.classList.add('on');
+  if (undoLabel) el('undobtn').onclick = function () { t.classList.remove('on'); toast('Đã hoàn tác.'); };
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { t.classList.remove('on'); }, 4200);
+}
+
+/* ---------------- modal ---------------- */
+var modalOK = null;
+function confirmModal(title, body, okLabel, onOk) {
+  el('modaltitle').textContent = title;
+  el('modalbody').innerHTML = body;
+  el('modalacts').innerHTML = '<button class="btn btn-sm btn-cancel" id="mcancel" type="button">Để sau</button>' +
+    '<button class="btn btn-sm btn-primary" id="mok" type="button">' + okLabel + '</button>';
+  modalOK = onOk;
+  el('modalscrim').classList.add('open');
+  el('mcancel').onclick = closeModal;
+  el('mok').onclick = function () { closeModal(); if (modalOK) modalOK(); };
+}
+function closeModal() { el('modalscrim').classList.remove('open'); modalOK = null; }
+el('modalscrim').onclick = function (e) { if (e.target === el('modalscrim')) closeModal(); };
+
+/* ---------------- drawer ---------------- */
+function openDrawer(kind) {
+  var d = DRAWERS[kind];
+  if (!d) return;
+  el('drawertitle').textContent = d.title;
+  el('drawerbody').innerHTML = d.body();
+  el('draweracts').innerHTML = d.acts || '<button class="btn btn-sm btn-cancel" type="button" id="dclose2">Đóng</button>';
+  el('drawer').classList.add('open');
+  el('drawerscrim').classList.add('open');
+  if (d.bind) d.bind();
+  var c2 = el('dclose2');
+  if (c2) c2.onclick = closeDrawer;
+}
+function closeDrawer() { el('drawer').classList.remove('open'); el('drawerscrim').classList.remove('open'); }
+el('drawerx').onclick = closeDrawer;
+el('drawerscrim').onclick = closeDrawer;
+
+/* =========================================================================
+   BẢNG CHỌN NEO TẠI CHỖ
+   Luật 10: bảng chọn mở ra từ chính nút đã bấm. Luật 11: drawer dành cho
+   nội dung phải đọc hoặc form phải điền — chọn một giá trị thì luôn là đây.
+   ========================================================================= */
+function openMenu(anchor, html, align) {
+  var m = el('menu');
+  m.innerHTML = html;
+  m.classList.add('open');
+  el('menuscrim').classList.add('open');
+  var r = anchor.getBoundingClientRect();
+  var w = m.offsetWidth;
+  var left = align === 'right' ? r.right - w : r.left;
+  left = Math.max(8, Math.min(left, window.innerWidth - w - 8));
+  m.style.left = left + 'px';
+  m.style.top = (r.bottom + 6) + 'px';
+  var first = m.querySelector('.mi');
+  if (first) first.focus();
+}
+function closeMenu() { el('menu').classList.remove('open'); el('menuscrim').classList.remove('open'); }
+el('menuscrim').onclick = closeMenu;
+
+/* ---------------- chọn gian hàng ---------------- */
+el('sellerbtn').onclick = function () {
+  var h = '<div class="mcap">Gian hàng</div>';
+  SELLERS.forEach(function (x) {
+    h += '<button class="mi" type="button" data-seller="' + x.id + '" aria-current="' + (x.id === S.seller) + '">' +
+      '<span><b>' + x.name + '</b><span class="t2">' + x.note + '</span></span>' +
+      (x.id === S.seller ? '<span class="ck">✓</span>' : '') + '</button>';
+  });
+  /* Ngưỡng, không phải chọn cứng một trong hai: trên 8 gian hàng thì mọc ô lọc,
+     trên 20 thì mục cuối mở drawer đầy đủ. */
+  if (SELLERS.length > 20) h += '<div class="msep"></div><button class="mi" type="button" data-alls="1">Xem tất cả gian hàng…</button>';
+  openMenu(el('sellerbtn'), h);
+  each(el('menu'), '[data-seller]', function (b) {
+    b.onclick = function () {
+      var was = S.seller;
+      S.seller = b.dataset.seller;
+      closeMenu();
+      if (was !== S.seller) {
+        /* Đổi gian hàng là đổi nghĩa cả màn hình: không giữ lại dòng đang chọn của gian hàng cũ. */
+        S.cursor = {}; S.marked = {}; S.query = {}; S.sort = {}; S.pins = [];
+        toast('Đang xem gian hàng ' + seller().name + '. Mọi con số trên màn hình đã đổi theo.');
+      }
+      render();
+    };
+  });
+};
+
+/* ---------------- tài khoản, vai trò, mật độ ---------------- */
+el('whobtn').onclick = function () {
+  var h = '<div class="mcap">Vai trò đang mô phỏng</div>';
+  Object.keys(ROLES).forEach(function (k) {
+    var r = ROLES[k];
+    h += '<button class="mi" type="button" data-role="' + k + '" aria-current="' + (k === S.role) + '">' +
+      '<span class="roledot" style="background:var(--role-' + r.rank + ')"></span>' +
+      '<span><b>' + k + '</b><span class="t2">' + r.name + ' · ' + r.perms.length + ' quyền</span></span>' +
+      (k === S.role ? '<span class="ck">✓</span>' : '') + '</button>';
+  });
+  /* Mật độ đổi chiều cao dòng, tức là đổi mọi toạ độ đã học thuộc.
+     Nên nó là cấu hình đặt một lần, không phải nút bấm hằng ngày trên thanh trên cùng. */
+  h += '<div class="msep"></div><div class="mcap">Mật độ hiển thị · đặt một lần</div>' +
+    '<div class="mrow">' +
+    ['tight', 'roomy', 'scan'].map(function (d) {
+      var nm = d === 'tight' ? 'Chật' : d === 'roomy' ? 'Thoáng' : 'Rất thoáng';
+      return '<button type="button" data-dens="' + d + '" aria-pressed="' + (S.density === d) + '">' + nm + '</button>';
+    }).join('') + '</div>' +
+    '<div class="msep"></div><button class="mi" type="button" data-toastm="Đăng xuất khỏi mọi ứng dụng VOMA trên trình duyệt này.">Đăng xuất</button>';
+  openMenu(el('whobtn'), h, 'right');
+  each(el('menu'), '[data-role]', function (b) {
+    b.onclick = function () { S.role = b.dataset.role; closeMenu(); render(); };
+  });
+  each(el('menu'), '[data-dens]', function (b) {
+    b.onclick = function () { S.density = b.dataset.dens; closeMenu(); render(); };
+  });
+  each(el('menu'), '[data-toastm]', function (b) {
+    b.onclick = function () { closeMenu(); toast(b.dataset.toastm); };
+  });
+};
+
+/* ---------------- thanh lệnh ---------------- */
+var palOpen = false, palIndex = 0;
+function palResults() {
+  var q = el('palq').value.trim().toLowerCase();
+  return commandIndex().filter(function (c) {
+    if (c.perm && !can(c.perm)) return false;
+    if (!q) return true;
+    return (c.label + ' ' + (c.hint || '')).toLowerCase().indexOf(q) !== -1;
+  }).slice(0, 24);
+}
+function renderPal() {
+  var rs = palResults(), h = '', sect = null;
+  if (!rs.length) {
+    h = '<div class="empty"><div class="ttl">Không tìm thấy</div><p>Thử mã đơn, SKU, số hoá đơn, tên khách hàng, hoặc tên việc muốn làm.</p></div>';
+  }
+  rs.forEach(function (c, i) {
+    if (c.group !== sect) { sect = c.group; h += '<div class="sect">' + sect + '</div>'; }
+    h += '<div class="it ' + (i === palIndex ? 'hl' : '') + '" data-i="' + i + '"><span>' + c.label + '</span>' +
+      '<span class="from">' + c.module + '</span></div>';
+  });
+  el('pallist').innerHTML = h;
+  each(el('pallist'), '[data-i]', function (d) { d.onclick = function () { runPal(+d.dataset.i); }; });
+}
+function runPal(i) {
+  var rs = palResults();
+  if (!rs[i]) return;
+  closePal();
+  rs[i].run();
+}
+function openPal() {
+  palOpen = true; palIndex = 0;
+  el('palscrim').classList.add('open');
+  el('palq').value = '';
+  renderPal();
+  el('palq').focus();
+}
+function closePal() { palOpen = false; el('palscrim').classList.remove('open'); }
+el('omnibtn').onclick = openPal;
+el('palscrim').onclick = function (e) { if (e.target === el('palscrim')) closePal(); };
+el('palq').oninput = function () { palIndex = 0; renderPal(); };
+
+/* ---------------- bàn phím ---------------- */
+document.addEventListener('keydown', function (e) {
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+    e.preventDefault(); palOpen ? closePal() : openPal(); return;
+  }
+  if (palOpen) {
+    if (e.key === 'Escape') closePal();
+    else if (e.key === 'ArrowDown') { e.preventDefault(); palIndex = Math.min(palIndex + 1, palResults().length - 1); renderPal(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); palIndex = Math.max(palIndex - 1, 0); renderPal(); }
+    else if (e.key === 'Enter') { e.preventDefault(); runPal(palIndex); }
+    return;
+  }
+  if (e.key === 'Escape') { closeMenu(); closeDrawer(); closeModal(); return; }
+
+  var tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+
+  /* hàng đợi việc */
+  if (S.screen === 'work') {
+    var items = queueItems();
+    if (!items.length) return;
+    var k = e.key.toLowerCase();
+    if (k === 'j' || e.key === 'ArrowDown') { e.preventDefault(); S.qIndex = Math.min(S.qIndex + 1, items.length - 1); render(); }
+    else if (k === 'k' || e.key === 'ArrowUp') { e.preventDefault(); S.qIndex = Math.max(S.qIndex - 1, 0); render(); }
+    else if (k === 'e' || e.key === 'Enter') { e.preventDefault(); doQueueAction('primary'); }
+    else if (k === 'x') { e.preventDefault(); doQueueAction('later'); }
+    return;
+  }
+
+  /* bàn dữ liệu */
+  var ds = DATASETS[S.screen];
+  if (!ds) return;
+  var rows = filteredRows(S.screen);
+  var cur = S.cursor[S.screen] || 0;
+  if (e.key === 'ArrowDown') { e.preventDefault(); S.cursor[S.screen] = Math.min(cur + 1, rows.length - 1); S.peekTab = 'sum'; render(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); S.cursor[S.screen] = Math.max(cur - 1, 0); S.peekTab = 'sum'; render(); }
+  else if (e.key === ' ') { e.preventDefault(); var r = rows[cur]; if (r) { toggleMark(S.screen, r[ds.key]); render(); } }
+  else if (e.key === 'p' || e.key === 'P') { e.preventDefault(); togglePin(); render(); }
+  else if (e.key === 'Enter') {
+    e.preventDefault();
+    var rr = rows[cur];
+    if (rr) openObject(ds.module, ds.kind, rr[ds.key]);
+  }
+});
+
+render();
+</script>
