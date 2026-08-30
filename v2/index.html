@@ -73,6 +73,7 @@
   .btn-danger { background: var(--surface); color: var(--text-dark); border: 1px solid var(--error); }
   .btn-danger:hover { background: var(--st-error-bg); }
   .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .navb:disabled, .otab:disabled, .it.dis, .qb:disabled { opacity: .45; cursor: not-allowed; }
   .btn:focus-visible, .lnk:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
   .btn kbd { font-family: var(--mono); font-size: 11px; font-weight: 400; border: 1px solid currentColor; border-radius: 3px; padding: 0 5px; opacity: .7; }
 
@@ -544,6 +545,8 @@ var S = {
 };
 
 function can(perm) { return !perm || ROLES[S.role].perms.indexOf(perm) !== -1; }
+/* L6: thiếu quyền thì vô hiệu tại chỗ và nói rõ lý do, không ẩn đi. */
+function permReason(perm) { return 'Thiếu quyền ' + perm + ' — vai trò ' + S.role + ' chưa được cấp.'; }
 function seller() { return SELLERS.filter(function (s) { return s.id === S.seller; })[0]; }
 function moduleOf(screen) { return MODULES.filter(function (m) { return m.screen === screen; })[0]; }
 </script>
@@ -571,35 +574,45 @@ function contributeTab(kind, tab) {
 }
 
 /* Chỉ mục cho thanh lệnh: đối tượng + hành động + đi tới, gom từ mọi module. */
+/* Bọc một mục hàng lệnh: giữ nguyên chỗ đứng, chỉ khoá lại và nói rõ lý do khi thiếu quyền.
+   Không sửa item gốc (COMMANDS dùng chung) — luôn trả về bản sao. */
+function palItem(perm, item) {
+  var allowed = can(perm);
+  var copy = { group: item.group, module: item.module, label: item.label, hint: item.hint, perm: perm, locked: !allowed };
+  if (allowed) {
+    copy.run = item.run;
+  } else {
+    copy.reason = permReason(perm);
+    copy.run = function () { toast(copy.reason); };
+  }
+  return copy;
+}
 function commandIndex() {
   var out = [];
   MODULES.forEach(function (m) {
-    if (!can(m.perm)) return;
-    out.push({
+    out.push(palItem(m.perm, {
       group: 'Đi tới', module: m.id, label: m.label, hint: m.screen,
       run: function () { go(m.screen); }
-    });
+    }));
   });
   Object.keys(DATASETS).forEach(function (screen) {
     var ds = DATASETS[screen];
-    if (!can(ds.perm)) return;
     ds.rows.slice(0, 8).forEach(function (r) {
-      out.push({
+      out.push(palItem(ds.perm, {
         group: 'Đối tượng', module: ds.module, label: ds.search(r), hint: ds.search(r),
         run: function () { openObject(ds.module, ds.kind, r[ds.key]); }
-      });
+      }));
     });
   });
   QUEUES.forEach(function (q) {
-    if (!can(q.perm)) return;
     q.items.forEach(function (it) {
-      out.push({
+      out.push(palItem(q.perm, {
         group: 'Việc cần làm', module: q.module, label: it.action + ' · ' + it.title, hint: it.sub,
         run: function () { S.queue = q.id; S.qIndex = q.items.indexOf(it); go('work'); }
-      });
+      }));
     });
   });
-  COMMANDS.forEach(function (c) { if (can(c.perm)) out.push(c); });
+  COMMANDS.forEach(function (c) { out.push(palItem(c.perm, c)); });
   var rank = { 'Việc cần làm': 0, 'Đối tượng': 1, 'Hành động': 2, 'Đi tới': 3 };
   return out.sort(function (a, b) { return rank[a.group] - rank[b.group]; });
 }
@@ -2014,9 +2027,10 @@ function totalQueueCount() {
 /* =========================================================================
    Trang 1 · VIỆC CỦA TÔI
    ========================================================================= */
-function visibleQueues() { return QUEUES.filter(function (q) { return can(q.perm); }); }
+function visibleQueues() { return QUEUES; }
+function allowedQueues() { return QUEUES.filter(function (q) { return can(q.perm); }); }
 function currentQueue() {
-  var qs = visibleQueues();
+  var qs = allowedQueues();
   if (!qs.length) return null;
   var q = qs.filter(function (x) { return x.id === S.queue; })[0];
   if (!q) { q = qs.filter(function (x) { return x.items.length; })[0] || qs[0]; S.queue = q.id; }
@@ -2034,9 +2048,11 @@ SCREENS.work = function () {
 
   var rail = '<div class="cap">Việc của tôi · ' + seller().name + '</div>';
   qs.forEach(function (x) {
-    var hot = x.items.some(function (i) { return i.urgent; });
+    var allowed = can(x.perm);
+    var hot = allowed && x.items.some(function (i) { return i.urgent; });
     rail += '<button class="qb ' + (x.items.length ? '' : 'done') + '" type="button" data-queue="' + x.id + '"' +
-      ' aria-current="' + (q && x.id === q.id) + '">' +
+      ' aria-current="' + (q && x.id === q.id) + '"' +
+      (allowed ? '' : ' disabled aria-disabled="true" title="' + esc(permReason(x.perm)) + '"') + '>' +
       '<span class="sq" style="background:' + x.color + '"></span><span>' + x.label + '</span>' +
       '<span class="n ' + (hot ? 'hot' : '') + '">' + x.items.length + '</span></button>';
   });
@@ -2218,13 +2234,16 @@ function peekPane(screen, row) {
   }
 
   var obj = OBJECTS[ds.kind];
-  var tabs = obj.tabs.filter(function (t) { return can(t.perm); });
-  if (!tabs.some(function (t) { return t.id === S.peekTab; })) S.peekTab = tabs[0].id;
+  var tabs = obj.tabs;
+  var allowedTabs = tabs.filter(function (t) { return can(t.perm); });
+  if (!allowedTabs.some(function (t) { return t.id === S.peekTab; })) S.peekTab = (allowedTabs[0] || tabs[0]).id;
   var pinned = S.pins.some(function (p) { return String(p.id) === String(row[ds.key]); });
 
   return '<aside class="peek">' + pins +
     '<div class="otabs">' + tabs.map(function (t) {
-      return '<button class="otab" type="button" data-peektab="' + t.id + '" aria-selected="' + (S.peekTab === t.id) + '">' +
+      var allowed = can(t.perm);
+      return '<button class="otab" type="button" data-peektab="' + t.id + '" aria-selected="' + (S.peekTab === t.id) + '"' +
+        (allowed ? '' : ' disabled aria-disabled="true" title="' + esc(permReason(t.perm)) + '"') + '>' +
         '<span>' + t.label + '</span><span class="src">' + t.by + '</span></button>';
     }).join('') + '</div>' +
     '<div class="peekbody">' +
@@ -2251,8 +2270,9 @@ SCREENS.object = function () {
     return '<div class="scrollarea"><div class="empty"><div class="ttl">Không tìm thấy</div>' +
       '<p>Đối tượng ' + o.id + ' không còn tồn tại hoặc không thuộc gian hàng ' + seller().name + '.</p></div></div>';
   }
-  var tabs = obj.tabs.filter(function (t) { return can(t.perm); });
-  if (!tabs.some(function (t) { return t.id === o.tab; })) o.tab = tabs[0].id;
+  var tabs = obj.tabs;
+  var allowedTabs = tabs.filter(function (t) { return can(t.perm); });
+  if (!allowedTabs.some(function (t) { return t.id === o.tab; })) o.tab = (allowedTabs[0] || tabs[0]).id;
   var m = MODULES.filter(function (x) { return x.id === o.module; })[0];
   var pinned = S.pins.some(function (p) { return String(p.id) === String(o.id); });
 
@@ -2265,7 +2285,9 @@ SCREENS.object = function () {
       '<div style="display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 10px">' + obj.chips(row) + '</div>' +
     '</div>' +
     '<div class="otabs" style="padding:0 22px">' + tabs.map(function (t) {
-      return '<button class="otab" type="button" data-tab="' + t.id + '" aria-selected="' + (o.tab === t.id) + '">' +
+      var allowed = can(t.perm);
+      return '<button class="otab" type="button" data-tab="' + t.id + '" aria-selected="' + (o.tab === t.id) + '"' +
+        (allowed ? '' : ' disabled aria-disabled="true" title="' + esc(permReason(t.perm)) + '"') + '>' +
         '<span>' + t.label + '</span><span class="src">' + t.by + '</span></button>';
     }).join('') + '</div>' +
     '<div class="scrollarea">' + obj.panel(o.tab, row, false) + '</div>';
@@ -2380,13 +2402,15 @@ function renderSidebar() {
     (qTotal ? '<span class="badge hot lbl">' + qTotal + '</span>' : '') + '</button>';
 
   GROUPS.forEach(function (g) {
-    var items = MODULES.filter(function (m) { return m.group === g && can(m.perm); });
+    var items = MODULES.filter(function (m) { return m.group === g; });
     if (!items.length) return;
     h += '<div class="grp">' + g + '</div>';
     items.sort(function (a, b) { return a.order - b.order; }).forEach(function (m) {
-      var active = S.screen === m.screen || (S.screen === 'object' && S.obj && S.obj.module === m.id);
-      var badge = moduleBadge(m.id);
-      h += '<button class="navb" type="button" data-go="' + m.screen + '"' + (active ? ' aria-current="page"' : '') + '>' +
+      var allowed = can(m.perm);
+      var active = allowed && (S.screen === m.screen || (S.screen === 'object' && S.obj && S.obj.module === m.id));
+      var badge = allowed ? moduleBadge(m.id) : null;
+      h += '<button class="navb" type="button" data-go="' + m.screen + '"' + (active ? ' aria-current="page"' : '') +
+        (allowed ? '' : ' disabled aria-disabled="true" title="' + esc(permReason(m.perm)) + '"') + '>' +
         svgIcon(m.icon) + '<span class="lbl">' + m.label + '</span>' +
         (badge ? '<span class="badge ' + (badge.hot ? 'hot' : '') + ' lbl">' + badge.n + '</span>' : '') + '</button>';
     });
@@ -2682,7 +2706,6 @@ var palOpen = false, palIndex = 0;
 function palResults() {
   var q = el('palq').value.trim().toLowerCase();
   return commandIndex().filter(function (c) {
-    if (c.perm && !can(c.perm)) return false;
     if (!q) return true;
     return (c.label + ' ' + (c.hint || '')).toLowerCase().indexOf(q) !== -1;
   }).slice(0, 24);
@@ -2694,7 +2717,8 @@ function renderPal() {
   }
   rs.forEach(function (c, i) {
     if (c.group !== sect) { sect = c.group; h += '<div class="sect">' + sect + '</div>'; }
-    h += '<div class="it ' + (i === palIndex ? 'hl' : '') + '" data-i="' + i + '"><span>' + c.label + '</span>' +
+    h += '<div class="it ' + (i === palIndex ? 'hl' : '') + (c.locked ? ' dis' : '') + '" data-i="' + i + '"' +
+      (c.locked ? ' aria-disabled="true" title="' + esc(c.reason) + '"' : '') + '><span>' + c.label + '</span>' +
       '<span class="from">' + c.module + '</span></div>';
   });
   el('pallist').innerHTML = h;
