@@ -664,14 +664,43 @@ DRAWERS.role = {
   }
 };
 
-/* ---------------- cấu hình ---------------- */
+/* ---------------- cấu hình ----------------
+
+   MƯỜI LĂM thẻ, không phải sáu (cập nhật 31/08).
+
+   Bản 2.0 vẽ sáu thẻ vì nó gộp cả miền hoá đơn vào MỘT thẻ ("Hoá đơn điện tử")
+   và gộp vai trò vào thẻ "Người dùng và vai trò". Bản dựng thật (voma-web) có
+   tám màn nữa đã tồn tại đầy đủ — bảy màn `/invoice-operations/**` và màn phân
+   quyền — cộng màn nhật ký hoạt động, mà thẻ gộp KHÔNG dẫn tới được: mỗi thẻ chỉ
+   trỏ được một đích, nên bảy màn kia chỉ vào được bằng cách gõ địa chỉ.
+
+   Chủ dự án chốt 31/08: giữ đủ mười lăm lối vào (màn mồ côi là lỗi thật), và bản
+   thiết kế đi theo — thiết kế là bản mô tả của sản phẩm, không phải xiềng buộc nó
+   đứng lại. Danh sách dưới đây vì thế là ảnh chiếu 1-1 của `SETTINGS_GROUPS`
+   trong `voma-web/src/modules/settings/model.ts`: cùng thứ tự, cùng mã module,
+   cùng nhãn, cùng mô tả.
+
+   `desc` rỗng ở ba thẻ (Vai trò, Ký hiệu hoá đơn, Chính sách doanh thu) là CÓ CHỦ
+   Ý: màn đích của chúng không có câu nào dưới `<h1>` để chép, và viết một câu mới
+   cho vừa ô là tự nghĩ ra chữ. Thẻ bỏ trống chỗ đó, y như cách `scope` chỉ hiện ở
+   hai thẻ thật sự toàn hệ thống.
+   ------------------------------------------ */
 SETTINGS_GROUPS = [
   { by: 'identity', label: 'Người dùng và vai trò', desc: 'Ai được vào gian hàng này và làm được gì.', toast: 'Người dùng và vai trò · thuộc Identity, phạm vi tenant.' },
+  { by: 'identity', label: 'Vai trò', desc: '', toast: 'Vai trò · ma trận quyền của cả hệ, phạm vi tenant.' },
   { by: 'channel', label: 'Kết nối sàn', desc: 'Uỷ quyền shop, ánh xạ danh mục và thuộc tính cho từng sàn.', toast: 'Kết nối sàn · mở danh sách kênh của gian hàng.' },
   { by: 'invoice', label: 'Hoá đơn điện tử', desc: 'Nhà cung cấp, dải số, ký hiệu, chính sách ánh xạ doanh thu.', toast: 'Hoá đơn điện tử · cấu hình theo tenant và kênh.' },
+  { by: 'invoice', label: 'Ký hiệu hoá đơn', desc: '', toast: 'Ký hiệu hoá đơn · dải số và ký hiệu đang dùng.' },
+  { by: 'invoice', label: 'Chính sách doanh thu', desc: '', toast: 'Chính sách doanh thu · quy tắc ánh xạ doanh thu.' },
+  { by: 'invoice', label: 'Hàng đợi xử lý xuất hoá đơn', desc: 'Giám sát tiến độ hàng đợi giao dịch, kiểm tra nhật ký và đưa yêu cầu lỗi trở lại hàng đợi.', toast: 'Hàng đợi xử lý xuất hoá đơn · theo dõi tiến độ và đưa yêu cầu lỗi trở lại hàng đợi.' },
+  { by: 'invoice', label: 'Đối soát & kiểm tra tự động', desc: 'Hệ thống 5 vòng lặp tự động phát hiện lệch số hoá đơn, giải phóng quyền xử lý quá hạn và kiểm tra trạng thái thuế.', toast: 'Đối soát & kiểm tra tự động · các vòng lặp phát hiện lệch số hoá đơn.' },
+  { by: 'invoice', label: 'Gộp hoá đơn cuối ngày', desc: 'Chạy thủ công cùng quy trình hệ thống tự động thực hiện mỗi ngày cho người bán đang chọn.', toast: 'Gộp hoá đơn cuối ngày · chạy thủ công đúng quy trình chạy tự động mỗi ngày.' },
+  { by: 'invoice', label: 'Kênh nhận thông báo', desc: 'Đăng ký URL nhận sự kiện phát hành hoá đơn qua HMAC-SHA256. Mỗi kênh có một khóa bí mật riêng để xác thực chữ ký ở header X-VOMA-Signature.', toast: 'Kênh nhận thông báo · webhook ký HMAC-SHA256 cho sự kiện hoá đơn.' },
+  { by: 'invoice', label: 'Lịch sử thay đổi', desc: 'Toàn bộ thay đổi dữ liệu hoá đơn — lọc theo loại dữ liệu, hành động, người thực hiện hoặc khoảng thời gian.', toast: 'Lịch sử thay đổi · nhật ký dữ liệu của phân hệ hoá đơn.' },
   { by: 'wms', label: 'Kho và vị trí', desc: 'Danh sách kho, sơ đồ khu, quy tắc gợi ý vị trí.', toast: 'Kho và vị trí.' },
   { by: 'oms', label: 'Thanh toán', desc: 'Cổng thanh toán dùng để đối chiếu tiền về.', scope: 'Áp dụng cho mọi gian hàng', scopeKind: 'warning', toast: 'Thanh toán · cấu hình này là toàn hệ thống, không riêng gian hàng.' },
-  { by: 'oms', label: 'Tin nhắn cho khách', desc: 'Kênh gửi SMS và Zalo khi đơn đổi trạng thái.', scope: 'Áp dụng cho mọi gian hàng', scopeKind: 'warning', toast: 'Tin nhắn · cấu hình này là toàn hệ thống, không riêng gian hàng.' }
+  { by: 'oms', label: 'Tin nhắn cho khách', desc: 'Kênh gửi SMS và Zalo khi đơn đổi trạng thái.', scope: 'Áp dụng cho mọi gian hàng', scopeKind: 'warning', toast: 'Tin nhắn · cấu hình này là toàn hệ thống, không riêng gian hàng.' },
+  { by: 'settings', label: 'Lịch sử hoạt động', desc: 'Xem và lọc lịch sử các hành động hệ thống được ghi nhận.', toast: 'Lịch sử hoạt động · nhật ký hành động của cả hệ thống.' }
 ];
 </script>
 
@@ -2361,7 +2390,11 @@ SCREENS.settings = function () {
     SETTINGS_GROUPS.map(function (g) {
       return '<div class="card"><h3>' + g.by + '</h3>' +
         '<div style="font-size:15px;font-weight:700;margin-bottom:4px">' + g.label + '</div>' +
-        '<div style="font-size:13px;color:var(--ink-2);margin-bottom:12px">' + g.desc + '</div>' +
+        /* `desc` rỗng thì KHÔNG vẽ ô mô tả — ba thẻ (Vai trò, Ký hiệu hoá đơn, Chính
+           sách doanh thu) không có câu nào để chép từ màn đích của chúng, và một ô
+           trống cao 13px là một khoảng hụt giữa lưới chứ không phải một câu. Cùng
+           cách xử lý đã dùng cho `scope` ở dòng dưới. */
+        (g.desc ? '<div style="font-size:13px;color:var(--ink-2);margin-bottom:12px">' + g.desc + '</div>' : '') +
         (g.scope ? '<div style="margin-bottom:12px">' + chip(g.scopeKind, g.scope) + '</div>' : '') +
         '<button class="btn btn-sm btn-secondary" type="button" data-toast="' + esc(g.toast) + '">Mở</button></div>';
     }).join('') + '</div></div>';
