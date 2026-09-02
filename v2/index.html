@@ -506,6 +506,7 @@ var MODULES = [
   { id: 'work',     label: 'Việc của tôi', icon: 'inbox', group: null,          screen: 'work',     perm: null,           order: 0 },
   { id: 'pim',      label: 'Sản phẩm',     icon: 'box',   group: 'Bán hàng',    screen: 'products', perm: 'pmi:read',     order: 10 },
   { id: 'oms',      label: 'Đơn hàng',     icon: 'cart',  group: 'Bán hàng',    screen: 'orders',   perm: 'oms:read',     order: 20 },
+  { id: 'customers',label: 'Khách hàng',   icon: 'users', group: 'Bán hàng',    screen: 'customers',perm: 'oms:read',     order: 25 },
   { id: 'channel',  label: 'Kênh bán',     icon: 'plug',  group: 'Bán hàng',    screen: 'channels', perm: 'channel:read', order: 30 },
   { id: 'wms',      label: 'Kho',          icon: 'ware',  group: 'Vận hành',    screen: 'stock',    perm: 'wms:read',     order: 40 },
   { id: 'scan',     label: 'Máy quét',     icon: 'scan',  group: 'Vận hành',    screen: 'scan',     perm: 'wms:read',     order: 50 },
@@ -730,7 +731,7 @@ var PAY_STATUS = {
 
 var ORDERS = [
   { id: '585503416692409354', ch: 'TikTok Shop', chRaw: 'AWAITING_SHIPMENT', chId: '585503416692409354',
-    cus: 'Nguyễn Thị Hà', phone: '0903 xxx 118', addr: '18 ngõ 4 Trần Thái Tông, Q. Cầu Giấy, Hà Nội',
+    cid: 'KH-0001', cus: 'Nguyễn Thị Hà', phone: '0903 xxx 118', addr: '18 ngõ 4 Trần Thái Tông, Q. Cầu Giấy, Hà Nội',
     goods: 1240000, ship: 30000, st: 'CONFIRMED', pay: 'PAID', at: '12/08 14:22', note: 'Giao giờ hành chính',
     items: [
       { name: 'Vợt cầu lông Yonex Astrox 88D Pro', variant: 'Xanh · 4U G5', sku: 'SP-74B108D4-DEFAULT', qty: 1, price: 1240000, avail: 104 },
@@ -739,13 +740,13 @@ var ORDERS = [
     ff: [ { no: 'PX-5855-01', wh: 'KHO-HN', st: 'PACKED', carrier: 'GHTK', track: 'S28841102', shipped: '—' } ] },
 
   { id: '585504991002771845', ch: 'TikTok Shop', chRaw: 'UNPAID', chId: '585504991002771845',
-    cus: 'Đỗ Thu Trang', phone: '0906 xxx 775', addr: '92 Lê Lợi, TP. Huế',
+    cid: 'KH-0002', cus: 'Đỗ Thu Trang', phone: '0906 xxx 775', addr: '92 Lê Lợi, TP. Huế',
     goods: 4150000, ship: 35000, st: 'DRAFT', pay: 'PENDING', at: '12/08 15:31', note: '',
     items: [ { name: 'Giày chạy bộ Asics Gel-Kayano 30', variant: 'Size 42', sku: 'SP-2F19C0A7-42', qty: 1, price: 4150000, avail: 37 } ],
     ff: [] },
 
   { id: '241012-SPE-0104', ch: 'Shopee', chRaw: 'READY_TO_SHIP', chId: '241012SPE0104',
-    cus: 'Vũ Đức Kiên', phone: '0935 xxx 118', addr: '55 Lạch Tray, Q. Ngô Quyền, Hải Phòng',
+    cid: 'KH-0003', cus: 'Vũ Đức Kiên', phone: '0935 xxx 118', addr: '55 Lạch Tray, Q. Ngô Quyền, Hải Phòng',
     goods: 1560000, ship: 28000, st: 'PICKING', pay: 'PAID', at: '12/08 11:05', note: '',
     items: [
       { name: 'Vợt cầu lông Yonex Astrox 88D Pro', variant: 'Đỏ · 4U G5', sku: 'SP-74B108D4-RED', qty: 1, price: 1240000, avail: null },
@@ -757,25 +758,25 @@ var ORDERS = [
     ] },
 
   { id: '585501321346450442', ch: 'TikTok Shop', chRaw: 'SHIPPED', chId: '585501321346450442',
-    cus: 'Trần Văn Long', phone: '0912 xxx 447', addr: '210 Nguyễn Văn Linh, Q. Hải Châu, Đà Nẵng',
+    cid: 'KH-0004', cus: 'Trần Văn Long', phone: '0912 xxx 447', addr: '210 Nguyễn Văn Linh, Q. Hải Châu, Đà Nẵng',
     goods: 3290000, ship: 35000, st: 'SHIPPED', pay: 'PAID', at: '12/08 09:10', note: '',
     items: [ { name: 'Vợt cầu lông Yonex Astrox 88D Pro', variant: 'Xanh · 4U G5', sku: 'SP-74B108D4-DEFAULT', qty: 1, price: 3290000, avail: 104 } ],
     ff: [ { no: 'PX-5854-11', wh: 'KHO-HN', st: 'SHIPPED', carrier: 'GHTK', track: 'S28840771', shipped: '12/08 16:05' } ] },
 
   { id: '241012-SPE-0088', ch: 'Shopee', chRaw: 'COMPLETED', chId: '241012SPE0088',
-    cus: 'CT TNHH An Phát', phone: '0977 xxx 201', addr: 'Lô B2 KCN Tân Thuận, Q.7, TP.HCM',
+    cid: 'KH-0005', cus: 'CT TNHH An Phát', phone: '0977 xxx 201', addr: 'Lô B2 KCN Tân Thuận, Q.7, TP.HCM',
     goods: 890000, ship: 22000, st: 'COMPLETED', pay: 'PAID', at: '11/08 16:40', note: 'Xuất hoá đơn công ty',
     items: [ { name: 'Áo bơi Speedo Endurance+', variant: 'Size M', sku: 'SP-11A7B44C-M', qty: 1, price: 890000, avail: 18 } ],
     ff: [ { no: 'PX-5851-04', wh: 'KHO-HCM', st: 'COMPLETED', carrier: 'GHN', track: 'GHN9920117', shipped: '11/08 18:20' } ] },
 
   { id: '241012-SPE-0091', ch: 'Shopee', chRaw: 'CANCELLED', chId: '241012SPE0091',
-    cus: 'Lê Minh Chi', phone: '0988 xxx 630', addr: '14 Đồng Khởi, TP. Biên Hoà, Đồng Nai',
+    cid: 'KH-0006', cus: 'Lê Minh Chi', phone: '0988 xxx 630', addr: '14 Đồng Khởi, TP. Biên Hoà, Đồng Nai',
     goods: 520000, ship: 0, st: 'CANCELLED', pay: 'PENDING', at: '11/08 15:02', note: 'Khách đổi ý',
     items: [ { name: 'Bóng đá Động Lực UHV 2.07', variant: 'Size 5', sku: 'SP-90D3E551-STD', qty: 1, price: 520000, avail: 212 } ],
     ff: [] },
 
   { id: '585502774100388219', ch: 'TikTok Shop', chRaw: 'CANCELLED', chId: '585502774100388219',
-    cus: 'Hoàng Anh Tuấn', phone: '0917 xxx 902', addr: '77 Nguyễn Thái Học, TP. Vinh, Nghệ An',
+    cid: 'KH-0007', cus: 'Hoàng Anh Tuấn', phone: '0917 xxx 902', addr: '77 Nguyễn Thái Học, TP. Vinh, Nghệ An',
     goods: 2180000, ship: 30000, st: 'CANCELLATION_PENDING', pay: 'PAID', at: '10/08 19:44', note: '',
     items: [ { name: 'Giày chạy bộ Asics Gel-Kayano 30', variant: 'Size 41', sku: 'SP-2F19C0A7-41', qty: 1, price: 2180000, avail: 37 } ],
     ff: [
@@ -784,7 +785,7 @@ var ORDERS = [
     ] },
 
   { id: '241012-SPE-0067', ch: 'Shopee', chRaw: 'RETURN_REQUESTED', chId: '241012SPE0067',
-    cus: 'Nguyễn Bảo Ngọc', phone: '0964 xxx 330', addr: '3 Nguyễn Trãi, Q. Thanh Xuân, Hà Nội',
+    cid: 'KH-0008', cus: 'Nguyễn Bảo Ngọc', phone: '0964 xxx 330', addr: '3 Nguyễn Trãi, Q. Thanh Xuân, Hà Nội',
     goods: 1120000, ship: 25000, st: 'COMPLETED', pay: 'PAID', at: '10/08 08:12', note: 'Sàn ghi nhận yêu cầu trả hàng',
     items: [ { name: 'Áo bơi Speedo Endurance+', variant: 'Size L', sku: 'SP-11A7B44C-L', qty: 1, price: 1120000, avail: 18 } ],
     ff: [ { no: 'PX-5848-01', wh: 'KHO-HN', st: 'COMPLETED', carrier: 'GHN', track: 'GHN9919043', shipped: '10/08 11:40' } ] }
@@ -826,7 +827,7 @@ DATASETS.orders = {
   emptyAction: '<button class="btn btn-sm btn-secondary" type="button" data-view="all">Xem tất cả đơn</button>',
   cols: [
     { label: 'Mã đơn', mono: true, cell: function (o) { return o.id; } },
-    { label: 'Khách hàng', cell: function (o) { return '<b>' + o.cus + '</b><span class="second">' + o.phone + '</span>'; } },
+    { label: 'Khách hàng', cell: function (o) { return customerLink(o.cid, '<b>' + o.cus + '</b>') + '<span class="second">' + o.phone + '</span>'; } },
     { label: 'Kênh', cell: function (o) { return o.ch; } },
     { label: 'Giá trị', num: true, cell: function (o) { return '<b>' + vnd(orderTotal(o)) + '</b>'; } },
     { label: 'Thanh toán', cell: function (o) { return chip(PAY_STATUS[o.pay].chip, PAY_STATUS[o.pay].label); } },
@@ -837,7 +838,7 @@ DATASETS.orders = {
 
 OBJECTS['oms.order'] = {
   title: function (o) { return o.id; },
-  sub: function (o) { return o.cus + ' · ' + o.phone + ' · đặt ' + o.at; },
+  sub: function (o) { return customerLink(o.cid, o.cus) + ' · ' + o.phone + ' · đặt ' + o.at; },
   chips: function (o) {
     return orderChip(o) + chip(PAY_STATUS[o.pay].chip, PAY_STATUS[o.pay].label) +
       chip('neutral', o.ch, 'Mã đơn nguyên văn của sàn: ' + o.chId);
@@ -1753,6 +1754,199 @@ COMMANDS = [
 
 <script>
 /* =========================================================================
+   4h · MODULE KHÁCH HÀNG — sổ khách, nguồn sàn, đơn của khách
+
+   Khối này đứng SAU 4e vì `COMMANDS` được gán lại ở 4e (push trước đó sẽ mất),
+   và đứng TRƯỚC 4f vì 4f bọc `panel` của mọi OBJECTS đã đăng ký — đăng ký sau
+   4f thì tab đóng góp không tới được. Tên 4h giữ theo thứ tự ra đời, không
+   theo vị trí trong file.
+
+   Khách "từ sàn" là khách VOMA tự sinh khi đơn đầu tiên của họ về từ sàn.
+   Sàn che PII: số điện thoại nhận về là mã người mua của sàn (`SHOPEE-…`,
+   `TIKTOK-…`), không phải số thật. Bản thiết kế hiển thị đúng mã đó, mờ, kèm
+   chú "Sàn che số" — không giả vờ là số điện thoại và không cho sửa (L6: khoá
+   tại chỗ, nói rõ lý do). Email/địa chỉ của khách sàn thì sửa được như thường.
+
+   Nguồn không phải trạng thái, nên chip nguồn luôn `neutral` (L9): màu chỉ
+   dành cho năm trạng thái dữ liệu.
+
+   Số đếm trên view tab: thiết kế lấy từ facets phía server, chưa tải thì
+   hiện "—" (L12: chưa biết ≠ 0). Trong bản dựng này dữ liệu đã nằm sẵn nên
+   shell đếm tại chỗ; trạng thái "—" mô tả ở đây, chưa vẽ.
+   ========================================================================= */
+
+/* Từ vựng nguồn khách: mã → nhãn. `manual` là khách do người bán tự tạo. */
+var CUSTOMER_SRC = {
+  manual:        { label: 'Tự tạo',      masked: false },
+  'Shopee':      { label: 'Shopee',      masked: true, prefix: 'SHOPEE-' },
+  'TikTok Shop': { label: 'TikTok Shop', masked: true, prefix: 'TIKTOK-' }
+};
+
+var CUSTOMERS = [
+  { id: 'KH-0001', name: 'Nguyễn Thị Hà',   phone: '0903 771 118', email: 'ha.nguyen@gmail.com',
+    addr: '18 ngõ 4 Trần Thái Tông, Q. Cầu Giấy, Hà Nội', src: 'manual', srcId: null, since: '03/05/2026', note: 'Khách quen, hay mua vợt.' },
+  { id: 'KH-0002', name: 'Đỗ Thu Trang',    phone: '0906 402 775', email: 'trangdo92@gmail.com',
+    addr: '92 Lê Lợi, TP. Huế', src: 'manual', srcId: null, since: '21/06/2026', note: '' },
+  { id: 'KH-0003', name: 'Vũ Đức Kiên',     phone: 'SHOPEE-221904471-88410', email: '',
+    addr: '55 Lạch Tray, Q. Ngô Quyền, Hải Phòng', src: 'Shopee', srcId: '221904471-88410', since: '12/08/2026', note: '' },
+  { id: 'KH-0004', name: 'Trần Văn Long',   phone: '0912 336 447', email: 'long.tv@outlook.com',
+    addr: '210 Nguyễn Văn Linh, Q. Hải Châu, Đà Nẵng', src: 'manual', srcId: null, since: '14/07/2026', note: '' },
+  { id: 'KH-0005', name: 'CT TNHH An Phát', phone: '0977 550 201', email: 'ketoan@anphat.vn',
+    addr: 'Lô B2 KCN Tân Thuận, Q.7, TP.HCM', src: 'manual', srcId: null, since: '02/03/2026', note: 'Luôn xuất hoá đơn công ty. MST 0312345678.' },
+  { id: 'KH-0006', name: 'Lê Minh Chi',     phone: '0988 214 630', email: '',
+    addr: '', src: 'manual', srcId: null, since: '11/08/2026', note: 'Tạo tay lúc nhận điện thoại đặt hàng, chưa hỏi địa chỉ.' },
+  { id: 'KH-0007', name: 'Hoàng Anh Tuấn',  phone: 'TIKTOK-7495012288844-30917', email: '',
+    addr: '77 Nguyễn Thái Học, TP. Vinh, Nghệ An', src: 'TikTok Shop', srcId: '7495012288844-30917', since: '10/08/2026', note: '' },
+  { id: 'KH-0008', name: 'Nguyễn Bảo Ngọc', phone: 'SHOPEE-221904471-90233', email: '',
+    addr: '3 Nguyễn Trãi, Q. Thanh Xuân, Hà Nội', src: 'Shopee', srcId: '221904471-90233', since: '10/08/2026', note: '' },
+  { id: 'KH-0009', name: 'Phạm Quang Huy',  phone: '0356 118 204', email: 'huypq@gmail.com',
+    addr: '', src: 'manual', srcId: null, since: '12/08/2026', note: 'Hỏi giá qua Zalo, chưa đặt đơn nào.' }
+];
+
+function customerOrders(c) { return ORDERS.filter(function (o) { return o.cid === c.id; }); }
+function phoneMasked(c) { return CUSTOMER_SRC[c.src].masked; }
+
+/* Chip nguồn: neutral cho mọi nguồn — nguồn không phải trạng thái (L9). */
+function customerSrcChip(c) {
+  var s = CUSTOMER_SRC[c.src];
+  return chip('neutral', s.label, s.masked
+    ? 'Khách sinh từ đơn ' + s.label + ' · mã người mua ' + c.srcId + ' (sàn che tên thật, số điện thoại)'
+    : 'Khách do người bán tự tạo trong VOMA');
+}
+
+/* Số điện thoại: số thật hiện thường; mã sàn hiện mờ, mono, kèm chú.
+   Không đổi mã sàn thành "—": mã đó là thứ duy nhất tra được khi khiếu nại (L14). */
+function customerPhone(c, withNote) {
+  if (!phoneMasked(c)) return c.phone;
+  return '<span style="font-family:var(--mono);color:var(--muted)" title="Sàn che số điện thoại thật. Đây là mã người mua ' +
+    CUSTOMER_SRC[c.src].label + ' giữ nguyên văn để tra cứu.">' + esc(c.phone) + '</span>' +
+    (withNote ? '<span class="second">Sàn che số</span>' : '');
+}
+
+/* Tên khách bấm được — dùng trong bảng đơn và trang đơn (4a) để dẫn sang khách. */
+function customerLink(cid, label) {
+  if (!cid) return label;
+  return '<button class="lnk" type="button" data-open="customers|oms.customer|' + cid + '" title="Mở khách ' + cid + '">' + label + '</button>';
+}
+
+/* Bốn số tóm tắt: đếm trên đơn đã nạp. Chưa có đơn → viết chữ, không ghi 0 mờ (L12). */
+function customerStats(c) {
+  var os = customerOrders(c);
+  var cancelled = os.filter(function (o) { return o.st === 'CANCELLED'; });
+  var spent = os.filter(function (o) { return o.st !== 'CANCELLED'; })
+    .reduce(function (a, o) { return a + orderTotal(o); }, 0);
+  var latest = os.slice().sort(function (a, b) { return b.at.localeCompare(a.at); })[0];
+  return { n: os.length, cancelled: cancelled.length, spent: spent, latest: latest || null };
+}
+
+DATASETS.customers = {
+  module: 'customers', kind: 'oms.customer', key: 'id', perm: 'oms:read',
+  group: 'Bán hàng', title: 'Khách hàng', sub: 'Khách tự tạo và khách sinh từ đơn sàn',
+  searchHint: 'Tìm tên, số điện thoại, email, mã khách…',
+  rows: CUSTOMERS,
+  search: function (c) { return c.name + ' · ' + c.phone + (c.email ? ' · ' + c.email : '') + ' · ' + c.id; },
+  /* L7: bốn view, thứ tự cố định; view 0 dòng vẫn hiện và ghi số. */
+  views: [
+    { id: 'all',    label: 'Tất cả',        f: function () { return true; } },
+    { id: 'manual', label: 'Tự tạo',        f: function (c) { return c.src === 'manual'; } },
+    { id: 'market', label: 'Từ sàn',        f: function (c) { return c.src !== 'manual'; } },
+    { id: 'noaddr', label: 'Thiếu địa chỉ', f: function (c) { return !c.addr; } }
+  ],
+  filters: [
+    { label: 'Nguồn', toast: 'Nguồn · lọc theo Tự tạo, Shopee, TikTok Shop.' },
+    { label: 'Có đơn', toast: 'Có đơn · khách đã đặt ít nhất một đơn, hoặc chưa đặt đơn nào.' }
+  ],
+  headActions: '<button class="btn btn-sm btn-cancel" type="button" data-toast="Đang xuất ' +
+    'danh sách khách theo đúng bộ lọc hiện tại ra tệp Excel. Số điện thoại khách sàn xuất nguyên mã sàn.">Xuất Excel</button>' +
+    '<button class="btn btn-md btn-primary" type="button" data-toast="Mở form tạo khách: tên → điện thoại → email → địa chỉ. Trùng số điện thoại thì báo ngay và dẫn sang khách đã có.">Tạo khách hàng</button>',
+  bulkActions: [
+    { label: 'Gắn nhãn', toast: 'Đã gắn nhãn cho các khách đang chọn.' },
+    { label: 'Xuất Excel', toast: 'Đã xuất các khách đang chọn.' }
+  ],
+  emptyTitle: 'Không có khách nào khớp',
+  emptyBody: 'Không có khách nào thoả bộ lọc hiện tại. Thử bỏ bớt điều kiện hoặc chuyển sang view "Tất cả".',
+  emptyAction: '<button class="btn btn-sm btn-secondary" type="button" data-view="all">Xem tất cả khách</button>',
+  cols: [
+    { label: 'Tên',        cell: function (c) { return '<b>' + c.name + '</b><span class="second" style="font-family:var(--mono)">' + c.id + '</span>'; } },
+    { label: 'Điện thoại', cell: function (c) { return customerPhone(c, true); } },
+    { label: 'Email',      cell: function (c) { return c.email || '<span style="color:var(--muted)">Chưa có</span>'; } },
+    { label: 'Địa chỉ',    cell: function (c) { return c.addr || '<span style="color:var(--muted)">Chưa có</span>'; } },
+    { label: 'Nguồn',      cell: function (c) { return customerSrcChip(c); } }
+  ]
+};
+
+OBJECTS['oms.customer'] = {
+  title: function (c) { return c.name; },
+  sub: function (c) { return c.id + ' · khách từ ' + c.since; },
+  chips: function (c) { return customerSrcChip(c); },
+  actions: function (c) {
+    /* L6: thiếu oms:write thì nút vẫn đứng đó, xám, kèm lý do. */
+    var w = can('oms:write');
+    return '<button class="btn btn-md btn-primary" type="button"' +
+      (w ? ' data-toast="Mở trình tự lập đơn với khách ' + c.name + ' đã điền sẵn."' :
+           ' disabled aria-disabled="true" title="' + esc(permReason('oms:write')) + '"') + '>Lập đơn cho khách</button>';
+  },
+  tabs: [
+    { id: 'sum',    label: 'Tổng quan', by: 'customers', order: 10, perm: 'oms:read' },
+    { id: 'orders', label: 'Đơn hàng',  by: 'customers', order: 20, perm: 'oms:read' }
+  ],
+  panel: function (tab, c, compact) {
+    if (tab === 'sum') {
+      var st = customerStats(c);
+      var stats = '<div class="card"><h3>Tóm tắt</h3>' + dl([
+        ['Số đơn', st.n ? num(st.n) : 'Chưa có đơn'],
+        ['Đã huỷ', st.n ? num(st.cancelled) : '—'],
+        ['Tổng chi', '<span title="Không tính đơn đã huỷ">' + (st.n ? vnd(st.spent) : '—') + '</span>'],
+        ['Đơn gần nhất', st.latest ? customerOrderLink(st.latest) : '—']
+      ]) + (st.n ? '<div style="margin-top:10px;font-size:12.5px;color:var(--muted)">Tổng chi không tính đơn đã huỷ. Đơn đang huỷ dở ở kho vẫn tính vì tiền chưa trả lại khách.</div>' : '') +
+      '</div>';
+      var w = can('oms:write');
+      var editBtn = '<button class="btn btn-sm btn-cancel" type="button"' +
+        (w ? ' data-toast="Mở form sửa liên hệ của ' + c.name + '. Số điện thoại khách sàn không nằm trong form."' :
+             ' disabled aria-disabled="true" title="' + esc(permReason('oms:write')) + '"') + '>Sửa liên hệ</button>';
+      var contact = '<div class="card"><h3>Liên hệ</h3>' + dl([
+        ['Điện thoại', customerPhone(c, false)],
+        ['Email', c.email || '<span style="color:var(--muted)">Chưa có</span>'],
+        ['Địa chỉ', c.addr || '<span style="color:var(--muted)">Chưa có</span>'],
+        ['Nguồn', customerSrcChip(c)],
+        ['Ghi chú', c.note || '—']
+      ]) + (phoneMasked(c)
+        ? '<div style="margin-top:10px;font-size:12.5px;color:var(--muted)">Số điện thoại là mã người mua do ' +
+          CUSTOMER_SRC[c.src].label + ' cấp; sàn che số thật nên <b>không sửa được ở đây</b>. Số thật chỉ có trên vận đơn của từng đơn.</div>'
+        : '') + '<div style="margin-top:12px">' + editBtn + '</div></div>';
+      if (compact) return stats + contact;
+      return '<div class="grid2"><div>' + contact + '</div><div>' + stats + '</div></div>';
+    }
+    if (tab === 'orders') return customerOrdersCard(c);
+    return '';
+  }
+};
+
+function customerOrderLink(o) {
+  return '<button class="lnk" type="button" data-open="oms|oms.order|' + o.id + '">' + o.id + '</button>';
+}
+
+/* Khối "Đơn hàng của khách": mã · ngày · trạng thái · tổng, mỗi dòng dẫn sang oms.order. */
+function customerOrdersCard(c) {
+  var os = customerOrders(c).slice().sort(function (a, b) { return b.at.localeCompare(a.at); });
+  if (!os.length) {
+    return '<div class="card"><h3>Đơn hàng của khách</h3><div class="empty" style="padding:22px 12px">' +
+      '<div class="ttl">Chưa có đơn nào</div><p>Khách này chưa đặt đơn. Lập đơn từ nút ở đầu trang thì khách được điền sẵn.</p></div></div>';
+  }
+  return '<div class="card"><h3>Đơn hàng của khách · ' + os.length + ' đơn</h3>' +
+    os.map(function (o) {
+      return lrow(customerOrderLink(o), '<b>' + vnd(orderTotal(o)) + '</b>',
+        '<span class="second">' + o.at + ' · ' + o.ch + ' · </span>' + orderChip(o));
+    }).join('') + '</div>';
+}
+
+/* ---------------- lệnh tĩnh của module ---------------- */
+COMMANDS.push({ group: 'Hành động', module: 'customers', label: 'Tạo khách hàng', perm: 'oms:write',
+  run: function () { go('customers'); toast('Mở form tạo khách hàng.'); } });
+</script>
+
+<script>
+/* =========================================================================
    4f · TAB ĐÓNG GÓP CHÉO MODULE
    Mỗi module khai một mặt của mình trên trang đối tượng do module khác sở hữu.
    Module sở hữu không biết những tab này tồn tại.
@@ -1915,6 +2109,13 @@ var SORT_KEYS = {
     'Trạng thái': function (o) { return rank(ORDER_STATUS, o.st); },
     'Tạo lúc':    function (o) { return o.at; }
   },
+  customers: {
+    'Tên':        function (c) { return c.name; },
+    /* Mã sàn không phải số điện thoại: trả null để xuống cuối theo cả hai chiều (L12). */
+    'Điện thoại': function (c) { return phoneMasked(c) ? null : c.phone; },
+    'Email':      function (c) { return c.email || null; },
+    'Nguồn':      function (c) { return rank(CUSTOMER_SRC, c.src); }
+  },
   products: {
     'SKU cha':      function (p) { return p.sku; },
     'Tên sản phẩm': function (p) { return p.name; },
@@ -1954,6 +2155,7 @@ Object.keys(SORT_KEYS).forEach(function (screen) {
    Làm đúng chỗ này thì phần lớn người dùng không bao giờ phải bấm sort. */
 var VIEW_SORT = {
   orders:   { todo: ['Tạo lúc', 1], unpaid: ['Giá trị', -1], ship: ['Tạo lúc', 1] },
+  customers: { noaddr: ['Tên', 1] },
   products: { gap: ['Dữ liệu', 1], unlisted: ['Tên sản phẩm', 1] },
   stock:    { low: ['Khả dụng', 1], reserved: ['Đang giữ', -1] },
   invoices: { rejected: ['Lập lúc', 1] }
