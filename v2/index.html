@@ -1436,28 +1436,28 @@ var BIZ_STATE = {
 var INVOICES = [
   { no: 'C26TKA/0001842', id: 'C26TKA/0001842', buyer: 'CT TNHH An Phát', mst: '0106xxxxxx',
     addr: 'Lô B2 KCN Tân Thuận, Q.7, TP.HCM', net: 830000, vat: 66400, total: 896400, rate: '8%',
-    tax: 'APPROVED', biz: 'ISSUED', at: '11/08 18:02', prov: 'Viettel SInvoice', series: '1/C26TKA',
+    tax: 'APPROVED', biz: 'ISSUED', at: '11/08 18:02', prov: 'Viettel S-Invoice', series: '1/C26TKA',
     cqt: 'M1-26-0AB8C-00001842', order: '241012-SPE-0088', rel: '', pdf: true },
 
-  { no: 'C26TKA/0001843', id: 'C26TKA/0001843', buyer: 'Nguyễn Thị Hà', mst: 'cá nhân, không có',
+  { no: 'C26TKA/0001843', id: 'C26TKA/0001843', buyer: 'Nguyễn Thị Hà', mst: '',
     addr: '18 ngõ 4 Trần Thái Tông, Q. Cầu Giấy, Hà Nội', net: 1175926, vat: 94074, total: 1270000, rate: '8%',
-    tax: 'SUBMITTED', biz: 'ISSUED', at: '12/08 16:40', prov: 'Viettel SInvoice', series: '1/C26TKA',
+    tax: 'SUBMITTED', biz: 'ISSUED', at: '12/08 16:40', prov: 'Viettel S-Invoice', series: '1/C26TKA',
     cqt: '—', order: '585503416692409354', rel: '', pdf: false },
 
-  { no: 'C26TKA/0001839', id: 'C26TKA/0001839', buyer: 'Trần Văn Long', mst: 'cá nhân, không có',
+  { no: 'C26TKA/0001839', id: 'C26TKA/0001839', buyer: 'Trần Văn Long', mst: '',
     addr: '210 Nguyễn Văn Linh, Q. Hải Châu, Đà Nẵng', net: 3078704, vat: 246296, total: 3325000, rate: '8%',
-    tax: 'REJECTED', biz: 'ISSUED', at: '12/08 10:15', prov: 'Viettel SInvoice', series: '1/C26TKA',
+    tax: 'REJECTED', biz: 'ISSUED', at: '12/08 10:15', prov: 'Viettel S-Invoice', series: '1/C26TKA',
     cqt: '—', order: '585501321346450442', rel: '', pdf: false,
     reject: 'Mã lỗi 20001 · Sai định dạng dữ liệu: ký hiệu mẫu số trên hoá đơn gốc không khớp' },
 
-  { no: 'C26TKA/0001836', id: 'C26TKA/0001836', buyer: 'Phạm Quỳnh Anh', mst: 'cá nhân, không có',
+  { no: 'C26TKA/0001836', id: 'C26TKA/0001836', buyer: 'Phạm Quỳnh Anh', mst: '',
     addr: 'Q.7, TP.HCM', net: 843519, vat: 67481, total: 911000, rate: '8%',
-    tax: 'APPROVED', biz: 'REPLACED', at: '10/08 09:20', prov: 'Viettel SInvoice', series: '1/C26TKA',
+    tax: 'APPROVED', biz: 'REPLACED', at: '10/08 09:20', prov: 'Viettel S-Invoice', series: '1/C26TKA',
     cqt: 'M1-26-0AB8C-00001836', order: '241012-SPE-0067', rel: 'Đã được thay thế bởi C26TKA/0001841', pdf: true },
 
-  { no: 'Nháp', id: 'HD-NHAP-0044', buyer: 'Vũ Đức Kiên', mst: 'cá nhân, không có',
+  { no: '', id: 'HD-NHAP-0044', buyer: 'Vũ Đức Kiên', mst: '',
     addr: 'Q. Ngô Quyền, Hải Phòng', net: 1470370, vat: 117630, total: 1588000, rate: '8%',
-    tax: 'UNSUBMITTED', biz: 'DRAFT', at: '12/08 11:30', prov: 'Viettel SInvoice', series: '1/C26TKA',
+    tax: 'UNSUBMITTED', biz: 'DRAFT', at: '12/08 11:30', prov: 'Viettel S-Invoice', series: '1/C26TKA',
     cqt: '—', order: '241012-SPE-0104', rel: '', pdf: false }
 ];
 
@@ -1476,8 +1476,12 @@ DATASETS.invoices = {
   ],
   filters: [
     { label: 'Khoảng ngày', toast: 'Khoảng ngày · lọc theo ngày lập hoá đơn.' },
-    { label: 'Ký hiệu', toast: 'Ký hiệu · lọc theo mẫu số và ký hiệu hoá đơn.' }
+    { label: 'Ký hiệu hoá đơn', toast: 'Ký hiệu hoá đơn · chọn trong các ký hiệu của gian hàng (vd C26TAA: C là có mã của cơ quan thuế, 26 là năm lập, chữ tiếp theo là loại hoá đơn, hai chữ cuối do gian hàng tự đặt).' }
   ],
+  /* UI/2 Hoá đơn #10, #15: thanh phân trang đã có tổng nên băng lọc không in "N / M dòng";
+     màn Hoá đơn không có ghim. */
+  noCount: true,
+  noPins: true,
   headActions: '<button class="btn btn-sm btn-cancel" type="button" data-toast="Mở bản nháp mới để soát trước khi phát hành.">Tạo nháp</button>' +
     '<button class="btn btn-md btn-primary" type="button" data-toast="Mở trình tự phát hành: chọn ký hiệu → người mua → dòng hàng → soát → phát hành.">Phát hành hoá đơn</button>',
   bulkActions: [
@@ -1488,8 +1492,8 @@ DATASETS.invoices = {
   emptyBody: 'Không có hoá đơn nào thoả bộ lọc hiện tại.',
   emptyAction: '<button class="btn btn-sm btn-secondary" type="button" data-view="all">Xem tất cả</button>',
   cols: [
-    { label: 'Số hoá đơn', mono: true, cell: function (i) { return i.no; } },
-    { label: 'Người mua', cell: function (i) { return '<b>' + i.buyer + '</b><span class="second">' + i.mst + '</span>'; } },
+    { label: 'Số hoá đơn', mono: true, cell: function (i) { return i.no || '-'; } },
+    { label: 'Người mua', cell: function (i) { return '<b>' + i.buyer + '</b><span class="second">' + (i.mst ? 'MST ' + i.mst : '-') + '</span>'; } },
     { label: 'Tổng tiền', num: true, cell: function (i) { return '<b>' + vnd(i.total) + '</b>'; } },
     { label: 'Cơ quan thuế', cell: function (i) { return chip(TAX_STATE[i.tax].chip, TAX_STATE[i.tax].label); } },
     { label: 'Nghiệp vụ', cell: function (i) { return chip(BIZ_STATE[i.biz].chip, BIZ_STATE[i.biz].label); } },
@@ -1499,7 +1503,9 @@ DATASETS.invoices = {
 };
 
 OBJECTS['invoice.doc'] = {
-  title: function (i) { return i.no === 'Nháp' ? 'Hoá đơn nháp' : i.no; },
+  /* Chưa có số: chỉ bản ghi nghiệp vụ DRAFT mới là "Hoá đơn nháp"; hoá đơn đã phát hành mà
+     nhà cung cấp chưa trả số là "chưa cấp số" (UI/2 Hoá đơn #12). */
+  title: function (i) { return i.no || (i.biz === 'DRAFT' ? 'Hoá đơn nháp' : 'Hoá đơn chưa cấp số'); },
   sub: function (i) { return i.buyer + ' · ' + i.prov + ' · ký hiệu ' + i.series; },
   chips: function (i) {
     return chip(TAX_STATE[i.tax].chip, TAX_STATE[i.tax].label) +
@@ -1507,32 +1513,37 @@ OBJECTS['invoice.doc'] = {
   },
   actions: function (i) {
     var replace = i.tax === 'APPROVED' && i.biz !== 'REPLACED'
-      ? '<button class="btn btn-md btn-primary" type="button" data-confirm="Lập hoá đơn thay thế?|' +
+      ? '<button class="btn btn-sm btn-cancel" type="button" data-confirm="Lập hoá đơn thay thế?|' +
         'Hoá đơn thay thế được phát hành thật lên cơ quan thuế và không thu hồi được. Hoá đơn ' + i.no +
         ' sẽ chuyển sang trạng thái đã bị thay thế.|Lập hoá đơn thay thế|Đã gửi hoá đơn thay thế cho ' + i.no + '.">Lập hoá đơn thay thế</button>'
-      : '<button class="btn btn-md btn-primary" type="button" disabled title="' +
+      : '<button class="btn btn-sm btn-cancel" type="button" disabled title="' +
         (i.biz === 'REPLACED' ? 'Hoá đơn này đã bị thay thế một lần rồi.' : 'Chỉ lập được hoá đơn thay thế khi cơ quan thuế đã nhận hoá đơn gốc.') +
         '">Lập hoá đơn thay thế</button>';
+    /* UI/2 Hoá đơn #18: việc thường làm tiếp là tải PDF nên "Tải PDF" là nút chính; lập
+       thay thế là ngoại lệ. Thứ tự giữ nguyên. */
     var files = i.pdf
-      ? '<button class="btn btn-sm btn-cancel" type="button" data-toast="Đang tải ' + i.no + '.pdf">Tải PDF</button>'
-      : '<button class="btn btn-sm btn-cancel" type="button" disabled title="Nhà cung cấp chưa trả tệp về. Đây không phải lỗi — tệp sẽ có sau khi cơ quan thuế phản hồi.">Tải PDF</button>';
+      ? '<button class="btn btn-md btn-primary" type="button" data-toast="Đang tải ' + i.no + '.pdf">Tải PDF</button>'
+      : '<button class="btn btn-md btn-primary" type="button" disabled title="Nhà cung cấp chưa trả tệp về. Đây không phải lỗi — tệp sẽ có sau khi cơ quan thuế phản hồi.">Tải PDF</button>';
     return files + replace;
   },
   tabs: [
     { id: 'sum',   label: 'Tổng quan', by: 'invoice', order: 10, perm: 'invoice:read' },
     { id: 'lines', label: 'Dòng hàng', by: 'invoice', order: 20, perm: 'invoice:read' }
   ],
+  /* Cột xem nhanh chỉ còn Tổng quan (UI/2 Hoá đơn #16-#17); dòng hàng vẫn ở trang đầy đủ.
+     Một tab thì không vẽ thanh tab. */
+  peekTabs: ['sum'],
   panel: function (tab, i, compact) {
     if (tab === 'sum') {
       var buyer = '<div class="card"><h3>Người mua</h3>' + dl([
-        ['Tên', i.buyer], ['Mã số thuế', i.mst], ['Địa chỉ', i.addr]
+        ['Tên', i.buyer], ['Mã số thuế', i.mst || '-'], ['Địa chỉ', i.addr]
       ]) + '</div>';
       var money = '<div class="card"><h3>Tiền</h3>' +
         lrow('Cộng tiền hàng', vnd(i.net)) + lrow('Thuế giá trị gia tăng ' + i.rate, vnd(i.vat)) +
         '<div class="total"><span>Tổng thanh toán</span><span class="r">' + vnd(i.total) + '</span></div></div>';
       var tax = '<div class="card"><h3>Cơ quan thuế</h3>' + dl([
         ['Trạng thái', TAX_STATE[i.tax].label], ['Mã của cơ quan thuế', i.cqt],
-        ['Nhà cung cấp', i.prov], ['Ký hiệu', i.series]
+        ['Nhà cung cấp', i.prov], ['Ký hiệu hoá đơn', i.series]
       ]) +
       (i.reject ? '<div style="margin-top:12px;background:var(--st-error-bg);color:var(--st-error-fg);border-radius:8px;padding:11px 13px;font-size:13px"><b>Lý do từ chối:</b> ' + i.reject + '</div>' : '') +
       (i.rel ? '<div style="margin-top:12px;font-size:13px;color:var(--ink-2)">' + i.rel + '</div>' : '') +
@@ -2402,7 +2413,7 @@ function dataScreen(screen) {
       '<div class="searchbox"><span aria-hidden="true" style="color:var(--muted)">⌕</span>' +
       '<input id="listsearch" value="' + esc(S.query[screen] || '') + '" placeholder="' + ds.searchHint + '" aria-label="Tìm trong ' + ds.title + '"></div>' +
       (ds.filters || []).map(function (f) { return '<button class="fbtn' + (f.on ? ' on' : '') + '" type="button" data-toast="' + esc(f.toast || 'Bộ lọc ' + f.label) + '">' + f.label + '</button>'; }).join('') +
-      '<span class="count">' + rows.length + ' / ' + ds.rows.length + ' dòng</span>' +
+      (ds.noCount ? '' : '<span class="count">' + rows.length + ' / ' + ds.rows.length + ' dòng</span>') +
     '</div>';
 
   var table;
@@ -2450,7 +2461,7 @@ function dataScreen(screen) {
 
 function peekPane(screen, row) {
   var ds = DATASETS[screen];
-  var pins = '<div class="pinbar">' +
+  var pins = ds.noPins ? '' : '<div class="pinbar">' +
     (S.pins.length
       ? S.pins.map(function (p, i) {
           return '<button class="pin" type="button" data-gopin="' + i + '">' + p.id +
@@ -2465,18 +2476,20 @@ function peekPane(screen, row) {
   }
 
   var obj = OBJECTS[ds.kind];
-  var tabs = obj.tabs;
+  var tabs = obj.peekTabs
+    ? obj.tabs.filter(function (t) { return obj.peekTabs.indexOf(t.id) >= 0; })
+    : obj.tabs;
   var allowedTabs = tabs.filter(function (t) { return can(t.perm); });
   if (!allowedTabs.some(function (t) { return t.id === S.peekTab; })) S.peekTab = (allowedTabs[0] || tabs[0]).id;
   var pinned = S.pins.some(function (p) { return String(p.id) === String(row[ds.key]); });
 
   return '<aside class="peek">' + pins +
-    '<div class="otabs">' + tabs.map(function (t) {
+    (tabs.length < 2 ? '' : '<div class="otabs">' + tabs.map(function (t) {
       var allowed = can(t.perm);
       return '<button class="otab" type="button" data-peektab="' + t.id + '" aria-selected="' + (S.peekTab === t.id) + '"' +
         (allowed ? '' : ' disabled aria-disabled="true" title="' + esc(permReason(t.perm)) + '"') + '>' +
         '<span>' + t.label + '</span><span class="src">' + t.by + '</span></button>';
-    }).join('') + '</div>' +
+    }).join('') + '</div>') +
     '<div class="peekbody">' +
       '<h2>' + obj.title(row) + '</h2>' +
       '<div class="psub">' + obj.sub(row) + '</div>' +
@@ -2484,7 +2497,7 @@ function peekPane(screen, row) {
       obj.panel(S.peekTab, row, true) +
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">' +
         obj.actions(row) +
-        '<button class="btn btn-sm btn-cancel" type="button" data-pin="1">' + (pinned ? 'Bỏ ghim' : 'Ghim') + '</button>' +
+        (ds.noPins ? '' : '<button class="btn btn-sm btn-cancel" type="button" data-pin="1">' + (pinned ? 'Bỏ ghim' : 'Ghim') + '</button>') +
         '<button class="btn btn-sm btn-cancel" type="button" data-open="' + ds.module + '|' + ds.kind + '|' + row[ds.key] + '">Mở trang đầy đủ</button>' +
       '</div>' +
     '</div></aside>';
@@ -2801,6 +2814,7 @@ function toggleMark(screen, id) {
 }
 function togglePin() {
   var ds = DATASETS[S.screen];
+  if (ds && ds.noPins && !S.obj) return;
   var r = currentRow(S.screen);
   if (S.obj) { r = { }; }
   var id, module, kind;
