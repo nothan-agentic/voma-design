@@ -208,6 +208,7 @@
   .split { display: grid; grid-template-columns: minmax(0, 1fr) 400px; flex: 1; min-height: 0; }
   @media (max-width: 1240px) { .split { grid-template-columns: minmax(0, 1fr) 340px; } }
   @media (max-width: 980px) { .split { grid-template-columns: minmax(0, 1fr); } .peek { display: none; } }
+  .split.nopeek { grid-template-columns: minmax(0, 1fr); }
   .peek { border-left: 1px solid var(--line-light); background: var(--surface); overflow-y: auto; display: flex; flex-direction: column; }
   .pinbar { display: flex; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--line-light); overflow-x: auto; background: var(--bg); flex: none; }
   .pinbar .pin { flex: none; border: 1px solid var(--line-light); background: var(--surface); border-radius: 999px; padding: 3px 10px; font-size: 11.5px; font-family: var(--mono); color: var(--ink-2); cursor: pointer; display: inline-flex; gap: 7px; align-items: center; }
@@ -528,6 +529,7 @@ var S = {
   /* bàn dữ liệu */
   view: {},          /* screen -> view id */
   cursor: {},        /* screen -> chỉ số dòng */
+  peekOpen: {},      /* screen -> đã bấm mở xem nhanh (chỉ dùng khi ds.peekOnClick) */
   marked: {},        /* screen -> { id: true } */
   query: {},         /* screen -> chuỗi tìm */
   pins: [],
@@ -1469,19 +1471,26 @@ DATASETS.invoices = {
   search: function (i) { return i.no + ' · ' + i.buyer + ' · ' + i.order; },
   sum: function (i) { return i.total; },
   views: [
-    { id: 'all',      label: 'Tất cả',            f: function () { return true; } },
-    { id: 'waiting',  label: 'Chờ cơ quan thuế',  f: function (i) { return i.tax === 'SUBMITTED'; } },
-    { id: 'rejected', label: 'Bị từ chối',        f: function (i) { return i.tax === 'REJECTED'; } },
-    { id: 'draft',    label: 'Nháp',              f: function (i) { return i.biz === 'DRAFT'; } }
+    /* UI/2 Hoá đơn + Hàng đợi #3: view theo trạng thái hoá đơn. Trạng thái của cơ quan
+       thuế chuyển thành một ô lọc riêng (không còn là view). "Đang xử lý" ở bản thật là
+       danh sách yêu cầu xuất hoá đơn chưa xong (hàng đợi cũ); dữ liệu mẫu ở đây mô phỏng
+       bằng hoá đơn còn chờ cơ quan thuế. */
+    { id: 'all',        label: 'Tất cả',         f: function () { return true; } },
+    { id: 'issued',     label: 'Đã phát hành',   f: function (i) { return i.biz === 'ISSUED'; } },
+    { id: 'processing', label: 'Đang xử lý',     f: function (i) { return i.tax === 'SUBMITTED'; } },
+    { id: 'draft',      label: 'Nháp',           f: function (i) { return i.biz === 'DRAFT'; } }
   ],
   filters: [
     { label: 'Khoảng ngày', toast: 'Khoảng ngày · lọc theo ngày lập hoá đơn.' },
+    { label: 'Cơ quan thuế', toast: 'Cơ quan thuế · chọn một trạng thái: chưa gửi, đã gửi chờ phản hồi, đã cấp mã, bị từ chối.' },
     { label: 'Ký hiệu hoá đơn', toast: 'Ký hiệu hoá đơn · chọn trong các ký hiệu của gian hàng (vd C26TAA: C là có mã của cơ quan thuế, 26 là năm lập, chữ tiếp theo là loại hoá đơn, hai chữ cuối do gian hàng tự đặt).' }
   ],
   /* UI/2 Hoá đơn #10, #15: thanh phân trang đã có tổng nên băng lọc không in "N / M dòng";
      màn Hoá đơn không có ghim. */
   noCount: true,
   noPins: true,
+  /* UI/2 Hoá đơn #13: cột xem nhanh chỉ mở khi bấm một dòng, và có nút X để đóng. */
+  peekOnClick: true,
   headActions: '<button class="btn btn-sm btn-cancel" type="button" data-toast="Mở bản nháp mới để soát trước khi phát hành.">Tạo nháp</button>' +
     '<button class="btn btn-md btn-primary" type="button" data-toast="Mở trình tự phát hành: chọn ký hiệu → người mua → dòng hàng → soát → phát hành.">Phát hành hoá đơn</button>',
   bulkActions: [
@@ -1496,7 +1505,7 @@ DATASETS.invoices = {
     { label: 'Người mua', cell: function (i) { return '<b>' + i.buyer + '</b><span class="second">' + (i.mst ? 'MST ' + i.mst : '-') + '</span>'; } },
     { label: 'Tổng tiền', num: true, cell: function (i) { return '<b>' + vnd(i.total) + '</b>'; } },
     { label: 'Cơ quan thuế', cell: function (i) { return chip(TAX_STATE[i.tax].chip, TAX_STATE[i.tax].label); } },
-    { label: 'Nghiệp vụ', cell: function (i) { return chip(BIZ_STATE[i.biz].chip, BIZ_STATE[i.biz].label); } },
+    { label: 'Trạng thái hoá đơn', cell: function (i) { return chip(BIZ_STATE[i.biz].chip, BIZ_STATE[i.biz].label); } },
     { label: 'Đơn hàng', mono: true, cell: function (i) { return i.order; } },
     { label: 'Lập lúc', cell: function (i) { return i.at; } }
   ]
@@ -2149,7 +2158,7 @@ var SORT_KEYS = {
     'Người mua':    function (i) { return i.buyer; },
     'Tổng tiền':    function (i) { return i.total; },
     'Cơ quan thuế': function (i) { return rank(TAX_STATE, i.tax); },
-    'Nghiệp vụ':    function (i) { return rank(BIZ_STATE, i.biz); },
+    'Trạng thái hoá đơn': function (i) { return rank(BIZ_STATE, i.biz); },
     'Lập lúc':      function (i) { return i.at; }
   }
 };
@@ -2438,7 +2447,7 @@ function dataScreen(screen) {
       '</tr></thead><tbody>' +
       rows.map(function (r, i) {
         var id = r[ds.key];
-        return '<tr data-row="' + i + '" class="' + (i === cur ? 'cur' : '') + ' ' + (marks[id] ? 'marked' : '') + '">' +
+        return '<tr data-row="' + i + '" class="' + (i === cur && !(ds.peekOnClick && !S.peekOpen[screen]) ? 'cur' : '') + ' ' + (marks[id] ? 'marked' : '') + '">' +
           '<td><span class="tick ' + (marks[id] ? 'on' : '') + '" data-tick="' + id + '">✓</span></td>' +
           ds.cols.map(function (c) {
             return '<td class="' + (c.num ? 'num ' : '') + (c.mono ? 'mono' : '') + '">' + c.cell(r) + '</td>';
@@ -2455,8 +2464,9 @@ function dataScreen(screen) {
       return '<button type="button" data-toast="' + esc(b.label + ' · ' + nMarked + ' dòng đang lọc theo “' + vlabel + '”. ' + b.toast) + '">' + b.label + '</button>';
     }).join('') + '</div>' : '';
 
-  return head + '<div class="split"><div style="display:flex;flex-direction:column;min-height:0;position:relative">' +
-    table + bulk + '</div>' + peekPane(screen, rows[cur]) + '</div>';
+  var closed = ds.peekOnClick && !S.peekOpen[screen];
+  return head + '<div class="split' + (closed ? ' nopeek' : '') + '"><div style="display:flex;flex-direction:column;min-height:0;position:relative">' +
+    table + bulk + '</div>' + (closed ? '' : peekPane(screen, rows[cur])) + '</div>';
 }
 
 function peekPane(screen, row) {
@@ -2484,6 +2494,7 @@ function peekPane(screen, row) {
   var pinned = S.pins.some(function (p) { return String(p.id) === String(row[ds.key]); });
 
   return '<aside class="peek">' + pins +
+    (ds.peekOnClick ? '<div style="display:flex;justify-content:flex-end;padding:8px 10px 0"><button class="btn btn-sm btn-cancel" type="button" data-peekclose="1" aria-label="Đóng xem nhanh">×</button></div>' : '') +
     (tabs.length < 2 ? '' : '<div class="otabs">' + tabs.map(function (t) {
       var allowed = can(t.perm);
       return '<button class="otab" type="button" data-peektab="' + t.id + '" aria-selected="' + (S.peekTab === t.id) + '"' +
@@ -2727,7 +2738,7 @@ function bindCanvas() {
   var c = el('canvas');
   each(c, '[data-go]', function (b) { b.onclick = function () { go(b.dataset.go); }; });
   each(c, '[data-view]', function (b) {
-    b.onclick = function () { S.view[S.screen] = b.dataset.view; S.cursor[S.screen] = 0; S.marked[S.screen] = {}; render(); };
+    b.onclick = function () { S.view[S.screen] = b.dataset.view; S.cursor[S.screen] = 0; S.peekOpen[S.screen] = false; S.marked[S.screen] = {}; render(); };
   });
   each(c, '[data-all]', function (b) {
     b.onclick = function () {
@@ -2747,12 +2758,15 @@ function bindCanvas() {
       if (e.target.dataset && e.target.dataset.tick !== undefined) {
         toggleMark(S.screen, e.target.dataset.tick); render(); return;
       }
-      S.cursor[S.screen] = +tr.dataset.row; S.peekTab = 'sum'; render();
+      S.cursor[S.screen] = +tr.dataset.row; S.peekOpen[S.screen] = true; S.peekTab = 'sum'; render();
     };
     tr.ondblclick = function () {
       var ds = DATASETS[S.screen], r = filteredRows(S.screen)[+tr.dataset.row];
       if (ds && r) openObject(ds.module, ds.kind, r[ds.key]);
     };
+  });
+  each(c, '[data-peekclose]', function (b) {
+    b.onclick = function () { S.peekOpen[S.screen] = false; render(); };
   });
   each(c, '[data-open]', function (b) {
     b.onclick = function (e) {
