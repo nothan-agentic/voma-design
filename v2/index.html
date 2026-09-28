@@ -1478,8 +1478,8 @@ DATASETS.invoices = {
     { label: 'Khoảng ngày', toast: 'Khoảng ngày · lọc theo ngày lập hoá đơn.' },
     { label: 'Ký hiệu', toast: 'Ký hiệu · lọc theo mẫu số và ký hiệu hoá đơn.' }
   ],
-  headActions: '<button class="btn btn-sm btn-cancel" type="button" data-toast="Mở bản nháp mới để soát trước khi phát hành.">Tạo nháp</button>' +
-    '<button class="btn btn-md btn-primary" type="button" data-toast="Mở trình tự phát hành: chọn ký hiệu → người mua → dòng hàng → soát → phát hành.">Phát hành hoá đơn</button>',
+  /* UI/2 Hoá đơn #5: một form "Lập hoá đơn" chung — trong form chọn Lưu nháp hoặc Phát hành. */
+  headActions: '<button class="btn btn-md btn-primary" type="button" data-toast="Mở form Lập hoá đơn: chọn ký hiệu → người mua → dòng hàng → Lưu nháp hoặc Phát hành.">Lập hoá đơn</button>',
   bulkActions: [
     { label: 'Tải PDF', toast: 'Đã tải các hoá đơn đang chọn.' },
     { label: 'Xuất Excel', toast: 'Đã xuất danh sách đang chọn.' }
@@ -1741,8 +1741,8 @@ COMMANDS = [
     run: function () { go('products'); toast('Mở trình soạn sản phẩm.'); } },
   { group: 'Hành động', module: 'wms', label: 'Điều chỉnh tồn kho', perm: 'wms:write',
     run: function () { go('stock'); openDrawer('adjust'); } },
-  { group: 'Hành động', module: 'invoice', label: 'Phát hành hoá đơn', perm: 'invoice:write',
-    run: function () { go('invoices'); toast('Mở trình tự phát hành hoá đơn.'); } },
+  { group: 'Hành động', module: 'invoice', label: 'Lập hoá đơn', perm: 'invoice:write',
+    run: function () { go('invoices'); toast('Mở form Lập hoá đơn.'); } },
   { group: 'Hành động', module: 'wms', label: 'Mở máy quét · nhặt hàng', perm: 'wms:read',
     run: function () { go('scan'); startScanTask('pick'); } },
   { group: 'Hành động', module: 'channel', label: 'Kết nối shop mới', perm: 'channel:write',
