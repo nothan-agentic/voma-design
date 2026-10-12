@@ -1592,7 +1592,7 @@ QUEUES.push({
    ========================================================================= */
 
 var AUTH_STATE = {
-  ACTIVE:   { label: 'Đang kết nối',        chip: 'success' },
+  ACTIVE:   { label: 'Đã kết nối',          chip: 'success' },
   EXPIRING: { label: 'Đang làm mới',        chip: 'in-progress' },
   EXPIRED:  { label: 'Hết hạn uỷ quyền',    chip: 'error' },
   REVOKED:  { label: 'Đã ngắt kết nối',     chip: 'error' }
@@ -1625,7 +1625,7 @@ DATASETS.channels = {
   views: [
     { id: 'all',    label: 'Tất cả',           f: function () { return true; } },
     { id: 'need',   label: 'Cần xử lý',        f: function (c) { return c.st !== 'ACTIVE' || c.jobsFailed > 0; } },
-    { id: 'active', label: 'Đang kết nối',     f: function (c) { return c.st === 'ACTIVE'; } }
+    { id: 'active', label: 'Đã kết nối',       f: function (c) { return c.st === 'ACTIVE'; } }
   ],
   filters: [ { label: 'Sàn', toast: 'Sàn · lọc theo TikTok Shop hoặc Shopee.' } ],
   headActions: '<button class="btn btn-md btn-primary" type="button" data-toast="Mở trang uỷ quyền của sàn. Sau khi người bán đồng ý, shop được nối vào gian hàng này.">Kết nối shop</button>',
